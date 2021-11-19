@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="2dp">
+
+        <CheckBox
+            android:id="@+id/chk_remark"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="10dp">
+
+        </CheckBox>
+
+        <TextView
+            android:id="@+id/itemname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="9dp"
+            android:text="TextView"
+            android:layout_toEndOf="@+id/chk_remark"
+            android:textColor="@color/colorGray"
+            android:textSize="14dp"
+            android:maxLines="1"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/linear_layout_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="4dp"
+            android:orientation="horizontal"
+            android:gravity="right|center_vertical">
+
+            <TextView
+                android:id="@+id/xqty"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center_vertical|right"
+                android:text="0" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

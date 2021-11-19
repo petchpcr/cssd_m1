@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="85dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/listmain"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/form_layout_color_gray"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp">
+
+        <RelativeLayout
+            android:id="@+id/maindoc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/w_docno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
+                android:layout_weight="1"
+                android:paddingLeft="0dp"
+                android:text="SS00710-0001"
+                android:textColor="@android:color/black"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/w_docdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="23dp"
+                android:layout_weight="1"
+                android:paddingLeft="0dp"
+                android:text="09-09-2020"
+                android:textColor="@color/colorGray"
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/w_dapt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/w_docno"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@+id/w_docno"
+                android:maxLines="1"
+                android:paddingLeft="2dp"
+                android:text="OR"
+                android:textColor="@color/colorGray"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/w_remark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="38dp"
+                android:layout_weight="1"
+                android:text="หมายเหตุ:"
+                android:textColor="@color/colorGray"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/w_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="80dp"
+                android:layout_marginTop="38dp"
+                android:layout_toEndOf="@+id/w_remark"
+                android:textColor="@color/colorGray"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/iswashdept"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="false"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="31dp"
+                android:background="@drawable/ic_radiobox_fill" />
+
+            <TextView
+                android:id="@+id/w_bt_note"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="false"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="55dp"
+                android:background="@drawable/ic_list_blue"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/btn_del"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="1dp"
+                android:layout_marginEnd="5dp"
+                android:background="@android:drawable/ic_delete" />
+
+            <TextView
+                android:id="@+id/tQty1"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_horizontal"
+                android:text="0"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="39dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_horizontal"
+                android:text="รายการ"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tQty2"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="53dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center_horizontal"
+                android:text="0"
+                android:textSize="11sp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

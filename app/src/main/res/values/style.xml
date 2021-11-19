@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="spinner_style_register">
+        <item name="android:background">@drawable/gradient_spinner</item>
+        <item name="android:popupBackground">#FFFFFFFF</item>
+    </style>
+
+    <style name="DialogCustomTheme" parent="android:Theme.Holo.Light.Dialog.NoActionBar">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+</resources>

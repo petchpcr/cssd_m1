@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="620dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="500dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="250dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="30dp"
+                        android:text="Remark"
+                        android:paddingLeft="15dp"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="@color/white"
+                        android:textSize="22dp"
+                        android:textStyle="bold"/>
+
+                    <ImageView
+                        android:id="@+id/close"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="430dp"
+                        android:background="@drawable/ic_cancel" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="60dp">
+
+                    <TextView
+                        android:id="@+id/text"
+                        android:layout_width="180dp"
+                        android:layout_height="150dp"
+                        android:text="ชื่อเจ้าหน้าที่แผนก  : "
+                        android:textColor="@color/black"
+                        android:gravity="center|left"
+                        android:textSize="20dp">
+
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/userdep"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/black"
+                        android:layout_toEndOf="@+id/text"
+                        android:textSize="20dp"
+                        android:gravity="left|top"
+                        android:paddingLeft="15dp"
+                        android:paddingTop="5dp"
+                        android:background="@drawable/login_block">
+
+                    </EditText>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/R1"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <CheckBox
+                        android:id="@+id/check1"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:maxLines="1"
+                        android:text="TextView"
+                        android:textColor="@color/black"
+                        android:textSize="20dp">
+
+                    </CheckBox>
+
+                    <CheckBox
+                        android:id="@+id/check2"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:gravity="left|center"
+                        android:maxLines="1"
+                        android:text="TextView"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/check1"
+                        android:textColor="@color/black"
+                        android:textSize="20dp">
+
+                    </CheckBox>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/R2"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <CheckBox
+                        android:id="@+id/check3"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:maxLines="1"
+                        android:text="TextView"
+                        android:textColor="@color/black"
+                        android:textSize="20dp">
+
+                    </CheckBox>
+
+                    <CheckBox
+                        android:id="@+id/check4"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:gravity="left|center"
+                        android:maxLines="1"
+                        android:text="TextView"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/check3"
+                        android:textColor="@color/black"
+                        android:textSize="20dp">
+
+                    </CheckBox>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/R3"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <CheckBox
+                        android:id="@+id/check5"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:maxLines="1"
+                        android:text="TextView"
+                        android:textColor="@color/black"
+                        android:textSize="20dp">
+
+                    </CheckBox>
+
+                    <CheckBox
+                        android:id="@+id/check6"
+                        android:layout_width="250dp"
+                        android:layout_height="60dp"
+                        android:gravity="left|center"
+                        android:maxLines="1"
+                        android:text="TextView"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/check5"
+                        android:textColor="@color/black"
+                        android:textSize="20dp">
+
+                    </CheckBox>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/text_qty"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="10dp"
+                android:text="จำนวน : "
+                android:paddingStart="15dp"
+                android:textColor="@color/black"
+                android:gravity="center|left"
+                android:textSize="20dp">
+
+            </TextView>
+
+            <EditText
+                android:id="@+id/qty_item"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/black"
+                android:layout_toEndOf="@+id/text_qty"
+                android:inputType="number"
+                android:textSize="20dp"
+                android:gravity="center"
+                android:paddingTop="5dp"
+                android:selectAllOnFocus="true"
+                android:background="@drawable/login_block">
+
+            </EditText>
+
+            <TextView
+                android:id="@+id/text_qty_1"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_toEndOf="@+id/qty_item"
+                android:text="ชิ้น"
+                android:paddingStart="15dp"
+                android:textColor="@color/black"
+                android:gravity="center|left"
+                android:textSize="20dp">
+
+            </TextView>
+
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/text_remark"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:hint=" หมายเหตุ..."
+            android:gravity="left|top"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:background="@drawable/login_block">
+
+        </EditText>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_height="80dp">
+
+            <Button
+                android:id="@+id/summit"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentEnd="true"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:gravity="left|top"
+                android:paddingLeft="15dp"
+                android:paddingTop="15dp"
+                android:background="@drawable/bt_save">
+
+            </Button>
+
+            <Button
+                android:id="@+id/cancle"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:gravity="left|top"
+                android:paddingLeft="15dp"
+                android:paddingTop="15dp"
+                android:background="@drawable/bt_cancel">
+
+            </Button>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

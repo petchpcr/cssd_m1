@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="bt_receive" type="id"/>
+    <item name="bt_dispensing" type="id"/>
+    <item name="bt_remark" type="id"/>
+    <item name="bt_results" type="id"/>
+    <item name="bt_returnofcssd" type="id"/>
+</resources>

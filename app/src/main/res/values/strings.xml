@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Cssd M1</string>
+    <string name="meta_position">meta_position</string>
+    <string name="meta_title">meta_title</string>
+    <!-- Urgent Notification -->
+    <string name="noti_notification">แจ้งเตือนอุปกรณ์</string>
+    <string name="noti_urgent">ด่วนมาก</string>
+    <string name="noti_quite_urgent">ด่วน</string>
+    <string name="noti_be_careful">ระวังเป็นพิเศษ</string>
+    <string name="noti_limit_reprocess">ครบรอบส่งคืน</string>
+    <string name="noti_expired">หมดอายุ</string>
+    <string name="title_activity_dialog_load_img">dialog_Load_Img</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+</resources>
