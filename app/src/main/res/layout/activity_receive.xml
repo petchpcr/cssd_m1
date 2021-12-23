@@ -300,7 +300,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="right|center_vertical"
-                android:text="(แผนกล้างเอง)   "
+                android:text="(ฝากฆ่าเชื้อ)   "
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:visibility="gone" />

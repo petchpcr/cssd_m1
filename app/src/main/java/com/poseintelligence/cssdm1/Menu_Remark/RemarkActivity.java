@@ -272,7 +272,12 @@ public class RemarkActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();
-                data.put("Date",Date);
+                if (check_date.isChecked()){
+                    data.put("Date","All");
+                }else {
+                    data.put("Date",Date);
+                }
+
                 data.put("key",key);
 //                data.put("B_ID",B_ID);
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
@@ -280,9 +285,9 @@ public class RemarkActivity extends AppCompatActivity {
                 try {
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_docno_remark.php", data);
 
-                    Log.d("tog_display","getxUrl : "+((CssdProject) getApplication()).getxUrl() + "cssd_display_docno_remark.php");
-                    Log.d("tog_display","result : "+result);
-                    Log.d("tog_display","data : "+data);
+                    Log.d("tog_display1","getxUrl : "+((CssdProject) getApplication()).getxUrl() + "cssd_display_docno_remark.php");
+                    Log.d("tog_display2","result : "+result);
+                    Log.d("tog_display3","data : "+data);
                 }catch(Exception e){
                     e.printStackTrace();
                 }

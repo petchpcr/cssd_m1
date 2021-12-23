@@ -62,14 +62,15 @@ public class search_sendsterileAdapter extends ArrayAdapter {
         System.out.println(listData.get(position).getFields8());
         System.out.println(listData.get(position).getFields9());
         */
+//
+//        EditNum1.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+//            public void onFocusChange(View v, boolean hasFocus){
+//                if (hasFocus)
+//                    ((EditText)v).selectAll();
+//
+//            }
+//        });
 
-        EditNum1.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-            public void onFocusChange(View v, boolean hasFocus){
-                if (hasFocus)
-                    ((EditText)v).selectAll();
-
-            }
-        });
 
         EditNum1.addTextChangedListener(new TextWatcher() {
 
