@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@drawable/rectangle"
+    android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_remark"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_curve"
+            android:padding="10dp"
+            android:text="มีรอย(ชำรุด)"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:textStyle="bold">
+
+        </TextView>
+
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/imageslide"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:padding="5dp"
+            app:corner_radius="1"
+            app:placeholder="@drawable/camera">
+
+        </com.denzcoskun.imageslider.ImageSlider>
+
+        <ImageView
+            android:id="@+id/images"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:background="@drawable/camera"
+            android:padding="5dp">
+
+        </ImageView>
+
+</LinearLayout>

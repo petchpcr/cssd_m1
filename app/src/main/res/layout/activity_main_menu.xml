@@ -69,79 +69,164 @@
             android:textSize="20sp" />
     </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/R2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <ScrollView
+        android:layout_marginTop="60dp"
         android:layout_below="@+id/L2"
-        android:layout_marginTop="60dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/RR1"
-            android:layout_width="180dp"
-            android:layout_height="170dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/RR1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/RR2"
-            android:layout_width="180dp"
-            android:layout_height="170dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="5dp">
+                </LinearLayout>
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/RR2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/RR3"
-            android:layout_width="180dp"
-            android:layout_height="170dp"
-            android:layout_below="@+id/RR1"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="0dp">
+                </LinearLayout>
 
-        </RelativeLayout>
+            </LinearLayout>
 
-        <RelativeLayout
-            android:id="@+id/RR4"
-            android:layout_width="180dp"
-            android:layout_height="170dp"
-            android:layout_below="@+id/RR2"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="5dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/RR3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/RR5"
-            android:layout_width="180dp"
-            android:layout_height="170dp"
-            android:layout_below="@+id/RR4"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="0dp">
+                </LinearLayout>
 
-        </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/RR4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
 
-        <RelativeLayout
-            android:id="@+id/RR6"
-            android:layout_width="180dp"
-            android:layout_height="170dp"
-            android:layout_below="@+id/RR4"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="5dp">
+                </LinearLayout>
+            </LinearLayout>
 
-        </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-    </RelativeLayout>
+                <LinearLayout
+                    android:id="@+id/RR5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/RR6"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/RR7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/RR8"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/menu_f_rectangle"
+                    android:gravity="center_horizontal|top"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 </RelativeLayout>

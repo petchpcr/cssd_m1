@@ -1,9 +1,397 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".dialog_check_usage_count">
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_curve">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:fontFamily="@font/kanit"
+            android:gravity="center"
+            android:text="@string/noti_notification"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/P1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/index1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="1."
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/noti_urgent"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/qty1"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="                         "
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="PCS/SET"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/P6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/index6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="6."
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/text6"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/noti_quite_urgent"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/qty6"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="                         "
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="PCS/SET"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/P2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/index2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="2."
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/noti_be_careful"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/qty2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="                         "
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="PCS/SET"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/P3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/index3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="3."
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="Remark"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/qty3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="                         "
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="PCS/SET"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/P4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/index4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="4."
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/text4"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/noti_limit_reprocess"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/qty4"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="                         "
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="PCS/SET"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/P5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/index5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="5."
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/text5"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="@string/noti_expired"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/qty5"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="                         "
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:text="PCS/SET"
+                android:textColor="@color/black"
+                android:textSize="16sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/back"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bt_back"
+        android:paddingStart="20dp"
+        android:paddingBottom="5dp">
+
+    </Button>
+
+</LinearLayout>

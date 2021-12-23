@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relative_layout_main"
-    style="@style/Theme.AppCompat.Light.DarkActionBar"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/bg_home">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_home"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/Block_1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,6 +36,19 @@
                 android:text="เอกสารส่งฆ่าเชื้อ"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
+
+            <Switch
+                android:id="@+id/switch_washdep"
+                android:layout_width="130dp"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:gravity="right|center_vertical"
+                android:text="ฝากฆ่าเชื้อ"
+                android:textColor="@color/white"
+                android:textSize="14dp"
+                android:theme="@style/SCBSwitch"
+                android:visibility="visible"
+                tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
 
@@ -127,9 +140,10 @@
                             android:layout_marginRight="8dp"
                             android:background="@drawable/text_standard"
                             android:gravity="center_vertical|center"
+                            android:hint="ค้นหาเอกสาร"
                             android:paddingLeft="8dp"
                             android:textSize="14dp"
-                            tools:ignore="TouchTargetSizeCheck" >
+                            tools:ignore="TouchTargetSizeCheck">
 
                         </EditText>
 
@@ -157,17 +171,6 @@
                             android:layout_width="120dp"
                             android:layout_height="35dp"
                             android:layout_weight="0.8" />
-
-                        <Switch
-                            android:id="@+id/switch_washdep"
-                            android:layout_width="130dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:text="แผนกล้างเอง"
-                            android:textColor="@color/white"
-                            android:textSize="14dp"
-                            android:visibility="gone"
-                            tools:ignore="TouchTargetSizeCheck" />
 
                         <ImageView
                             android:id="@+id/btn_form_search"
@@ -212,10 +215,10 @@
                         android:layout_marginTop="0dp"
                         android:layout_marginRight="10dp"
                         android:text="ยังไม่ปิด/ทั้งหมด  "
+                        android:theme="@style/SCBSwitch"
                         android:textColor="@color/colorSwitchBlue"
                         android:textColorLink="@color/colorSwitchBlue"
-                        android:textSize="14dp"
-                        android:textStyle="italic" />
+                        android:textSize="14dp" />
 
 
                 </LinearLayout>
@@ -265,12 +268,13 @@
     <LinearLayout
         android:id="@+id/Block_2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
@@ -290,18 +294,29 @@
                 android:text="TextView"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/h_wash_dep"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="right|center_vertical"
+                android:text="(แผนกล้างเอง)   "
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="2dp"
+            android:layout_weight="0"
             android:orientation="vertical"
             android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -362,7 +377,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -425,13 +440,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="250dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <com.toptoche.searchablespinnerlibrary.SearchableSpinner
@@ -444,14 +460,15 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginStart="10dp"
+                    android:layout_weight="0"
                     android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/txt_doc_time"
-                        android:layout_width="match_parent"
+                        android:layout_width="80dp"
                         android:layout_height="35dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginEnd="5dp"
@@ -466,7 +483,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
@@ -501,7 +518,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="right"
-                    android:text="จำนววน 0 รายการ"
+                    android:text="จำนวน 0 รายการ"
                     android:textColor="@color/colorBlue"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -512,12 +529,13 @@
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="50dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <ListView
                     android:id="@+id/list_doc_detail"
                     android:layout_width="match_parent"
-                    android:layout_height="450dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="0dp"
                     android:layout_marginRight="4dp"
@@ -528,7 +546,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="-50dp"
                 android:orientation="horizontal">
 
@@ -562,4 +580,4 @@
         </LinearLayout>
 
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

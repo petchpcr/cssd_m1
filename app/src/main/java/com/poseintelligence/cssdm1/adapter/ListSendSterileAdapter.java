@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.poseintelligence.cssdm1.R;
-import com.poseintelligence.cssdm1.ReceiveActivity;
+import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.model.pCustomer;
 
@@ -66,6 +66,7 @@ public class ListSendSterileAdapter extends ArrayAdapter {
         final TextView w_bt_note = (TextView) v.findViewById(R.id.w_bt_note);
         final TextView tQty1 = (TextView) v.findViewById(R.id.tQty1);
         final TextView tQty2 = (TextView) v.findViewById(R.id.tQty2);
+        final TextView textView6 = (TextView) v.findViewById(R.id.textView6);
 
         w_docdate.setText(listData.get(position).getDocdate() + " " + listData.get(position).getTime() + " (" + listData.get(position).getSend_From() + ")" );
         w_dapt.setText(listData.get(position).getDeptname());
@@ -75,6 +76,12 @@ public class ListSendSterileAdapter extends ArrayAdapter {
         tQty2.setText(listData.get(position).getQty2());
 
         final ImageView btn_del = (ImageView) v.findViewById(R.id.btn_del);
+
+        if(((ReceiveActivity) aActivity).WA_IsUsedWash){
+            tQty1.setVisibility(View.INVISIBLE);
+            tQty2.setVisibility(View.INVISIBLE);
+            textView6.setText("("+listData.get(position).getQty2()+")");
+        }
 
         if (listData.get(position).getIsStatus().equals("0")) {
             img_sttus.setBackgroundResource(R.drawable.ic_radiobox_fill);

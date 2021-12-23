@@ -2,6 +2,7 @@ package com.poseintelligence.cssdm1.core.connect;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -160,7 +161,7 @@ public class xControl {
         return xData;
     }
 
-    public void ListResterileType(final Spinner spn,final Activity context) {
+    public void ListResterileType(final Spinner spn,final Activity context, final String Re_name) {
         class ListOccuranceType extends AsyncTask<String, Void, String> {
             @Override
             protected void onPreExecute() {
@@ -174,6 +175,9 @@ public class xControl {
                     Response_Aux newsData;
                     JSONObject jsonObj = new JSONObject(s);
                     setRs = jsonObj.getJSONArray(TAG_RESULTS);
+                    if (!Re_name.equals("null")&&!Re_name.equals("")){
+                        list.add(Re_name);
+                    }
                     xData.clear();
                     for(int i=0;i<setRs.length();i++){
                         newsData = new Response_Aux();
@@ -196,7 +200,10 @@ public class xControl {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("Status","1");
+                data.put("Re_name",Re_name);
                 String result = ruc.sendPostRequest(((CssdProject) context.getApplication()).getxUrl() + "1/get_resteriletype.php",data);
+                Log.d("BANKTEST",data+"");
+                Log.d("BANKTEST",result+"");
                 return  result;
             }
         }

@@ -15,7 +15,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="130dp"
-            android:background="@drawable/bg_curve">
+            android:background="@color/colorTitleBlue">
 
             <ImageView
                 android:id="@+id/backpage"

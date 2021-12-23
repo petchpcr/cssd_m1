@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    tools:context=".Menu_Remark.dialog_delete_pic_remark">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:text="ยืนยัน"
+        android:textColor="@color/black"
+        android:textSize="20dp">
+
+    </TextView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="กรุณาเลือกรูปที่ต้องการลบ"
+        android:textColor="@color/black"
+        android:textSize="16dp">
+
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/rd1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="รูปที่1">
+
+            </CheckBox>
+
+            <ImageView
+                android:id="@+id/pic1"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:background="@drawable/camera"
+                android:scaleType="centerCrop">
+
+            </ImageView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/rd2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="รูปที่2">
+
+            </CheckBox>
+
+            <ImageView
+                android:id="@+id/pic2"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:background="@drawable/camera"
+                android:scaleType="centerCrop">
+
+            </ImageView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/rd3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="รูปที่3">
+
+            </CheckBox>
+
+            <ImageView
+                android:id="@+id/pic3"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:background="@drawable/camera"
+                android:scaleType="centerCrop">
+
+            </ImageView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="ยกเลิก"
+            android:textColor="@color/colorAccent"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="ตกลง"
+            android:textColor="@color/colorAccent"
+            android:textSize="16dp">
+
+        </TextView>
+    </LinearLayout>
+
+</LinearLayout>

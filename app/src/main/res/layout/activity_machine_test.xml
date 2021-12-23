@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg_tran">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorTitleBlue"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/backpage"
+                android:layout_width="30dp"
+                android:layout_height="35dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/ic_keyboard_arrow_left_black">
+
+            </ImageView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="13dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/calendar_64" />
+
+                <TextView
+                    android:id="@+id/txt_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/rq_listdoc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

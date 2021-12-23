@@ -65,7 +65,6 @@ public class Login extends AppCompatActivity {
     private HTTPConnect http = new HTTPConnect();
 
     ArrayList<ConfigM1> config_m1 = new ArrayList<>();
-    ArrayList<ConfigM1> active_m1 = new ArrayList<>();
 
     //Check if internet is present or not
     private boolean isConnectingToInternet() {
@@ -283,6 +282,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                dep_device();
                 try {
                     onLogin(uname.getText().toString(), pword.getText().toString());
                 } catch (Exception e) {
@@ -481,7 +481,6 @@ public class Login extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 }
-                dep_device();
             }
 
             @Override
@@ -576,7 +575,7 @@ public class Login extends AppCompatActivity {
 
                         if (c.getString("result").equals("A")) {
 
-                            CssdProject cssdProject = new CssdProject();
+//                            ((CssdProject) getApplication()).setD_DATABASE(c.getString("p_DB"));
                             ((CssdProject) getApplication()).setMN_IsUsedFormNonUsage(c.getBoolean("MN_IsUsedFormNonUsage"));
                             ((CssdProject) getApplication()).setMN_IsUsedComputeDate(c.getBoolean("MN_IsUsedComputeDate"));
                             ((CssdProject) getApplication()).setMN_IsUsedReceiveDevice(c.getBoolean("MN_IsUsedReceiveDevice"));
@@ -755,8 +754,10 @@ public class Login extends AppCompatActivity {
     }
 
     public void dep_device(){
-        if(getSerialNumber().equals("L203P85U01898")){
+        if(getSerialNumber().equals("L203P85U01743")){
             onLogin("user1", "111");
+
+
         }
     }
 }

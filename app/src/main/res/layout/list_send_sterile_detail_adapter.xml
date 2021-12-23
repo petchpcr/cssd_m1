@@ -24,12 +24,14 @@
 
             <TextView
                 android:id="@+id/w_itemname"
-                android:layout_width="200dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="28dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/w_date"
                 android:text="TextView"
                 android:textColor="@color/colorGray"
                 android:textSize="14dp" />
@@ -102,9 +104,9 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="38dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@+id/w_bt_risk"
                 android:background="@drawable/ic_item_express_gray"
                 android:visibility="visible" />
 
@@ -114,8 +116,8 @@
                 android:layout_height="20dp"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="3dp"
-                android:layout_toStartOf="@+id/w_bt_express"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@+id/w_bt_note"
                 android:background="@drawable/ic_risk_icon_gray"
                 android:visibility="visible" />
 
@@ -124,9 +126,9 @@
                 android:layout_width="25dp"
                 android:layout_height="20dp"
                 android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="3dp"
-                android:layout_toStartOf="@+id/w_bt_risk"
+                android:layout_marginEnd="40dp"
                 app:srcCompat="@drawable/ic_r_grey" />
 
             <TextView
@@ -187,9 +189,9 @@
             <TextView
                 android:id="@+id/w_bt_note"
                 android:layout_width="20dp"
-                android:layout_height="25dp"
+                android:layout_height="21dp"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="3dp"
                 android:layout_toStartOf="@+id/w_resterile"
                 android:background="@drawable/ic_list_grey" />

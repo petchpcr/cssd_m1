@@ -1,4 +1,4 @@
-package com.poseintelligence.cssdm1;
+package com.poseintelligence.cssdm1.Menu_Receive;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,6 +38,12 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.MainMenu;
+import com.poseintelligence.cssdm1.Menu_Remark.dialog_Load_Img;
+import com.poseintelligence.cssdm1.Menu_Remark.dialog_Load_Img_Remark;
+import com.poseintelligence.cssdm1.Menu_Remark.dialog_remark_sendsterile;
+import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListSendSterileAdapter;
 import com.poseintelligence.cssdm1.adapter.ListSendSterileDetailAdapter;
 import com.poseintelligence.cssdm1.adapter.ListSendSterileDetailSetAdapter;
@@ -151,6 +157,7 @@ public class ReceiveActivity extends AppCompatActivity {
     private TextView txt_basket_lable;
     private TextView lable_qty;
     private TextView lable_unit;
+    private TextView h_wash_dep;
 
     private SearchableSpinner spn_department_form;
     private SearchableSpinner spn_usr_send;
@@ -253,7 +260,7 @@ public class ReceiveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_receive);
-        getSupportActionBar().hide();
+//        getSupportActionBar().hide();
 
         // Permission StrictMode
         if (android.os.Build.VERSION.SDK_INT > 9) {
@@ -261,7 +268,6 @@ public class ReceiveActivity extends AppCompatActivity {
             StrictMode.setThreadPolicy(policy);
         }
 
-        getSupportActionBar().hide();
 
         // -----------------------------------------------------------------------
         // Sound
@@ -286,6 +292,12 @@ public class ReceiveActivity extends AppCompatActivity {
 //            defineZone();
         }
 
+        if(WA_IsUsedWash){
+            txt_doc_time.setVisibility(View.GONE);
+            switch_status.setText("เอกสารล่าง  ");
+        }else{
+            switch_status.setText("ยังไม่ปิด/ทั้งหมด  ");
+        }
 
         edt_usage_code.requestFocus();
 
@@ -298,6 +310,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 handler_1.removeCallbacks(runnable_1);
             }
         };
+
+        displaySendSterile(false, null, 2);
 
         handler_1.postDelayed(runnable_1, 999);
 
@@ -320,8 +334,8 @@ public class ReceiveActivity extends AppCompatActivity {
                     JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     ar_list_dept_id.clear();
-                    ar_list_dept_id.add("เลือกแผนก");
-                    ar_list_dept_name.add("เลือกแผนก");
+                    ar_list_dept_id.add("");
+                    ar_list_dept_name.add("ทุกแผนก");
 
                     for (int i = 0; i < setRs.length(); i++) {
                         JSONObject c = setRs.getJSONObject(i);
@@ -344,6 +358,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("B_ID",B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 Log.d("OOOO",getUrl + "cssd_select_department_by_send_sterile.php?"+ data);
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_select_department_by_send_sterile.php", data);
                 Log.d("OOOO","Result : "+result);
@@ -391,7 +406,9 @@ public class ReceiveActivity extends AppCompatActivity {
         spn_department_search = ( SearchableSpinner ) findViewById(R.id.spn_department_search);
 
         switch_status = ( Switch ) findViewById(R.id.switch_status);
+
         switch_washdep = ( Switch ) findViewById(R.id.switch_washdep);
+        h_wash_dep= ( TextView ) findViewById(R.id.h_wash_dep);
 
         Create_Doc = ( ImageView ) findViewById(R.id.Create_Doc);
         img_back_1 = ( ImageView ) findViewById(R.id.img_back_1);
@@ -442,6 +459,8 @@ public class ReceiveActivity extends AppCompatActivity {
         WA_IsUsedWash = ((CssdProject) getApplication()).isWA_IsUsedWash();
 
         ST_IsUsedNotification = ((CssdProject) getApplication()).isST_IsUsedNotification();
+
+        switch_washdep.setVisibility(SS_IsUsedSelfWashDepartment ? View.VISIBLE : View.GONE);
     }
 
     public void byEvent() {
@@ -453,7 +472,7 @@ public class ReceiveActivity extends AppCompatActivity {
         spn_department_search.setPositiveButton("ปิด");
         spn_department_form.setTitle("เลือก");
         spn_department_form.setPositiveButton("ปิด");
-        spn_usr_receive.setTitle("เลือกู้รับ(จ่ายกลาง)");
+        spn_usr_receive.setTitle("เลือกผู้รับ(จ่ายกลาง)");
         spn_usr_receive.setPositiveButton("ปิด");
 
         onChangeDateSearch();
@@ -464,7 +483,7 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // do something when the corky2 is clicked
-                Intent intent = new Intent(ReceiveActivity.this,MainMenu.class);
+                Intent intent = new Intent(ReceiveActivity.this, MainMenu.class);
                 startActivity(intent);
                 finish();
             }
@@ -502,7 +521,7 @@ public class ReceiveActivity extends AppCompatActivity {
                     if (!IsItemClick) {
 
                         dept_id = ar_list_dept_id.get(position);
-
+                        spn_department_search.setSelection(position);
                         //clearDoc();
                     }
 
@@ -529,6 +548,14 @@ public class ReceiveActivity extends AppCompatActivity {
         switch_status.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 displaySendSterile(false, null,3 );
+
+                if(WA_IsUsedWash){
+                    if(!switch_status.isChecked()){
+                        switch_status.setText("เอกสารล่าง  ");
+                    }else{
+                        switch_status.setText("ส่งล้าง/ฆ่าเชื้อ  ");
+                    }
+                }
             }
         });
 
@@ -620,6 +647,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 dept_id = "";
                 DocNo = "";
                 txt_count_list.setText("จำนวน 0 รายการ");
+                txt_title.setText("บันทึกรับ");
+                txt_doc_time.setText("");
 
 //                if(SS_IsNonSelectDepartment){
 //                    switch_non_select_department.setText("ไม่เลือกแผนก");
@@ -657,6 +686,7 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // do something when the corky2 is clicked
+                btn_form_search.callOnClick();
                 Block_1.setVisibility( View.VISIBLE );
                 Block_2.setVisibility( View.GONE );
             }
@@ -773,9 +803,11 @@ public class ReceiveActivity extends AppCompatActivity {
                 if (switch_washdep.isChecked()){
                     Switch_Mode = true;
                     displaySendSterile(false, null, 0);
+                    h_wash_dep.setVisibility(View.VISIBLE);
                 }else {
                     Switch_Mode = false;
                     displaySendSterile(false, null, 0);
+                    h_wash_dep.setVisibility(View.GONE);
                 }
             }
         });
@@ -1021,6 +1053,7 @@ public class ReceiveActivity extends AppCompatActivity {
                     return;
                 }
 
+                Log.d("tog_deptid","dept_id = "+dept_id);
                 // TODO Auto-generated method
                 if (switch_non_select_department.isChecked() || ( !dept_id.equals("") && !dept_id.equals("0") ) ) {
                     openSearchItemStock("1");
@@ -1070,11 +1103,11 @@ public class ReceiveActivity extends AppCompatActivity {
             }
         });
 
+
         btn_complete.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-
                 /*
                 if(IsAdmin){
                     onRemoveSelectedSendSterile();
@@ -1270,6 +1303,7 @@ public class ReceiveActivity extends AppCompatActivity {
         i.putExtra("p_docno", DocNo);
         i.putExtra("p_dept_id", dept_id);
         i.putExtra("p_user_code", userid);
+        i.putExtra("p_switch_washdep", switch_washdep.isChecked());
 
         startActivityForResult(i, 100);
     }
@@ -1417,6 +1451,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
 
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("p_qr", p_qr);
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_check_usage_for_remove_by_qr.php", data);
@@ -1450,6 +1485,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 //HashMap<String, String> data = new HashMap<String, String>();
 
+//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 //data.put("p_id", p_qr);
 
                 //String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getUrl() + "cssd_select_department_by_search.php", data);
@@ -1510,6 +1546,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("d_dep", d_dep);
                 data.put("d_docno", DocNo);
                 data.put("d_issend", d_issend);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("B_ID",B_ID);
                 String result = null;
 
@@ -1741,6 +1778,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
 
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 if(((CssdProject) getApplication()).getCustomerId() == 201 || ((CssdProject) getApplication()).getCustomerId() == 211){
                     data.put("p_is_used_itemstock_department", "0");
                 }
@@ -1804,6 +1842,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
 
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("p_id", p_qr);
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_select_department_by_search.php", data);
@@ -1880,6 +1919,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
                 data.put("p_is_usedself_washdepartment", SS_IsUsedSelfWashDepartment ? "1" : "0");
 
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("B_ID", B_ID);
 
                 if (!dept_id.equals("") && !dept_id.equals("0")) {
@@ -1972,6 +2012,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
                 data.put("p_usage_nowash_id", Usage_nowash_id);
 
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("B_ID", B_ID);
 
                 if (!dept_id.equals("") && !dept_id.equals("0")) {
@@ -2054,6 +2095,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 data.put("p_id", RowID);
                 data.put("p_is_cancel", IsCancel ? "1" : "0");
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_item_stock.php", data);
 
@@ -2102,6 +2144,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("p_docno",docno);
                 data.put("p_dept_id",dept_id);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = null;
                 try {
 
@@ -2155,6 +2198,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("p_usagecode",usagecode);
                 data.put("p_dept_id",dept_id);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = null;
                 try {
 
@@ -2267,6 +2311,7 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_select_user.php",data);
                 return  result;
             }
@@ -2343,6 +2388,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
 
                 data.put("p_docno", p_docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
 
@@ -2453,6 +2499,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_user", userid);
                 data.put("p_data", p_data);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
 
@@ -2511,6 +2558,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_user", userid);
                 data.put("p_docno", p_docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
 
@@ -2551,6 +2599,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("remark", remark);
                 data.put("check", check);
                 data.put("B_ID",B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = null;
 
                 result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_remark.php", data);
@@ -2607,82 +2656,83 @@ public class ReceiveActivity extends AppCompatActivity {
         return index;
     }
 
-    public void displaySendSterile() {
-
-        final String Date = txt_doc_date_search.getText().toString();
-
-        class DisplaySendSterile extends AsyncTask<String, Void, String> {
-            // variable
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                //clearForm();
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-
-                try {
-
-                    JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
-
-                        DocNo = c.getString("DocNo");
-                        IsStatus = c.getString("IsStatus");
-
-                        // Display Form
-                        displaySendSterile(
-                                DocNo,
-                                c.getString("DocDate"),
-                                c.getString("xtime"),
-                                c.getString("DeptID"),
-                                c.getString("usr_receive"),
-                                c.getString("UserReceive"),
-                                c.getString("UserSend"),
-                                IsStatus != null && IsStatus.equals("2")
-                        );
-
-                        // Display List Detail
-                        displaySendSterileDetail(DocNo);
-
-                        return;
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-
-                }
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                HashMap<String, String> data = new HashMap<String, String>();
-
-                data.put("p_is_non_select_department", "1");
-                data.put("date", Date);
-                data.put("p_bid", B_ID);
-
-                String result = null;
-
-                try {
-                    result = httpConnect.sendPostRequest(getUrl + "cssd_display_send_sterile.php", data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                return result;
-            }
-        }
-
-        DisplaySendSterile ru = new DisplaySendSterile();
-
-        ru.execute();
-    }
+//    public void displaySendSterile() {
+//
+//        final String Date = txt_doc_date_search.getText().toString();
+//
+//        class DisplaySendSterile extends AsyncTask<String, Void, String> {
+//            // variable
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//                //clearForm();
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String s) {
+//                super.onPostExecute(s);
+//
+//                try {
+//
+//                    JSONObject jsonObj = new JSONObject(s);
+//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+//
+//                    for (int i = 0; i < rs.length(); i++) {
+//                        JSONObject c = rs.getJSONObject(i);
+//
+//                        DocNo = c.getString("DocNo");
+//                        IsStatus = c.getString("IsStatus");
+//
+//                        // Display Form
+//                        displaySendSterile(
+//                                DocNo,
+//                                c.getString("DocDate"),
+//                                c.getString("xtime"),
+//                                c.getString("DeptID"),
+//                                c.getString("usr_receive"),
+//                                c.getString("UserReceive"),
+//                                c.getString("UserSend"),
+//                                IsStatus != null && IsStatus.equals("2")
+//                        );
+//
+//                        // Display List Detail
+//                        displaySendSterileDetail(DocNo);
+//
+//                        return;
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                } finally {
+//
+//                }
+//            }
+//
+//            @Override
+//            protected String doInBackground(String... params) {
+//                HashMap<String, String> data = new HashMap<String, String>();
+//
+//                data.put("p_is_non_select_department", "1");
+//                data.put("date", Date);
+//                data.put("p_bid", B_ID);
+//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+//
+//                String result = null;
+//
+//                try {
+//                    result = httpConnect.sendPostRequest(getUrl + "cssd_display_send_sterile.php", data);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//                return result;
+//            }
+//        }
+//
+//        DisplaySendSterile ru = new DisplaySendSterile();
+//
+//        ru.execute();
+//    }
 
     private void displaySendSterile( String DocNo, String DocDate, String DocTime, String DeptId, String ReceiveName, String ReceiveId, String SendId, boolean IsComplete ){
         spn_department_form.setSelection(getIndexSpinnerDepartment(DeptId));
@@ -2714,6 +2764,7 @@ public class ReceiveActivity extends AppCompatActivity {
 //        }
 
         final String department_id = dept_id_search;
+        Log.d("tog_dept_id_search","dept_id_search = " + dept_id_search);
         final String Date = txt_doc_date_search.getText().toString();
         final String txt = edt_doc_no_search.getText().toString();
         final String status = switch_status.isChecked() ? "-1" : "0";
@@ -2760,7 +2811,12 @@ public class ReceiveActivity extends AppCompatActivity {
                         IsStatus = c.getString("IsStatus");
 
                         p.setQty1(c.getString("Qty1"));
-                        p.setQty2(c.getString("Qty2"));
+                        if(c.getString("Qty2").equals("null")){
+                            p.setQty2("0");
+                        }else{
+                            p.setQty2(c.getString("Qty2"));
+                        }
+
 
                         ar_data.add(p);
                     }
@@ -2789,6 +2845,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
 
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 if(IsSU) {
                     data.put("is_admin", "1");
                     data.put("department_id", department_id);
@@ -2819,7 +2876,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 try {
                     Log.d("OOOO",getUrl + "cssd_display_send_sterile.php?"+data);
                     result = httpConnect.sendPostRequest(getUrl + "cssd_display_send_sterile.php", data);
-                    Log.d("OOOO",result);
+                    Log.d("tog_display","result : "+result);
+                    Log.d("tog_display","data : "+data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -2920,6 +2978,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 data.put("DocNo", docno);
                 data.put("B_ID", B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
 
@@ -2929,6 +2988,9 @@ public class ReceiveActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                Log.d("tog_display","result : "+result);
+                Log.d("tog_display","data : "+data);
 
                 return result;
             }
@@ -2940,6 +3002,8 @@ public class ReceiveActivity extends AppCompatActivity {
     }
 
     public void LoadImg(final String itemcode,final String sel,final String usagecode,final String itemname,final String type) {
+
+        Log.d("tog_display","LoadImg");
         if (type.equals("remark")){
             Intent intent = new Intent(ReceiveActivity.this, dialog_Load_Img_Remark.class);
             intent.putExtra("itemcode", itemcode);
@@ -3021,6 +3085,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("UsageCode", UsageCode);
                 data.put("DocNo", txt_doc_no.getText().toString());
                 data.put("B_ID", B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
 
@@ -3081,6 +3146,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("UsageCode", UsageCode);
                 data.put("DocNo",txt_doc_no.getText().toString());
                 data.put("B_ID",B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = null;
 
                 result = httpConnect.sendPostRequest(getUrl + "getitemdetail_sendsterile.php", data);
@@ -3134,6 +3200,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 data.put("p_id", ID);
                 data.put("p_user_code", userid);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
 //                if(((CssdProject) getApplication()).getPm().getEmCode() == 201 || ((CssdProject) getApplication()).getPm().getEmCode() == 211){
 //                    data.put("p_is_used_itemstock_department", "1");
@@ -3206,6 +3273,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("remark",params[1]);
                 data.put("xsel",params[2]);
                 data.put("B_ID",B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result =  httpConnect.sendPostRequest(getUrl + "updateremark_sendsterile_ems.php", data);
 
@@ -3254,6 +3322,7 @@ public class ReceiveActivity extends AppCompatActivity {
         }
     }
     public void callDialog(final String Itemname ,final String type, final String Qty, final String Qty_save) {
+
         Intent intent = new Intent(ReceiveActivity.this, dialog_remark_sendsterile.class);
         intent.putExtra("Itemname", Itemname);
         intent.putExtra("Usagecode", Usagecode);
@@ -3322,8 +3391,9 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_value", value);
                 data.put("p_doc_no", doc_no);
                 data.put("B_ID",B_ID);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
-                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile.php", data);
+                String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile.php", data);
 
                 return result;
             }
@@ -3351,10 +3421,13 @@ public class ReceiveActivity extends AppCompatActivity {
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
                     for(int i=0;i<rs.length();i++) {
                         JSONObject c = rs.getJSONObject(i);
-                        if (c.getString("IsStatus").equals("0")){
-                            CheckNotification();
-                            DIALOG_ACTIVE = true;
-                        }
+//                        if (c.getString("IsStatus").equals("0")){
+//                            CheckNotification();
+//                            DIALOG_ACTIVE = true;
+//                        }
+
+                        CheckNotification();
+                        DIALOG_ACTIVE = true;
                     }
 
                 } catch (JSONException e) {
@@ -3367,6 +3440,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("p_docNo",p_docno);
                 data.put("p_bid","1");
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = null;
                 try {
 
@@ -3382,6 +3456,7 @@ public class ReceiveActivity extends AppCompatActivity {
         CheckStatusDocNo obj = new CheckStatusDocNo();
         obj.execute();
     }
+
 
     public void CheckNotification() {
         class CheckNotification extends AsyncTask<String, Void, String> {
@@ -3416,20 +3491,39 @@ public class ReceiveActivity extends AppCompatActivity {
                     if (DIALOG_ACTIVE == true){
                         if (!S_condition1.equals("0") || !S_condition2.equals("0") || !S_condition3.equals("0") || !S_condition4.equals("0") || !S_condition5.equals("0") || !S_condition6.equals("0")){
                             if (ST_IsUsedNotification || SS_IsUsedNotification){
-                                Intent intent = new Intent(ReceiveActivity.this, dialog_check_usage_count.class);
-                                intent.putExtra("UsageCode", UsageCode);
-                                intent.putExtra("cnt", Cnt);
-                                intent.putExtra("DocNo",DocNo);
-                                intent.putExtra("B_ID",B_ID);
-                                intent.putExtra("sel","1");
-                                intent.putExtra("page","0");
-                                intent.putExtra("condition1",S_condition1);
-                                intent.putExtra("condition2",S_condition2);
-                                intent.putExtra("condition3",S_condition3);
-                                intent.putExtra("condition4",S_condition4);
-                                intent.putExtra("condition5",S_condition5);
-                                intent.putExtra("condition6",S_condition6);
-                                startActivity(intent);
+//                                Intent intent = new Intent(ReceiveActivity.this, dialog_check_usage_count.class);
+//                                intent.putExtra("UsageCode", UsageCode);
+//                                intent.putExtra("cnt", Cnt);
+//                                intent.putExtra("DocNo",DocNo);
+//                                intent.putExtra("B_ID",B_ID);
+//                                intent.putExtra("sel","1");
+//                                intent.putExtra("page","0");
+//                                intent.putExtra("condition1",S_condition1);
+//                                intent.putExtra("condition2",S_condition2);
+//                                intent.putExtra("condition3",S_condition3);
+//                                intent.putExtra("condition4",S_condition4);
+//                                intent.putExtra("condition5",S_condition5);
+//                                intent.putExtra("condition6",S_condition6);
+//                                startActivity(intent);
+
+                                HashMap<String, String> xData = new HashMap<String,String>();
+                                xData.put("UsageCode", UsageCode);
+                                xData.put("cnt", Cnt);
+                                xData.put("DocNo",DocNo);
+                                xData.put("B_ID",B_ID);
+                                xData.put("sel","1");
+                                xData.put("page","0");
+                                xData.put("condition1",S_condition1);
+                                xData.put("condition2",S_condition2);
+                                xData.put("condition3",S_condition3);
+                                xData.put("condition4",S_condition4);
+                                xData.put("condition5",S_condition5);
+                                xData.put("condition6",S_condition6);
+
+                                final Dialog dialog = new dialog_check_usage_count(ReceiveActivity.this,xData);
+                                dialog.show();
+//                                dialog.getActionBar().hide();
+
                                 DIALOG_ACTIVE = false;
                             }
                         }
@@ -3452,7 +3546,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 String result = null;
                 try {
 
-                    result = httpConnect.sendPostRequest(getUrl + "cssd_display_usage_count.php", data);
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
 
                 }catch(Exception e){
                     e.printStackTrace();
@@ -3468,6 +3562,91 @@ public class ReceiveActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(data == null)
+            return;
+
+
+        if(resultCode == 100 && resultCode == 100) {
+
+            // Import Item
+//            get_ss_to_add_basket(data.getStringExtra("p_data"),data.getStringExtra("DocNo"));
+
+            try {
+
+                String p_docno = data.getStringExtra("DocNo");
+
+
+                if (DocNo == null || DocNo.equals("")) {
+
+                    DocNo = p_docno;
+
+                    displaySendSterile(true, p_docno, 9);
+
+                    displaySendSterileDetail(p_docno);
+
+                }else {
+                    displaySendSterileDetail(DocNo);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }else if(requestCode == 110 && resultCode == 110) {
+
+            // Update Physician
+
+        }else if(resultCode == 1005){
+            String usagecode = data.getStringExtra("usagecode");
+            String DocNoSend = data.getStringExtra("DocNoSend");
+            displaySterileDetailSet(usagecode);
+            displaySendSterileDetail(DocNo);
+//            getListDetailQty(usagecode);
+        }else {
+
+            // Update Dropdown
+
+            try {
+
+                String RETURN_DATA = data.getStringExtra("RETURN_DATA");
+                String RETURN_VALUE = data.getStringExtra("RETURN_VALUE");
+
+                if (resultCode == Master.user_receive) {
+                    if (txt_usr_receive.getContentDescription() == null) {
+                        txt_usr_receive.setText(RETURN_DATA);
+                        txt_usr_receive.setContentDescription(RETURN_VALUE);
+
+                    } else {
+
+                        txt_usr_receive.setText(RETURN_DATA);
+                        txt_usr_receive.setContentDescription(RETURN_VALUE);
+
+                        try {
+                            model_send_sterile.get(index).setUserReceive(RETURN_VALUE);
+                            model_send_sterile.get(index).setUsr_receive(RETURN_DATA);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    updateSendSterile(Integer.toString(Master.user_receive), RETURN_VALUE, DocNo);
+
+
+                } else if (resultCode == Master.user_send) {
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 }

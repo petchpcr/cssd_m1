@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.R;
-import com.poseintelligence.cssdm1.ReceiveActivity;
+import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.model.pCustomer;
 
 

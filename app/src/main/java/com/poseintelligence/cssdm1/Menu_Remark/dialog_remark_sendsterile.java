@@ -1,6 +1,6 @@
-package com.poseintelligence.cssdm1;
+package com.poseintelligence.cssdm1.Menu_Remark;
 
-import static com.poseintelligence.cssdm1.ReceiveActivity.hideKeyboard;
+import static com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity.hideKeyboard;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.R;
+import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 
 import org.json.JSONArray;

@@ -1,5 +1,7 @@
 package com.poseintelligence.cssdm1.core.connect;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -64,6 +66,8 @@ public class HTTPConnect  {
             e.printStackTrace();
         }
 
+        Log.d("tog_","Data = "+postDataParams);
+        Log.d("tog_","result = "+response);
         return response;
     }
 

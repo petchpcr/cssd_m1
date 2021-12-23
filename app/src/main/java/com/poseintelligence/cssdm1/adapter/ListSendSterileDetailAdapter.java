@@ -28,7 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.R;
-import com.poseintelligence.cssdm1.ReceiveActivity;
+import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.connect.xControl;
 import com.poseintelligence.cssdm1.model.Response_Aux;
@@ -86,6 +86,7 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
 
         final ImageView imv_re_sterile = (ImageView)v.findViewById(R.id.w_resterile);
         final TextView txtitemname = (TextView)v.findViewById(R.id.w_itemname);
+        final TextView H_remark = (TextView)v.findViewById(R.id.textView53);
         final TextView txtUcode= (TextView) v.findViewById(R.id.w_ucode);
         final TextView w_date= (TextView) v.findViewById(R.id.w_date);
         final TextView itemqty = (TextView) v.findViewById(R.id.itemqty);
@@ -126,6 +127,11 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
         if (WA_IsUsedWash){
             w_bt_express.setVisibility(View.VISIBLE);
             bt_risk.setVisibility(View.VISIBLE);
+
+            H_remark.setVisibility(View.INVISIBLE);
+            txtxremark_detail.setVisibility(View.INVISIBLE);
+            r_name.setVisibility(View.INVISIBLE);
+            w_date.setVisibility(View.INVISIBLE);
         }else {
             w_bt_express.setVisibility(View.INVISIBLE);
             bt_risk.setVisibility(View.INVISIBLE);
@@ -356,7 +362,7 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
                 dialog.setTitle("ประเภท Re-Sterile...");
 
                 final Spinner ResterileType = (Spinner) dialog.findViewById(R.id.spn_list);
-                xCtl.ListResterileType(ResterileType, atv );
+                xCtl.ListResterileType(ResterileType, atv ,listData.get(position).getResterilename());
 
                 final ArrayList<Response_Aux> resultsResterileType = xCtl.getListResterileType();
 
@@ -365,7 +371,7 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
                     public void onItemSelected(AdapterView<?> parent, View view, int pn, long id) {
                         //id rester
                         listData.get(position).setResteriletype(resultsResterileType.get(pn).getFields1());
-                        
+
                         //name rester
                         listData.get(position).setResterilename(ResterileType.getSelectedItem().toString());
                     }
@@ -384,12 +390,15 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
                             listData.get(position).setIsSterile("1");
                             imv_re_sterile.setImageResource(R.drawable.alert_0);
                             r_name.setText(listData.get(position).getResterilename());
-                        }else{
-                            imv_re_sterile.setBackgroundResource(R.drawable.ic_alert_g);
+                        }
+
+                        if (ResterileType.getSelectedItem().equals("-")) {
+                            listData.get(position).setIsSterile("0");
+                            imv_re_sterile.setImageResource(R.drawable.ic_r_grey);
                             r_name.setText("");
                         }
 
-                        updateReSterileType_(listData.get(position).getSs_rowid(), listData.get(position).getIsSterile(), listData.get( position ).getResteriletype());
+                        updateReSterileType_(listData.get(position).getSs_rowid(), listData.get(position).getIsSterile(), listData.get( position ).getResterilename());
 
                         dialog.dismiss();
                     }
@@ -402,7 +411,7 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
                         try {
                             if (ResterileType.getSelectedItem().equals("-")) {
                                 listData.get(position).setIsSterile("0");
-                                imv_re_sterile.setImageResource(R.drawable.ic_alert_g);
+                                imv_re_sterile.setImageResource(R.drawable.ic_r_grey);
                                 r_name.setText("");
                             }
 

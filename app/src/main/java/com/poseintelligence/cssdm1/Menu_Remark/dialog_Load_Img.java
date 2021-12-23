@@ -1,4 +1,4 @@
-package com.poseintelligence.cssdm1;
+package com.poseintelligence.cssdm1.Menu_Remark;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;

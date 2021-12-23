@@ -3,6 +3,13 @@ package com.poseintelligence.cssdm1.model;
 public class Item {
     private String itemCode;
     private String Name;
+    private boolean chk;
+
+    public Item(String itemCode, String name, boolean chk) {
+        this.itemCode = itemCode;
+        Name = name;
+        this.chk = chk;
+    }
 
     public String getItemCode() {
         return itemCode;

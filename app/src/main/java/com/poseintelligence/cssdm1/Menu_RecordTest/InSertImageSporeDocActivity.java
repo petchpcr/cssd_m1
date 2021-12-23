@@ -1,12 +1,10 @@
-package com.poseintelligence.cssdm1.RecordTestMenu;
+package com.poseintelligence.cssdm1.Menu_RecordTest;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -212,7 +210,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 //        setSpinnerSterile("2",TestProgramName);
 
         docno = (TextView)findViewById(R.id.docno);
-        round = (TextView)findViewById(R.id.round);
+        round = (TextView)findViewById(R.id.createdate);
         program = (TextView)findViewById(R.id.program);
         test = (TextView)findViewById(R.id.test);
         check_code = (CheckBox)findViewById(R.id.check_code);
@@ -674,16 +672,12 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                                                 } else {
                                                     Remark = remark.getText().toString();
                                                 }
-                                                if (Page.equals("1")){
-                                                    SaveDoc(DocNo, array_spinner_id.get(pg_spinner.getSelectedItem()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
-                                                    uploadImage();
-                                                    uploadImage_T2();
-                                                    uploadTextImage();
-                                                }else {
-                                                    SaveDoc(DocNo, array_spinner_id.get(pg_spinner.getSelectedItem()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
-                                                    uploadImage();
-                                                    uploadTextImage();
-                                                }
+
+                                                SaveDoc(DocNo, array_spinner_id.get(pg_spinner.getSelectedItem()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
+                                                uploadImage();
+//                                                uploadImage_T2();
+                                                uploadTextImage();
+
                                             } else {
                                                 Toast.makeText(InSertImageSporeDocActivity.this, "เลือกผลการทดสอบ", Toast.LENGTH_SHORT).show();
                                             }
@@ -879,8 +873,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 String result = null;
                 try {
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "savespore_doc.php", data);
-                    Log.d("BANKFEY",data+"");
-                    Log.d("BANKFEY",result);
+                    Log.d("tog_savedoc","data = "+data);
+                    Log.d("tog_savedoc","result = "+result);
+
                 }catch(Exception e){
                     e.printStackTrace();
                 }
@@ -915,7 +910,6 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
 
                 try {
-
                     ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
                     bitmap1 = ((BitmapDrawable) images1.getDrawable()).getBitmap();
                     bitmap1 = Bitmap.createScaledBitmap(bitmap1, width,height, true);
@@ -949,7 +943,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 String result = null;
                 String result_Us = null;
                 if (!images1.getDrawable().equals(null)){
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "images/UploadImage.php",data);
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_image/UploadImageTestresult.php",data);
                 }
                 Log.d("tog_UploadImage","data = "+data+"");
                 Log.d("tog_UploadImage","result = "+result+"");
@@ -961,64 +955,64 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         ui.execute();
     }
 
-    private void uploadImage_T2(){
-        class uploadImage_T2 extends AsyncTask<String,Void,String> {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-            }
-            @SuppressLint("WrongThread")
-            @Override
-            protected String doInBackground(String... params) {
-
-                try {
-                    ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
-                    bitmap1 = ((BitmapDrawable) images1.getDrawable()).getBitmap();
-                    bitmap1=Bitmap.createScaledBitmap(bitmap1, width,height, true);
-                    bitmap1 = rotateImage(bitmap1, images1.getRotation());
-                    bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, stream1); //compress to which format you want.
-                    byte [] byte_arr1 = stream1.toByteArray();
-                    image_str1 = Base64.encodeToString(byte_arr1, Base64.DEFAULT);
-                }catch (Exception e){
-
-                }
-
-                try {
-                    ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
-                    bitmap2 = ((BitmapDrawable) images2.getDrawable()).getBitmap();
-                    bitmap2 = Bitmap.createScaledBitmap(bitmap2, width,height, true);
-                    bitmap2 = rotateImage(bitmap2, images2.getRotation());
-                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, stream2); //compress to which format you want.
-                    byte [] byte_arr2 = stream2.toByteArray();
-                    image_str2 = Base64.encodeToString(byte_arr2, Base64.DEFAULT);
-                }catch (Exception e){
-
-                }
-
-                HashMap<String,String> data = new HashMap<>();
-                data.put("image1", image_str1);
-                data.put("name1",DocNo+"_pic1");
-                data.put("image2", image_str2);
-                data.put("name2",DocNo+"_pic2");
-                data.put("DocNo",DocNo);
-                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-                String result = null;
-                if (!images1.getDrawable().equals(null)){
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_image/UploadImage_T2.php",data);
-                }
-                Log.d("KFHKDDL",data+"");
-                Log.d("KFHKDDL",result+"");
-                return  result;
-            }
-        }
-
-        uploadImage_T2 ui = new uploadImage_T2();
-        ui.execute();
-    }
+//    private void uploadImage_T2(){
+//        class uploadImage_T2 extends AsyncTask<String,Void,String> {
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//            }
+//            @Override
+//            protected void onPostExecute(String s) {
+//                super.onPostExecute(s);
+//            }
+//            @SuppressLint("WrongThread")
+//            @Override
+//            protected String doInBackground(String... params) {
+//
+//                try {
+//                    ByteArrayOutputStream stream1 = new ByteArrayOutputStream();
+//                    bitmap1 = ((BitmapDrawable) images1.getDrawable()).getBitmap();
+//                    bitmap1=Bitmap.createScaledBitmap(bitmap1, width,height, true);
+//                    bitmap1 = rotateImage(bitmap1, images1.getRotation());
+//                    bitmap1.compress(Bitmap.CompressFormat.JPEG, 100, stream1); //compress to which format you want.
+//                    byte [] byte_arr1 = stream1.toByteArray();
+//                    image_str1 = Base64.encodeToString(byte_arr1, Base64.DEFAULT);
+//                }catch (Exception e){
+//
+//                }
+//
+//                try {
+//                    ByteArrayOutputStream stream2 = new ByteArrayOutputStream();
+//                    bitmap2 = ((BitmapDrawable) images2.getDrawable()).getBitmap();
+//                    bitmap2 = Bitmap.createScaledBitmap(bitmap2, width,height, true);
+//                    bitmap2 = rotateImage(bitmap2, images2.getRotation());
+//                    bitmap2.compress(Bitmap.CompressFormat.JPEG, 100, stream2); //compress to which format you want.
+//                    byte [] byte_arr2 = stream2.toByteArray();
+//                    image_str2 = Base64.encodeToString(byte_arr2, Base64.DEFAULT);
+//                }catch (Exception e){
+//
+//                }
+//
+//                HashMap<String,String> data = new HashMap<>();
+//                data.put("image1", image_str1);
+//                data.put("name1",DocNo+"_pic1");
+//                data.put("image2", image_str2);
+//                data.put("name2",DocNo+"_pic2");
+//                data.put("DocNo",DocNo);
+//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+//                String result = null;
+//                if (!images1.getDrawable().equals(null)){
+//                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_image/UploadImageTestresult.php",data);
+//                }
+//                Log.d("tog_UpImage_T2","data = "+data+"");
+//                Log.d("tog_UpImage_T2","result = "+result+"");
+//                return  result;
+//            }
+//        }
+//
+//        uploadImage_T2 ui = new uploadImage_T2();
+//        ui.execute();
+//    }
 
     private void uploadTextImage(){
         class uploadTextImage extends AsyncTask<String,Void,String> {
@@ -1093,7 +1087,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     data.put("DocNo",DocNo);
                     data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                     if (!images1.getDrawable().equals(null)){
-                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "images/UploadImage_Text.php",data);
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_image/UploadImage_Text.php",data);
                     }
 
                     Log.d("tog_UploadImage_Text","data = "+data+"");
@@ -1130,7 +1124,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
                         array_spinner_id.put(c.getString("TestProgramName"),c.getString("ID"));
-                        list_sp.add(c.getString("TestProgramName"));
+                        if(!c.getString("TestProgramName").equals(program)){
+                            list_sp.add(c.getString("TestProgramName"));
+                        }
                     }
 
                     adapter_spinner = new ArrayAdapter<String>(InSertImageSporeDocActivity.this, android.R.layout.simple_spinner_dropdown_item, list_sp);
@@ -1232,8 +1228,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     for(int i=0;i<rs.length();i++) {
                         JSONObject c = rs.getJSONObject(i);
 
-                        URL imageUrl = new URL(((CssdProject) getApplication()).getxUrl() + "images/"+c.getString("Pic1"));
-                        URL imageUrl1 = new URL(((CssdProject) getApplication()).getxUrl() + "images/"+c.getString("Pic2"));
+                        URL imageUrl = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/uploads/"+c.getString("Pic1"));
+                        URL imageUrl1 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/uploads/"+c.getString("Pic2"));
 
 //                        Picasso.get().load(String.valueOf(imageUrl)).networkPolicy(NetworkPolicy.NO_CACHE)
 //                                .memoryPolicy(MemoryPolicy.NO_CACHE)

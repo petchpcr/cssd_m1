@@ -1,4 +1,4 @@
-package com.poseintelligence.cssdm1;
+package com.poseintelligence.cssdm1.Menu_Remark;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 
 import org.json.JSONArray;

@@ -261,7 +261,7 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginEnd="4dp"
                     android:gravity="center|center_vertical"
-                    android:text="เบิก"
+                    android:text="แลก"
                     android:textColor="#FFFFFF"
                     android:textSize="18dp" />
 

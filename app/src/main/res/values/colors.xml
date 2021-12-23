@@ -19,5 +19,8 @@
     <color name="colorDirGreen">#b3ff99</color>
     <color name="list_text_color">#333333</color>
     <color name="list_background_transparent_color">#00FFFFFF</color>
+    <color name="colorAccent">#D81B1B</color>
+    <color name="colorTitleBlue">#2e5fbd</color>
+    <color name="colorTitleGray">#999999</color>
 
 </resources>

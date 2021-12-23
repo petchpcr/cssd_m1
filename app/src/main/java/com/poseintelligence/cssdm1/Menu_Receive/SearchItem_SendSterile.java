@@ -1,4 +1,4 @@
-package com.poseintelligence.cssdm1;
+package com.poseintelligence.cssdm1.Menu_Receive;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -26,6 +26,8 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.search_sendsterileAdapter;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
@@ -67,6 +69,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
     private LinearLayout LinearLayout_department_search;
     private Switch switch_mode;
     private Switch switch_new;
+    private boolean p_switch_washdep = false;
     private SearchableSpinner spn_department_search;
 
     // Config
@@ -140,6 +143,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
             p_user_code = bd.getString("p_user_code");
             IsReuse = bd.getBoolean("IsReuse", true);
             p_bid = bd.getString("B_ID");
+            p_switch_washdep = bd.getBoolean("p_switch_washdep");
 
             Log.d("OOOO","p_docno = " + p_docno);
             Log.d("OOOO","p_dept_id = " + p_dept_id);
@@ -479,7 +483,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("Usage_code", Usage_code);
                 data.put("B_ID",p_bid);
-//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 if(SS_IsUsedItemSet){
                     data.put("p_IsUsedItemSet", "1");
@@ -511,7 +515,8 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                 }
 
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_item_by_send_sterile.php",data);
-
+                Log.d("tog_display","result : "+result);
+                Log.d("tog_display","data : "+data);
                 return  result;
             }
         }
@@ -595,8 +600,6 @@ public class SearchItem_SendSterile extends AppCompatActivity {
 
                         if(c.getString("result").equals("A")) {
 
-                            //System.out.println("return = " + c.getString("DocNo"));
-
                             Intent intent = new Intent();
                             setResult((IsReuse ? 100 : 8888) , intent);
                             intent.putExtra("DocNo", c.getString("DocNo"));
@@ -607,9 +610,6 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                             if (dialog.isShowing()) {
                                 dialog.dismiss();
                             }
-
-                            ((ReceiveActivity) ((CssdProject) getApplication()).getxActivity() ).displaySendSterileDetail( p_docno );
-
                             finish();
 
                         }else{
@@ -644,9 +644,13 @@ public class SearchItem_SendSterile extends AppCompatActivity {
 
                 data.put("p_dept_id", p_dept_id);
 
-                if( IsReuse && ( ((CssdProject) getApplication()).getCustomerId() == 201 || ((CssdProject) getApplication()).getCustomerId() == 211 ) ){
-                    data.put("p_is_used_itemstock_department", "1");
+                data.put("p_switch_washdep", p_switch_washdep ? "1" : "0");
+
+                if( IsReuse && ( ((CssdProject) getApplication()).getCustomerId() == 201)){
+                    data.put("p_is_used_itemstock_department", "0");
                     data.put("p_is_new_department", p_is_new_department);
+                }else {
+                    data.put("p_is_used_itemstock_department", "1");
                 }
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
@@ -655,7 +659,8 @@ public class SearchItem_SendSterile extends AppCompatActivity {
 
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + file, data);
 
-                //System.out.println("result = " + result);
+                Log.d("tog_add_ss","result : "+result);
+                Log.d("tog_add_ss","data : "+data);
 
                 return  result;
             }
@@ -779,7 +784,8 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                     }
 
                     String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_item_by_send_sterile.php", data);
-
+                    Log.d("tog_display","result : "+result);
+                    Log.d("tog_display","data : "+data);
                     return result;
                 }
             }
