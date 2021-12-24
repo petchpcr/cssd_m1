@@ -472,7 +472,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                     }
 
                     grid.setAdapter(new search_sendsterileAdapter(SearchItem_SendSterile.this, MODEL_ITEM_STOCK));
-
+                    Log.d("tog_display98","data222222");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -515,8 +515,8 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                 }
 
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_item_by_send_sterile.php",data);
-                Log.d("tog_display","result : "+result);
-                Log.d("tog_display","data : "+data);
+                Log.d("tog_display67","result : "+result);
+                Log.d("tog_display66","data : "+data);
                 return  result;
             }
         }
@@ -750,7 +750,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                         }
 
                         grid.setAdapter(new search_sendsterileAdapter(SearchItem_SendSterile.this, MODEL_ITEM_STOCK));
-
+                        Log.d("tog_display98","data222222");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } finally {

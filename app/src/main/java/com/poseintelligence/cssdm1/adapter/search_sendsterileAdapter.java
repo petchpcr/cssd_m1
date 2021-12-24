@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,12 +66,28 @@ public class search_sendsterileAdapter extends ArrayAdapter {
 //
 //        EditNum1.setOnFocusChangeListener(new View.OnFocusChangeListener(){
 //            public void onFocusChange(View v, boolean hasFocus){
-//                if (hasFocus)
-//                    ((EditText)v).selectAll();
-//
+//                if (hasFocus) {
+//                    EditNum1.selectAll();
+//                }
 //            }
 //        });
 
+//                new android.os.Handler().postDelayed(
+//                        new Runnable() {
+//                            public void run() {
+                                Log.d("tog_display54","555555");
+//                                EditNum1.requestFocus();
+//                            }
+//                        }, 1000);
+
+        EditNum1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditNum1.requestFocusFromTouch();
+
+            }
+
+        });
 
         EditNum1.addTextChangedListener(new TextWatcher() {
 
@@ -80,7 +97,9 @@ public class search_sendsterileAdapter extends ArrayAdapter {
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
         });
 
         return v;
