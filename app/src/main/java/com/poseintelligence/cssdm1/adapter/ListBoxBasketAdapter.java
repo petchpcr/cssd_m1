@@ -68,10 +68,11 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
                     select_basket_pos=-1;
                 }else{
                     select_basket_pos = position;
-                    wiget_list.smoothScrollToPosition(select_basket_pos);
+//                    wiget_list.smoothScrollToPosition(select_basket_pos);
+                    ((SterileActivity)context).reload_mac();
                 }
 
-                ((SterileActivity)context).get_basket(mData.get(position).getBasketCode());
+//                ((SterileActivity)context).get_basket(mData.get(position).getBasketCode());
             }
         });
 
@@ -165,10 +166,6 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
 
         public LinearLayout getLl() {
             return ll;
-        }
-
-        public void set_refesh_qty() {
-            qty.setText(mData.get(select_basket_pos).getQty()+"");
         }
     }
 }

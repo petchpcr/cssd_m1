@@ -76,10 +76,10 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                     select_mac_pos=-1;
                 }else{
                     select_mac_pos = position;
-                    wiget_list.smoothScrollToPosition(select_mac_pos);
+//                    wiget_list.smoothScrollToPosition(select_mac_pos);
+                    ((SterileActivity)context).get_machine(mData.get(select_mac_pos).getMachineID());
                 }
 //                onItemSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);
-                ((SterileActivity)context).get_machine(mData.get(select_mac_pos).getMachineID());
             }
         });
 
@@ -101,9 +101,10 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                 setMacUnSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);
             }
 
-            if(mData.get(position).getMachineID().equals(((SterileActivity)context).mac_empty_id)){
-                holder.ll.setLayoutParams(params);
-            }
+//            if(mData.get(position).getMachineID().equals(((SterileActivity)context).mac_empty_id)){
+//                Log.d("tog_hide","tog_hide");
+//                holder.ll.setLayoutParams(params);
+//            }
         }
     }
 
@@ -132,17 +133,6 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     }
 
     public void setMacSelect(){
-//        if(mData.get(select_mac_pos).getIsActive().equals("1")){
-//            ((SterileActivity)context).show_dialog("Warning","Machine is running");
-//            select_mac_pos = -1;
-//            return;
-//        }
-//
-//        if(mData.get(select_mac_pos).getIsBrokenMachine().equals("1")){
-//            ((SterileActivity)context).show_dialog("Warning","Machine is broken");
-//            select_mac_pos = -1;
-//            return;
-//        }
         select_mac.mac_image.setBackgroundResource(R.drawable.ic_sterile_blue);
         select_mac.ll.setBackgroundResource(R.drawable.rectangle_blue);
         select_mac.mac.setTextColor(Color.WHITE);

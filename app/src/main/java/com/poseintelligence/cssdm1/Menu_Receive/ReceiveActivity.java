@@ -551,7 +551,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 if(WA_IsUsedWash){
                     if(!switch_status.isChecked()){
-                        switch_status.setText("เอกสารล่าง  ");
+                        switch_status.setText("เอกสารร่าง  ");
                     }else{
                         switch_status.setText("ส่งล้าง/ฆ่าเชื้อ  ");
                     }
@@ -851,7 +851,8 @@ public class ReceiveActivity extends AppCompatActivity {
                                     Log.d("OOOO","Mode:1");
                                     clearByQR(S_Code);
 
-                                }else if (S_Code.equals("save")) {
+                                }
+                                else if (S_Code.equals("save")) {
                                     Log.d("OOOO","Mode:2");
                                     edt_usage_code.setText("");
                                     edt_usage_code.requestFocus();
@@ -1007,7 +1008,8 @@ public class ReceiveActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                }else if (SS_IsUsedZoneSterile && S_Code.length() > 4 && S_Code.substring(0, 4).toLowerCase().equals("zone")) {
+                                }
+                                else if (SS_IsUsedZoneSterile && S_Code.length() > 4 && S_Code.substring(0, 4).toLowerCase().equals("zone")) {
                                     Log.d("OOOO","Mode:3");
                                     int index = 0;
 
@@ -1017,7 +1019,8 @@ public class ReceiveActivity extends AppCompatActivity {
 //
 //                                    setZone(String.valueOf(index));
 
-                                } else if ( switch_non_select_department.isChecked()) {
+                                }
+                                else if ( switch_non_select_department.isChecked()) {
                                     Log.d("OOOO","Mode:4");
                                     dept_id = "-1";
                                     String S_em = edt_usage_code.getText().toString().substring(0, 2);

@@ -44,6 +44,8 @@ public class SterileActivity extends AppCompatActivity{
     public String getUrl;
     public String p_DB;
 
+    boolean basket_1st = false;
+
     String mass_onkey="";
 
     RecyclerView list_mac;
@@ -193,8 +195,6 @@ public class SterileActivity extends AppCompatActivity{
                     if(mac_id.equals("null")){
                         list.clear();
 
-                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0"));
-
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
 
@@ -202,29 +202,45 @@ public class SterileActivity extends AppCompatActivity{
                                 list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine")));
                             }
                         }
+
+                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0"));
+
                         list_mac_adapter = new ListBoxMachineAdapter(SterileActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
                     }else{
                         if(mac_id.equals(mac_empty_id)){
-                            list_mac_adapter.onScanSelect(0);
+                            list.get(list.size()-1).setIsActive("0");
+                            list_mac_adapter.onScanSelect(list.size()-1);
+                            basket_1st =false;
+                            reload_basket();
                         }else{
                             for (int i = 0; i < rs.length(); i++) {
                                 JSONObject c = rs.getJSONObject(i);
                                 Log.d("tog_scan_basket","xID = "+c.getString("xID")+"---"+mac_id);
-                                if(c.getString("xID").equals(mac_id)){
-                                    if(c.getString("IsActive").equals("1")){
-                                        show_dialog("Warning","Machine is running");
-                                    }else if(c.getString("IsBrokenMachine").equals("1")){
-                                        show_dialog("Warning","Machine is broken");
-                                    }else{
-                                        mac_select_id = i+1;
+
+                                for (int j = 0; j < list.size(); j++) {
+                                    if(list.get(j).getMachineID().equals(c.getString("xID"))){
+                                        list.get(j).setIsActive(c.getString("IsActive"));
+                                        list.get(j).setIsBrokenMachine(c.getString("IsBrokenMachine"));
+
+                                        if(c.getString("xID").equals(mac_id)){
+                                            if(c.getString("IsActive").equals("1")){
+                                                show_dialog("Warning","Machine is running");
+                                            }else if(c.getString("IsBrokenMachine").equals("1")){
+                                                show_dialog("Warning","Machine is broken");
+                                            }else{
+                                                mac_select_id = j;
+                                                list_mac_adapter.onScanSelect(mac_select_id);
+                                                basket_1st =false;
+                                                reload_basket();
+                                            }
+                                        }
                                     }
                                 }
 
                             }
                         }
 
-                        list_mac_adapter.notifyDataSetChanged();
                     }
 
 
@@ -308,34 +324,38 @@ public class SterileActivity extends AppCompatActivity{
 
                                 if(c.getString("BasketCode").toLowerCase().equals(basket_id.toLowerCase())){
 
-                                    int mac_pos = list_mac_adapter.select_mac_pos;
-                                    //ยังไม่ได้เลือกเครื่อง
-                                    if(mac_pos<0){
-                                        if(c.getString("InMachineID").equals("null")){
-                                            //show basket
-                                            pos = i;
-                                        }else{
-                                            show_dialog("Warning","Basket is in Machine");
-                                            return;
-                                        }
-                                    }else{
-                                        //เลือกเครื่องแล้ว
-                                        String mac_id = list.get(mac_pos).getMachineID();
-                                        if(c.getString("InMachineID").equals("null")){//ตะกร้าไม่มีเครื่อง
-                                            //add basket in mac
-                                            pos = i;
-                                        }else if (c.getString("InMachineID").equals(mac_id)){//
-                                            //show basket in mac
-                                            pos = i;
-                                        }else{
-                                            show_dialog("Warning","Basket is in another Machine");
-                                            return;
+                                    for (int j = 0; j < xlist_basket.size(); j++) {
+                                        if(xlist_basket.get(j).getBasketCode().equals(c.getString("BasketCode"))){
+                                            xlist_basket.get(j).setMacId(c.getString("InMachineID"));
+
+                                            int mac_pos = list_mac_adapter.select_mac_pos;
+
+                                            if(mac_pos>0){
+                                                String mac_id = list.get(mac_pos).getMachineID();
+                                                if(c.getString("InMachineID").equals("null")){//ตะกร้าไม่มีเครื่อง
+                                                    //add basket in mac
+                                                    get_item_in_basket(j);
+                                                    list_basket_adapter.onScanSelect(j);
+                                                }else if (c.getString("InMachineID").equals(mac_id)){
+                                                    get_item_in_basket(j);
+                                                    list_basket_adapter.onScanSelect(j);
+                                                }else{
+                                                    list_basket_adapter.onScanSelect(-1);
+                                                    if(mac_pos==list.size()-1){
+                                                        list_mac_adapter.onScanSelect(-1);
+                                                        show_dialog("Warning","Basket is in some machine");
+                                                    }else{
+                                                        show_dialog("Warning","Basket is in another machine");
+                                                    }
+                                                }
+                                            }
+
+                                            list_mac_adapter.notifyDataSetChanged();
+                                            list_basket_adapter.notifyDataSetChanged();
                                         }
                                     }
 
                                 }
-                                list_basket_adapter.onScanSelect(pos);
-                                list_basket_adapter.notifyDataSetChanged();
                             }
                         }
                     }
@@ -418,13 +438,13 @@ public class SterileActivity extends AppCompatActivity{
         get_item_in_basket(list_basket_adapter.select_basket_pos);
     }
 
-    public void get_item_in_basket(int select_mac_pos){
-        if(select_mac_pos>=0){
+    public void get_item_in_basket(int pos){
+        if(pos>=0){
             list_item_basket_adapter = new ListItemBasketAdapter(this,xlist_item_basket);
             list_item_basket.setAdapter(list_item_basket_adapter);
 
-            xlist_basket.get(select_mac_pos).setQty(xlist_item_basket.size());
-            list_basket_adapter.select_item.set_refesh_qty();
+            xlist_basket.get(pos).setQty(xlist_item_basket.size());
+            list_basket_adapter.notifyDataSetChanged();
         }
 
     }
@@ -440,16 +460,25 @@ public class SterileActivity extends AppCompatActivity{
     }
 
     public void reload_mac(){
-        if(list_mac_adapter.select_mac_pos>0){
+        if(list_mac_adapter.select_mac_pos<list.size()&&list_mac_adapter.select_mac_pos>=0){
             String mac_ID = list.get(list_mac_adapter.select_mac_pos).getMachineID();
             get_machine(mac_ID);
+        }else{
+            get_machine(mac_empty_id);
+            basket_1st = true;
         }
     }
 
     public void reload_basket(){
         int basket_pos = list_basket_adapter.select_basket_pos;
-        get_basket(xlist_basket.get(basket_pos).getBasketCode());
-//        list_mac_adapter.onScanSelect(mac_select_id);
+
+        Log.d("tog_basket","basket pos = "+basket_pos);
+        if(basket_pos>=0){
+            Log.d("tog_basket","getBasketCode = "+xlist_basket.get(basket_pos).getBasketCode());
+            get_basket(xlist_basket.get(basket_pos).getBasketCode());
+        }else{
+            list_mac_adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -459,7 +488,10 @@ public class SterileActivity extends AppCompatActivity{
 
         if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            if(keyCode == KeyEvent.KEYCODE_BACK ){
+                onBackPressed();
+            }
+            else if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 Log.d("tog_dispatchKey","enter = "+mass_onkey);
                 String key = mass_onkey.substring(0,1);
                 key= key.toLowerCase();

@@ -110,6 +110,7 @@ public class Login extends AppCompatActivity {
 
 
         dep_device();
+
     }
 
     // ===============================================
@@ -285,7 +286,9 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    onLogin(uname.getText().toString(), pword.getText().toString());
+
+                    onLogin("user2", "111");
+//                    onLogin(uname.getText().toString(), pword.getText().toString());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
