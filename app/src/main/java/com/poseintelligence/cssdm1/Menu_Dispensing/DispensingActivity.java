@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.MainMenu;
+import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListDepartmentAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailItemAdapter;
@@ -299,6 +300,7 @@ public class DispensingActivity extends AppCompatActivity {
 //                }
             }
         });
+
         // ===============================
         // Block 2
         // ===============================
@@ -439,8 +441,30 @@ public class DispensingActivity extends AppCompatActivity {
                     {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
+                            String S_Code = txt_usage_code.getText().toString().toLowerCase();
+                            Log.d("top_dep","S_Code = "+S_Code);
+                            if(S_Code.substring(0,1).equals("d")){
+                                boolean x = true;
+                                for(int i = 0;i<Model_Department.size();i++){
 
-                            checkInput();
+                                    Log.d("top_dep","ID = "+Model_Department.get(i));
+                                    if(Model_Department.get(i).equals(S_Code.substring(1))){
+                                        list_department.setSelection(i);
+                                        select_dept(i);
+                                        x=false;
+
+                                    }
+                                }
+                                if(x){
+                                    Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                txt_usage_code.setText("");
+                                return false;
+                            }else{
+                                checkInput();
+                            }
+
 
 //                            String txt = txt_usage_code.getText().toString();
 //                            if(!B_IsNonSelectDocument) {
@@ -450,6 +474,50 @@ public class DispensingActivity extends AppCompatActivity {
 //                                    findDepartmentByQR(txt, true);
 //                                }
 //                            }
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+
+                return false;
+            }
+
+
+        });
+
+        txt_search_department.setOnKeyListener(new View.OnKeyListener()
+        {
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+//                    speakText("Strat");
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String S_Code = txt_search_department.getText().toString().toLowerCase();
+                            Log.d("top_dep","S_Code = "+S_Code);
+                            if(S_Code.substring(0,1).equals("d")){
+                                boolean x = true;
+                                for(int i = 0;i<Model_Department.size();i++){
+
+                                    Log.d("top_dep","ID = "+Model_Department.get(i).getID());
+                                    if(Model_Department.get(i).getID().equals(S_Code.substring(1))){
+                                        list_department.setSelection(i);
+                                        select_dept(i);
+                                        x=false;
+
+                                    }
+                                }
+                                if(x){
+                                    Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                txt_search_department.setText("");
+                                return false;
+                            }
                             return true;
                         default:
                             break;
@@ -1684,45 +1752,7 @@ public class DispensingActivity extends AppCompatActivity {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                             ((ListDepartmentAdapter) adapter).setSelection(position);
-                            DepIndex = position;
-                            DepID = ((TextView)((LinearLayout) view).getChildAt(0)).getText().toString();
-                            DepName = ((TextView)((LinearLayout) view).getChildAt(2)).getText().toString();
-                            DocNo = null;
-                            RefDocNo = null;
-                            DocDateTime = "";
-                            switch_opt.setChecked(false);
-
-                            title_2.setText( " แผนก: " + DepName );
-                            try {
-
-                                if(DepID == null){
-                                    list_payout_detail_item.setAdapter(null);
-                                    list_pay.setAdapter(null);
-                                }else {
-
-//                                    label_division.setText(" แผนก: " + DepName + " (เอกสารใหม่)");
-
-                                    // Pay
-                                    displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
-
-                                    list_payout_detail_item.setAdapter(null);
-
-                                    hideKeyboard(DispensingActivity.this);
-
-                                }
-
-                            }catch (Exception e){
-
-                            }
-//                            title_2.setText( "  " );
-                            Block_1.setVisibility( View.GONE );
-                            Block_2.setVisibility( View.VISIBLE );
-                            Block_3.setVisibility( View.GONE );
-                            Block_4.setVisibility( View.VISIBLE );
-                            switch_opt.setVisibility( View.GONE );
-                            imageCreate.setVisibility( View.GONE );
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                            linear_layout_search.setLayoutParams(params);
+                            select_dept(position);
                         }
                     });
 
@@ -1785,6 +1815,48 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
     // Utility
     // ------------------------------------------------------------------
+
+    public void select_dept(int position) {
+        DepIndex = position;
+        DepID = Model_Department.get(position).getID();
+        DepName =  Model_Department.get(position).getDepName2();
+        DocNo = null;
+        RefDocNo = null;
+        DocDateTime = "";
+        switch_opt.setChecked(false);
+
+        title_2.setText( " แผนก: " + DepName );
+        try {
+
+            if(DepID == null){
+                list_payout_detail_item.setAdapter(null);
+                list_pay.setAdapter(null);
+            }else {
+
+//                                    label_division.setText(" แผนก: " + DepName + " (เอกสารใหม่)");
+
+                // Pay
+                displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+
+                list_payout_detail_item.setAdapter(null);
+
+                hideKeyboard(DispensingActivity.this);
+
+            }
+
+        }catch (Exception e){
+
+        }
+//                            title_2.setText( "  " );
+        Block_1.setVisibility( View.GONE );
+        Block_2.setVisibility( View.VISIBLE );
+        Block_3.setVisibility( View.GONE );
+        Block_4.setVisibility( View.VISIBLE );
+        switch_opt.setVisibility( View.GONE );
+        imageCreate.setVisibility( View.GONE );
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        linear_layout_search.setLayoutParams(params);
+    }
 
     public static void hideKeyboard(Activity activity) {
         InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);

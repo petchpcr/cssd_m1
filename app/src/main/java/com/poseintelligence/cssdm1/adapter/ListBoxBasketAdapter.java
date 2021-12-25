@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,18 +17,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.R;
+import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.BasketTag;
+import com.poseintelligence.cssdm1.model.ModelMachine;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdapter.ViewHolder> {
 
     private ArrayList<BasketTag> mData;
     private LayoutInflater mInflater;
     private Context context;
-    private int select_mac_pos = -1;
-    onItemSelect select_item= new onItemSelect();
+    public int select_basket_pos = -1;
+    public onItemSelect select_item= new onItemSelect();
     RecyclerView wiget_list;
 
     // data is passed into the constructor
@@ -45,25 +57,26 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
 
     // binds the data to the TextView in each row
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.name.setText(mData.get(position).getName());
         holder.qty.setText(mData.get(position).getQty()+"");
 
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(select_mac_pos==position){
-                    select_mac_pos=-1;
+                if(select_basket_pos==position){
+                    select_basket_pos=-1;
                 }else{
-                    select_mac_pos = position;
-                    wiget_list.smoothScrollToPosition(select_mac_pos);
+                    select_basket_pos = position;
+                    wiget_list.smoothScrollToPosition(select_basket_pos);
                 }
-                onItemSelect(holder.name,holder.qty,holder.image,holder.ll);
+
+                ((SterileActivity)context).get_basket(mData.get(position).getBasketCode());
             }
         });
 
-        if(position==select_mac_pos){
-            setItemSelect(holder.name,holder.qty,holder.image,holder.ll);
+        if(position==select_basket_pos){
+            onItemSelect(holder.name,holder.qty,holder.image,holder.ll);
         }else{
             setItemUnSelect(holder.name,holder.qty,holder.image,holder.ll);
         }
@@ -94,11 +107,11 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
 
     }
 
-    public void setItemSelect(TextView name, TextView qty, ImageView image, LinearLayout ll){
-        image.setBackgroundResource(R.drawable.bi_basket_w);
-        ll.setBackgroundResource(R.drawable.rectangle_blue);
-        qty.setVisibility(View.VISIBLE);
-        name.setTextColor(Color.WHITE);
+    public void setItemSelect(){
+        select_item.image.setBackgroundResource(R.drawable.bi_basket_w);
+        select_item.ll.setBackgroundResource(R.drawable.rectangle_blue);
+        select_item.qty.setVisibility(View.VISIBLE);
+        select_item.name.setTextColor(Color.WHITE);
     }
 
     public void setItemUnSelect(TextView name, TextView qty, ImageView image, LinearLayout ll){
@@ -108,13 +121,20 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
         name.setTextColor(context.getResources().getColor(R.color.colorTitleGray));
     }
 
+    public void onScanSelect(int pos) {
+        select_basket_pos = pos;
+        if(select_basket_pos>=0){
+            wiget_list.smoothScrollToPosition(select_basket_pos);
+        }
+    }
+
     public void onItemSelect(TextView name, TextView qty, ImageView image, LinearLayout ll) {
         if(select_item.name!=null){
             setItemUnSelect(select_item.name,select_item.qty,select_item.image,select_item.ll);
         }
-        if(select_mac_pos>=0){
+        if(select_basket_pos>=0){
             select_item.setItemSelect(name,qty,image,ll);
-            setItemSelect(select_item.name,select_item.qty,select_item.image,select_item.ll);
+            setItemSelect();
         }
     }
 
@@ -145,6 +165,10 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
 
         public LinearLayout getLl() {
             return ll;
+        }
+
+        public void set_refesh_qty() {
+            qty.setText(mData.get(select_basket_pos).getQty()+"");
         }
     }
 }

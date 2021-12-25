@@ -61,7 +61,8 @@
                     android:layout_width="100px"
                     android:layout_height="120px"
                     android:layout_weight="0"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:buttonTint="@color/colorTitleBlue" />
 
             </LinearLayout>
 

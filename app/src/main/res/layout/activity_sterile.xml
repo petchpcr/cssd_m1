@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Select the device you eant to use." />
+            android:text="Select the device you want to use." />
 
     </LinearLayout>
 
@@ -94,7 +94,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="8dp"
             android:text="Delete"
-            android:textColor="@color/colorRed"
+            android:textColor="@color/colorAccent"
             android:textSize="12sp"
             android:visibility="gone" />
 

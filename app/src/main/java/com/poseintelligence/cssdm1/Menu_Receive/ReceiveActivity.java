@@ -294,7 +294,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
         if(WA_IsUsedWash){
             txt_doc_time.setVisibility(View.GONE);
-            switch_status.setText("เอกสารล่าง  ");
+            switch_status.setText("เอกสารร่าง  ");
         }else{
             switch_status.setText("ยังไม่ปิด/ทั้งหมด  ");
         }
@@ -822,10 +822,28 @@ public class ReceiveActivity extends AppCompatActivity {
                             String S_Code = edt_usage_code.getText().toString().toLowerCase();
                             Log.d("OOOO","S_Code:"+S_Code);
 //                            Log.d("OOOO","IsSU:"+IsSU);
-                            if(IsSU){
+
+                            if (S_Code.substring(0,1).equals("d")) {
+                                boolean x = true;
+                                for(int i = 0;i<ar_list_dept_id.size();i++){
+
+                                    Log.d("top_dep","ID = "+ar_list_dept_id.get(i));
+                                    if(ar_list_dept_id.get(i).equals(S_Code.substring(1))){
+                                        spn_department_form.setSelection(i);
+                                        x=false;
+
+                                    }
+                                }
+                                if(x){
+                                    Toast.makeText(ReceiveActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                edt_usage_code.setText("");
+                                return false;
+                            }else if(IsSU){
 //                                Log.d("OOOO","IsSU1:"+IsSU);
                                 addUsageForRemoveByQR(S_Code);
-                            }else {
+                            } else {
                                 Log.d("OOOO","dept_id:"+dept_id);
 //                                addSterileDetailByQR(S_Code, dept_id);
 

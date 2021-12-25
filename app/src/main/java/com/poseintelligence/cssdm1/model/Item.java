@@ -27,4 +27,11 @@ public class Item {
         Name = name;
     }
 
+    public boolean isChk() {
+        return chk;
+    }
+
+    public void setChk(boolean chk) {
+        this.chk = chk;
+    }
 }

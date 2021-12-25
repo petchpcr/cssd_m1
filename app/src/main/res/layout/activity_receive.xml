@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -215,10 +215,10 @@
                         android:layout_marginTop="0dp"
                         android:layout_marginRight="10dp"
                         android:text="ยังไม่ปิด/ทั้งหมด  "
-                        android:theme="@style/SCBSwitch"
                         android:textColor="@color/colorSwitchBlue"
                         android:textColorLink="@color/colorSwitchBlue"
-                        android:textSize="14dp" />
+                        android:textSize="14dp"
+                        android:theme="@style/SCBSwitch" />
 
 
                 </LinearLayout>
@@ -270,7 +270,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"

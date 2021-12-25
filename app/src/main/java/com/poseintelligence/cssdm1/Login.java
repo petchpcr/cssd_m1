@@ -107,6 +107,9 @@ public class Login extends AppCompatActivity {
 
         onLoadConfiguration();
         get_building_name();
+
+
+        dep_device();
     }
 
     // ===============================================
@@ -281,8 +284,6 @@ public class Login extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                dep_device();
                 try {
                     onLogin(uname.getText().toString(), pword.getText().toString());
                 } catch (Exception e) {
@@ -755,9 +756,7 @@ public class Login extends AppCompatActivity {
 
     public void dep_device(){
         if(getSerialNumber().equals("L203P85U01743")){
-            onLogin("user1", "111");
-
-
+            onLogin("user2", "111");
         }
     }
 }

@@ -22,12 +22,12 @@ public class BasketTag {
         this.RefDocNo = RefDocNo ;
     }
 
-    public BasketTag(String ID,String name, String BasketCode, String IsActive_Basket,int qty) {
+    public BasketTag(String ID,String name, String BasketCode, String macId,int qty) {
         this.ID = ID;
         Name = name;
         this.qty = qty;
         this.BasketCode =BasketCode ;
-        this.IsActive_Basket = IsActive_Basket ;
+        MacId = macId ;
     }
 
     public String getRefDocNo() {

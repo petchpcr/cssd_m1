@@ -1,18 +1,16 @@
 package com.poseintelligence.cssdm1.model;
 
 public class ModelMachine {
-    String ID;
     String MachineID;
     String MachineName;
-    String IsStatus;
+    String IsActive;
+    String IsBrokenMachine;
 
-    public ModelMachine(String machineID, String machineName) {
+    public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine) {
         MachineID = machineID;
         MachineName = machineName;
-    }
-
-    public String getID() {
-        return ID;
+        IsActive = isActive;
+        IsBrokenMachine = isBrokenMachine;
     }
 
     public String getMachineID() {
@@ -23,7 +21,19 @@ public class ModelMachine {
         return MachineName;
     }
 
-    public String getIsStatus() {
-        return IsStatus;
+    public String getIsActive() {
+        return IsActive;
+    }
+
+    public void setIsActive(String isActive) {
+        IsActive = isActive;
+    }
+
+    public String getIsBrokenMachine() {
+        return IsBrokenMachine;
+    }
+
+    public void setIsBrokenMachine(String isBrokenMachine) {
+        IsBrokenMachine = isBrokenMachine;
     }
 }

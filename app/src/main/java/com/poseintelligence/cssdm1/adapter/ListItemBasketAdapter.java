@@ -19,12 +19,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.poseintelligence.cssdm1.Menu_MachineTest.MachineTestDetailActivity;
+import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.model.Item;
@@ -38,7 +40,6 @@ public class ListItemBasketAdapter extends ArrayAdapter<Item> {
     private final ArrayList<Item> list;
     private final Activity context;
     int width=0;
-    float oldx = 0;
     float d_x = 0;
 
     public ListItemBasketAdapter(Activity context, ArrayList<Item> list) {
@@ -62,57 +63,60 @@ public class ListItemBasketAdapter extends ArrayAdapter<Item> {
         TextView text_2 = (TextView) view.findViewById(R.id.text_2);
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         LinearLayout bt_delete = (LinearLayout) view.findViewById(R.id.bt_delete);
+        bt_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((SterileActivity)context).item_to_delete(position);
+            }
+        });
 
         text_1.setWidth(width-260);
 
         h_sc.setHorizontalScrollBarEnabled(false);
 
+        text_1.setText(list.get(position).getName());
+        text_2.setText(list.get(position).getItemCode());
+
+        checkBox.setChecked(list.get(position).isChk());
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                list.get(position).setChk(b);
+                get_list_checkbox();
+            }
+        });
+        Log.d("tog_chk","chk = "+position+"---"+list.get(position).isChk());
+
 //        h_sc.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 //            @Override
 //            public void onScrollChange(View view,  int x, int y, int oldX, int oldY) {
 //                Log.d("tog_OnScroll","x = "+x+" -- ox = "+oldX);
+//                d_x = x;
+//            }
+//        });
+//
+//        h_sc.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//
+//                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+//                    if(d_x>70){
+//                        h_sc.smoothScrollTo(200,0);
+//                        Log.d("tog_OnScroll","R");
+//                    }else{
+//                        h_sc.smoothScrollTo(0,0);
+//                        Log.d("tog_OnScroll","L");
+//                    }
+//                }
+//                return false;
 //            }
 //        });
 
-        h_sc.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-//                    Log.d("tog_OnScroll","oldx = "+motionEvent.getRawX());
-                    oldx = motionEvent.getRawX();
-                }
-
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-//                    Log.d("tog_OnScroll","x = "+motionEvent.getRawX());
-                    d_x=motionEvent.getRawX();
-
-                    float x = oldx-d_x;
-//                    Log.d("tog_OnScroll","x = "+(oldx-d_x));
-                    if(x<0){
-                        if(x<-65){
-                            h_sc.smoothScrollTo(0,0);
-                            Log.d("tog_OnScroll","L");
-                        }else{
-                            h_sc.smoothScrollTo(200,0);
-                            Log.d("tog_OnScroll","R");
-                        }
-                    }else{
-                        if(x>65){
-                            h_sc.smoothScrollTo(200,0);
-                            Log.d("tog_OnScroll","R");
-                        }else{
-                            h_sc.smoothScrollTo(0,0);
-                            Log.d("tog_OnScroll","L");
-                        }
-                    }
-                }
-//                Log.d("tog_OnScroll","motionEvent = "+motionEvent);
-                return false;
-            }
-        });
-
 
         return view;
+    }
+
+    public void get_list_checkbox(){
+        ((SterileActivity)context).get_list_checkbox_to_delete();
     }
 }
