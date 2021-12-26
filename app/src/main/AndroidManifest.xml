@@ -50,7 +50,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CssdM1"
         android:usesCleartextTraffic="true">
-        <activity android:name=".adapter.ListItemBasketAdapter"></activity>
+        <activity
+            android:name=".Menu_BasketWashing.BasketWashingActivity"
+            android:exported="false" />
+        <activity android:name=".adapter.ListItemBasketAdapter" />
         <activity android:name=".adapter.ListBoxBasketAdapter" />
         <activity
             android:name=".Menu_Sterile.SterileActivity"

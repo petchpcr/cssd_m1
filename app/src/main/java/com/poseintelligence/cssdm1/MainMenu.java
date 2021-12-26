@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.Menu_MachineTest.MachineTestActivity;
 import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
@@ -62,6 +63,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         list_menu.add((LinearLayout) findViewById(R.id.RR6));
         list_menu.add((LinearLayout) findViewById(R.id.RR7));
         list_menu.add((LinearLayout) findViewById(R.id.RR8));
+        list_menu.add((LinearLayout) findViewById(R.id.RR9));
     }
 
     private void byEvent() {
@@ -95,6 +97,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     case "bt_returnofcssd": getoPage(ReturnActivity.class); break;
                     case "bt_machine_test": getoPage(MachineTestActivity.class); break;
                     case "bt_sterile": getoPage(SterileActivity.class); break;
+                    case "bt_basket_washing": getoPage(BasketWashingActivity.class); break;
                 }
             }
         };
@@ -142,6 +145,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_returnofcssd": t.setText("คืนของ\nเข้าสต๊อกจ่ายกลาง"); break;
             case "bt_machine_test": t.setText("เก็บข้อมูล\nตรวจสอบเครื่อง"); break;
             case "bt_sterile": t.setText("ฆ่าเชื้อ"); break;
+            case "bt_basket_washing": t.setText("นำเข้าตะกร้า-เครื่องล้าง"); break;
         }
 
         t.setGravity(Gravity.CENTER);
