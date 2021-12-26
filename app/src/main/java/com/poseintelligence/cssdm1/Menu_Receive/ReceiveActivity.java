@@ -823,7 +823,7 @@ public class ReceiveActivity extends AppCompatActivity {
                             Log.d("OOOO","S_Code:"+S_Code);
 //                            Log.d("OOOO","IsSU:"+IsSU);
 
-                            if (S_Code.substring(0,1).equals("d")) {
+                            if (S_Code.substring(0,1).equals("d")|| S_Code.substring(0,1).equals("D") ) {
                                 boolean x = true;
                                 for(int i = 0;i<ar_list_dept_id.size();i++){
 

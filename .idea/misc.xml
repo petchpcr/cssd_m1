@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_basket_washing.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_dispensing.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_main_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_receive.xml" value="0.264" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_remark.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_search_item_send_sterile.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_sterile.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/list_payout_detail_item.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_search_sendsterile.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_send_sterile_adapter.xml" value="0.4" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_send_sterile_detail_adapter.xml" value="0.4" />

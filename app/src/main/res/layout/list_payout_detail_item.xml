@@ -48,23 +48,6 @@
             android:text="ItemName"
             android:textColor="@color/list_text_color"
             android:textSize="16sp"></TextView>
-
-        <TextView
-            android:id="@+id/txt_stock_qty"
-            android:layout_width="75dp"
-            android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_marginBottom="3dp"
-            android:layout_toStartOf="@+id/txt_request_qty"
-            android:background="@drawable/text_standard_gray"
-            android:gravity="center|center_vertical"
-            android:inputType="number|numberDecimal|numberSigned"
-            android:selectAllOnFocus="true"
-            android:textColor="@color/list_text_color"
-            android:textSize="18dp"></TextView>
-
         <TextView
             android:id="@+id/txt_request_qty"
             android:layout_width="75dp"
@@ -96,6 +79,24 @@
             android:selectAllOnFocus="true"
             android:textColor="@color/list_text_color"
             android:textSize="18dp"></TextView>
+
+        <TextView
+            android:id="@+id/txt_stock_qty"
+            android:layout_width="75dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="3dp"
+            android:layout_toStartOf="@+id/txt_request_qty"
+            android:background="@drawable/text_standard_gray"
+            android:gravity="center|center_vertical"
+            android:inputType="number|numberDecimal|numberSigned"
+            android:selectAllOnFocus="true"
+            android:textColor="@color/list_text_color"
+            android:textSize="18dp"></TextView>
+
+
 
         <TextView
             android:id="@+id/txt_qty"

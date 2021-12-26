@@ -89,8 +89,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 Integer position = Integer.parseInt(v.getTag().toString());
 //                Log.d("OOOO","Clicked item at position: " + position + " : " + cM1.get(position).getCngName());
                 switch(cM1.get(position).getBtImg()) {
-                    case "bt_dispensing": getoPage(SterileActivity.class); break;
-//                    case "bt_dispensing": getoPage(DispensingActivity.class); break;
+//                    case "bt_dispensing": getoPage(SterileActivity.class); break;
+                    case "bt_dispensing": getoPage(DispensingActivity.class); break;
                     case "bt_receive": getoPage(ReceiveActivity.class); break;
                     case "bt_remark": getoPage(RemarkActivity.class); break;
                     case "bt_results": getoPage(ResultsActivity.class); break;
