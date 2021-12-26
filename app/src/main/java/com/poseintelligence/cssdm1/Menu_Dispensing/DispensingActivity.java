@@ -499,7 +499,7 @@ public class DispensingActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             String S_Code = txt_search_department.getText().toString().toLowerCase();
                             Log.d("top_dep","S_Code = "+S_Code);
-                            if(S_Code.substring(0,1).equals("d")){
+                            if(S_Code.substring(0,1).equals("d") || S_Code.substring(0,1).equals("D")){
                                 boolean x = true;
                                 for(int i = 0;i<Model_Department.size();i++){
 
