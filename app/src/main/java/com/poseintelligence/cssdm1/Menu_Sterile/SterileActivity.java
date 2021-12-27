@@ -82,6 +82,7 @@ public class SterileActivity extends AppCompatActivity{
     public AlertDialog alert;
 
     ProgressDialog program_dialog;
+    ProgressDialog loadind_dialog;
 
     Handler handler  = new Handler();
     Runnable runnable = new Runnable() {
@@ -177,10 +178,25 @@ public class SterileActivity extends AppCompatActivity{
 
         list_basket.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        get_machine("null");
-        get_basket("null");
         alert_builder = new AlertDialog.Builder(SterileActivity.this);
 
+        loadind_dialog = new ProgressDialog(SterileActivity.this);
+        loadind_dialog.setMessage("Loading...");
+
+        get_machine("null");
+        get_basket("null");
+    }
+
+    public void loadind_dialog_show(){
+        if(!loadind_dialog.isShowing()){
+            loadind_dialog.show();
+        }
+    }
+
+    public void loadind_dialog_dismis(){
+        if(loadind_dialog.isShowing()){
+            loadind_dialog.dismiss();
+        }
     }
 
     public void get_machine(String mac_id) {
@@ -189,14 +205,11 @@ public class SterileActivity extends AppCompatActivity{
 
             int mac_select_id = -1;
 
-            private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
-
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.show();
+                loadind_dialog_show();
             }
 
             @Override
@@ -222,10 +235,12 @@ public class SterileActivity extends AppCompatActivity{
 
                         list_mac_adapter = new ListBoxMachineAdapter(SterileActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
+
+                        loadind_dialog_dismis();
                     }else{
                         if(mac_id.equals(mac_empty_id)){
                             list.get(list.size()-1).setIsActive("0");
-                            list_mac_adapter.onScanSelect(list.size()-1);
+                            mac_id_non_approve = list.size()-1;
                             reload_basket();
                         }else{
                             for (int i = 0; i < rs.length(); i++) {
@@ -241,6 +256,7 @@ public class SterileActivity extends AppCompatActivity{
                                         if(c.getString("xID").equals(mac_id)){
                                             if(c.getString("IsActive").equals("1")){
                                                 show_dialog("Warning","Machine is running");
+
                                             }
                                             else if(c.getString("IsBrokenMachine").equals("1")){
                                                 show_dialog("Warning","Machine is broken");
@@ -271,13 +287,6 @@ public class SterileActivity extends AppCompatActivity{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-
-
             }
 
             @Override
@@ -309,14 +318,12 @@ public class SterileActivity extends AppCompatActivity{
     public void get_basket(String basket_id) {
 
         class get_basket extends AsyncTask<String, Void, String> {
-            private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
 
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.show();
+                loadind_dialog_show();
             }
 
             @Override
@@ -339,6 +346,8 @@ public class SterileActivity extends AppCompatActivity{
 
                         list_basket_adapter = new ListBoxBasketAdapter(SterileActivity.this, xlist_basket,list_basket);
                         list_basket.setAdapter(list_basket_adapter);
+
+                        loadind_dialog_dismis();
                     }else{
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
@@ -363,13 +372,14 @@ public class SterileActivity extends AppCompatActivity{
                                                     if(mac_id.equals(mac_empty_id)){
                                                         list_mac_adapter.onScanSelect(mac_id_non_approve);
                                                         list_basket_adapter.onScanSelect(j);
-                                                        get_item_in_basket(j);
                                                     }else{
-                                                        add_basket_to_mac(j);
+                                                        is_add_item = true;
                                                     }
 
+                                                    get_item_in_basket(j,list.get(mac_pos).getIDocNo());
+
                                                 }else if (c.getString("InMachineID").equals(mac_id)){
-                                                    get_item_in_basket(j);
+                                                    get_item_in_basket(j,list.get(mac_pos).getIDocNo());
                                                 }else{
                                                     list_basket_adapter.onScanSelect(-1);
                                                     if(mac_pos==list.size()-1){
@@ -381,7 +391,7 @@ public class SterileActivity extends AppCompatActivity{
                                                 }
                                             }else{
                                                 list_basket_adapter.onScanSelect(j);
-                                                get_item_in_basket(j);
+                                                get_item_in_basket(j,"");
                                             }
 
                                             list_mac_adapter.notifyDataSetChanged();
@@ -397,12 +407,6 @@ public class SterileActivity extends AppCompatActivity{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-
 
             }
 
@@ -469,15 +473,71 @@ public class SterileActivity extends AppCompatActivity{
         xlist_item_basket.remove(index);
         list_item_basket.invalidateViews();
 
-        get_item_in_basket(list_basket_adapter.select_basket_pos);
+        get_item_in_basket(list_basket_adapter.select_basket_pos,"");
     }
 
-    public void add_basket_to_mac(int pos){
-        is_add_item = true;
-        get_item_in_basket(pos);
+    public void add_basket_to_mac(String docno,String basket_id) {
+        class add_basket_to_mac extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            reload_basket();
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("basket_id", basket_id);
+                data.put("docno", docno);
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(getUrl + "set_basket_to_sterile.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_add_item","data = " + data);
+                Log.d("tog_add_item","result = " + result);
+                return result;
+            }
+
+            // =========================================================================================
+        }
+
+        add_basket_to_mac obj = new add_basket_to_mac();
+
+        obj.execute();
     }
 
-    public void add_item_to_basket(int pos,String basket_id){
+    public void add_item_to_basket(String basket_id){
         class add_item extends AsyncTask<String, Void, String> {
             private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
 
@@ -496,23 +556,18 @@ public class SterileActivity extends AppCompatActivity{
                 try {
                     JSONObject jsonObj = new JSONObject(result);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
-                    xlist_item_basket.clear();
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
 
-                            list_item_basket_adapter = new ListItemBasketAdapter(SterileActivity.this,xlist_item_basket);
-                            list_item_basket.setAdapter(list_item_basket_adapter);
-
-                            xlist_basket.get(pos).setQty(xlist_item_basket.size());
-
-                            list_mac_adapter.onScanSelect(mac_id_non_approve);
-                            list_basket_adapter.onScanSelect(pos);
-                            list_mac_adapter.notifyDataSetChanged();
-                            list_basket_adapter.notifyDataSetChanged();
-
-                            is_add_item = false;
+                            if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("null")){
+                                addSterileDetailById(
+                                        list.get(list_mac_adapter.select_mac_pos).getDocNo(),
+                                        c.getString("w_id"),
+                                        basket_id
+                                );
+                            }
                         }
 
                     }
@@ -558,53 +613,45 @@ public class SterileActivity extends AppCompatActivity{
         obj.execute();
     }
 
-    public void addSterileDetail(final String p_docno, final String p_data, final String p_PackingMatID, final String Qty) {
+    public void addSterileDetailById(final String p_docno, final String p_data,String basket_id) {
 
         final boolean mode = false;
-        final boolean p_ungroup = true;
 
         class AddSterileDetail extends AsyncTask<String, Void, String> {
-
-
-            private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
 
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.setCancelable(false);
-                this.dialog.show();
+
+                loadind_dialog_show();
             }
 
             @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-
-                //System.out.println(s);
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
 
                 try {
-                    JSONObject jsonObj = new JSONObject(s);
+                    JSONObject jsonObj = new JSONObject(result);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
-
-                    int ib = 0;
-                    int ic = 0;
 
                     for(int i=0;i<rs.length();i++){
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
-
-
+                            if(is_add_item){
+                                add_basket_to_mac(p_docno,basket_id);
+                            }else{
+                                reload_basket();
+                            }
                         }
+
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }finally{
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
+                    is_add_item = false;
                 }
             }
 
@@ -612,67 +659,16 @@ public class SterileActivity extends AppCompatActivity{
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();
 
-                // Insert Detail
-                data.put("p_data", p_data);
+                data.put("p_list_id", p_data);
                 data.put("p_docno", p_docno);
-                data.put("p_IsUsedUserOperationDetail", SR_IsUsedUserOperationDetail ? "1" : "0");
-
-                if(PrepareCode != null)
-                    data.put("p_PrepareCode", PrepareCode);
-
-                if(ApproveCode != null)
-                    data.put("p_ApproveCode", ApproveCode);
-
-                if(SterileCode != null)
-                    data.put("p_SterileCode", SterileCode);
-
-                if(PackingCode != null)
-                    data.put("p_PackingCode", PackingCode);
-
-                if(Qty != null) {
-                    data.put("p_qty", Qty);
-                }
-
-                if(p_PackingMatID != null) {
-                    data.put("p_PackingMatID", p_PackingMatID);
-                }
+                data.put("p_IsUsedUserOperationDetail", ((CssdProject) getApplication()).isSR_IsUsedUserOperationDetail() ? "1" : "0");
 
                 data.put("p_is_status", mode ? "-1" : "1");
 
-                // ---------------------------------------------------------------------------------
-                // parameter display sterile detail
-                // ---------------------------------------------------------------------------------
-                if(B_ID != null){
-                    data.put("p_bid", B_ID);
-                }
-
-                if(MD_IsItemPriceCode) {
-                    data.put("p_is_item_price_code", "1");
-                }
-
-                if(SR_IsUsedUserOperationDetail) {
-                    data.put("p_used_user_detail", "1");
-                }
-
-                if(SR_IncExp) {
-                    data.put("p_inc_exp", "1");
-                }
-
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-                // ---------------------------------------------------------------------------------
-                // parameter display import wash detail
-                // ---------------------------------------------------------------------------------
 
-                data.put("p_SterileProcessID", getSterileProcessId());
-                data.put("p_Mode", mode ? "-1" : "1");
-
-                data.put("p_ungroup", p_ungroup ? "1" : "0");
-
-                // ---------------------------------------------------------------------------------
-                // call php
-                // ---------------------------------------------------------------------------------
-
-                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getUrl() + "cssd_add_sterile_detail_by_select_insert.php", data);
+                // Add Select Insert
+                String result = httpConnect.sendPostRequest(getUrl + "cssd_add_sterile_detail_by_id.php", data);
 
                 return result;
             }
@@ -684,21 +680,21 @@ public class SterileActivity extends AppCompatActivity{
         obj.execute();
     }
 
-
-    public void get_item_in_basket(int pos){
+    public void get_item_in_basket(int pos,String doc){
 
         Log.d("tog_get_item","pos = " + pos);
         if(pos>=0){
             String basket_id = xlist_basket.get(pos).getID();
             class get_item extends AsyncTask<String, Void, String> {
-                private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
+                String w_id = "";
+                boolean get_data = true;
 
                 // variable
                 @Override
                 protected void onPreExecute() {
                     super.onPreExecute();
-                    this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                    this.dialog.show();
+
+                    loadind_dialog_show();
                 }
 
                 @Override
@@ -724,45 +720,45 @@ public class SterileActivity extends AppCompatActivity{
                                         c.getString("SterileProgramID"),
                                         false
                                 ));
-                            }
 
-                            if(is_add_item&&!c.getString("SterileProgramID").equals(ProgramID)){
-                                ProgramID = "";
-                                show_dialog("Warning","Some item in basket program mismatch");
+                                w_id = w_id+c.getString("WashDetailID")+",";
+
+                                if(is_add_item&&!c.getString("SterileProgramID").equals(ProgramID)){
+                                    ProgramID = "";
+                                    show_dialog("Warning","Some item in basket program mismatch");
+                                    is_add_item = false;
+                                    get_data =false;
+                                }
+                            }else{
                                 is_add_item = false;
-                                get_data = true;
                             }
                         }
 
-                        if(!get_data){
-
+                        Log.d("tog_get_item","is_add_item && rs.length()!=0 = " + (is_add_item && rs.length()!=0));
+                        if(get_data){
                             if(is_add_item){
-                                add_item_to_basket(pos,basket_id);
+//                            add_item_to_basket(pos,basket_id);
+                                addSterileDetailById( doc, w_id,basket_id);
                             }else{
                                 list_item_basket_adapter = new ListItemBasketAdapter(SterileActivity.this,xlist_item_basket);
                                 list_item_basket.setAdapter(list_item_basket_adapter);
-
+                                list_basket_adapter.onScanSelect(pos);
                                 xlist_basket.get(pos).setQty(xlist_item_basket.size());
 
-                                list_mac_adapter.onScanSelect(mac_id_non_approve);
-                                list_basket_adapter.onScanSelect(pos);
-                                list_mac_adapter.notifyDataSetChanged();
                                 list_basket_adapter.notifyDataSetChanged();
-                            }
 
-                            get_data = false;
+                                Log.d("tog_get_item","mac_id_non_approve = " + mac_id_non_approve);
+                                list_mac_adapter.onScanSelect(mac_id_non_approve);
+                                list_mac_adapter.notifyDataSetChanged();
+
+                                loadind_dialog_dismis();
+                            }
                         }
 
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-
 
                 }
 
@@ -797,6 +793,14 @@ public class SterileActivity extends AppCompatActivity{
     }
 
     public void show_dialog(String title,String mass){
+        mac_id_non_approve = list_mac_adapter.select_mac_pos;
+        basket_pos_non_approve = list_basket_adapter.select_basket_pos;
+
+        list_basket_adapter.notifyDataSetChanged();
+        list_mac_adapter.notifyDataSetChanged();
+
+        loadind_dialog_dismis();
+
         alert_builder.setTitle(title);
         alert_builder.setMessage(mass);
 
@@ -844,7 +848,6 @@ public class SterileActivity extends AppCompatActivity{
             Log.d("tog_basket","getBasketCode = "+xlist_basket.get(basket_pos).getBasketCode());
             get_basket(xlist_basket.get(basket_pos).getBasketCode());
         }else{
-
             list_mac_adapter.onScanSelect(mac_id_non_approve);
             list_basket_adapter.notifyDataSetChanged();
             list_mac_adapter.notifyDataSetChanged();
@@ -912,14 +915,12 @@ public class SterileActivity extends AppCompatActivity{
     public void get_doc_in_mac(String docno){
 
         class get_doc_in_mac extends AsyncTask<String, Void, String> {
-            private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
 
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.show();
+                loadind_dialog_show();
             }
 
             @Override
@@ -952,12 +953,6 @@ public class SterileActivity extends AppCompatActivity{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-
 
             }
 
