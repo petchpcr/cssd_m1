@@ -1050,7 +1050,9 @@ public class ReceiveActivity extends AppCompatActivity {
 
                                 } else {
                                     Log.d("OOOO","Mode:6");
-                                    findDepartmentByQR(S_Code);
+                                    String S_Code2 = edt_usage_code.getText().toString();
+                                    GetDapusage_code(S_Code2);
+//                                    findDepartmentByQR(S_Code);
                                 }
                             }
 
@@ -1308,6 +1310,66 @@ public class ReceiveActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void GetDapusage_code(final String p_qr) {
+
+        class GetDapusage_code extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < setRs.length(); i++) {
+                        JSONObject c = setRs.getJSONObject(i);
+
+                        if(c.getString("result").equals("A")) {
+//                            pCustomer p = new pCustomer();
+                           int DepID = Integer.valueOf( c.getString("DepID")).intValue();
+
+                            spn_department_form.setSelection(DepID);
+                            addSterileDetailByQR(p_qr, c.getString("DepID"));
+                            Log.d("thejane3",""+DepID);
+
+                        }else{
+                            Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally{
+                    focus();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("p_qr", p_qr);
+                String result = httpConnect.sendPostRequest(getUrl + "cssd_getdep_usage_code.php", data);
+                Log.d("thejane7",""+data);
+                Log.d("thejane8",""+result);
+                return result;
+            }
+        }
+
+        GetDapusage_code ru = new GetDapusage_code();
+
+        ru.execute();
     }
 
     private void openSearchItemStock(String mode) {
@@ -1812,9 +1874,9 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_qr", p_qr);
                 data.put("p_dept_id", p_dept_id);
                 data.put("p_bid",B_ID);
-                Log.d("OOOO",""+getUrl + "cssd_add_send_sterile_detail_by_qr.php?"+data);
+                Log.d("thejane2",""+getUrl + "cssd_add_send_sterile_detail_by_qr.php?"+data);
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_add_send_sterile_detail_by_qr.php", data);
-                Log.d("OOOO",""+result);
+                Log.d("thejane4",""+result);
                 return result;
             }
         }
