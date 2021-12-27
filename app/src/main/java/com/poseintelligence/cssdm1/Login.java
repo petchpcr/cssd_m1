@@ -286,7 +286,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    dep_device();
+//                    dep_device();
                     onLogin(uname.getText().toString(), pword.getText().toString());
                 } catch (Exception e) {
                     e.printStackTrace();
