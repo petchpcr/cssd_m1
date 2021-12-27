@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +68,7 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
                 if(select_basket_pos==position){
                     select_basket_pos=-1;
                 }else{
-                    select_basket_pos = position;
+                    ((SterileActivity)context).basket_pos_non_approve = position;
 //                    wiget_list.smoothScrollToPosition(select_basket_pos);
                     ((SterileActivity)context).reload_mac();
                 }
@@ -76,6 +77,7 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
             }
         });
 
+        Log.d("tog_getbasket","b select_basket_pos = "+select_basket_pos);
         if(position==select_basket_pos){
             onItemSelect(holder.name,holder.qty,holder.image,holder.ll);
         }else{
@@ -124,6 +126,8 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
 
     public void onScanSelect(int pos) {
         select_basket_pos = pos;
+
+        Log.d("tog_getbasket","onScanSelect = "+select_basket_pos);
         if(select_basket_pos>=0){
             wiget_list.smoothScrollToPosition(select_basket_pos);
         }

@@ -75,11 +75,9 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                 if(select_mac_pos==position){
                     select_mac_pos=-1;
                 }else{
-                    select_mac_pos = position;
-//                    wiget_list.smoothScrollToPosition(select_mac_pos);
-                    ((SterileActivity)context).get_machine(mData.get(select_mac_pos).getMachineID());
+                    ((SterileActivity)context).mac_id_non_approve  = position;
+                    ((SterileActivity)context).get_machine(mData.get(position).getMachineID());
                 }
-//                onItemSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);
             }
         });
 

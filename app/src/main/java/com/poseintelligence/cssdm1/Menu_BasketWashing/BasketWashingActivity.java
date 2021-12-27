@@ -154,18 +154,6 @@ public class BasketWashingActivity extends AppCompatActivity {
         get_basket("null");
         alert_builder = new AlertDialog.Builder(BasketWashingActivity.this);
 
-
-
-        xlist_item_basket.add(new Item("I00215-219-00001","หน่วยตรวจผู้ป่วยนอกรังสีร่วมรักษาระบบประสาทและหลอดเลือด",false));
-        xlist_item_basket.add(new Item("I00215-219-00002","Jug",false));
-        xlist_item_basket.add(new Item("1","9999",false));
-        xlist_item_basket.add(new Item("2","9999",false));
-        xlist_item_basket.add(new Item("3","9999",false));
-        xlist_item_basket.add(new Item("4","9999",false));
-        xlist_item_basket.add(new Item("5","9999",false));
-        xlist_item_basket.add(new Item("6","9999",false));
-        xlist_item_basket.add(new Item("7","9999",false));
-
     }
 
     public void get_machine(String mac_id) {
