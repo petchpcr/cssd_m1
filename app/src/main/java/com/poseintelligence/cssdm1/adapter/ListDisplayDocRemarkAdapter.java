@@ -170,8 +170,10 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
             @SuppressLint("ResourceType")
             @Override
             public void onItemSelected(int i) {
+                Log.d("image1","4");
                 TitlePic = slideModels1.get(i).getTitle();
                 if (TitlePic.equals("รูปที่1")){
+                    Log.d("image1","1");
                     if (DATA_MODEL.get(position).getPicture().equals("") || DATA_MODEL.get(position).getPicture().equals("null")){
                         ((RemarkActivity) context).OpenCamera(DATA_MODEL.get(position).getID(),DATA_MODEL.get(position).getSensterileDocNo(),"1");
                     }else {
@@ -186,9 +188,11 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
 //                        context.startActivity(intent);
 
                         open_pic(position , slideModels1,image1.getDrawingCache());
+
                     }
                 }
                 else if (TitlePic.equals("รูปที่2")){
+                    Log.d("image1","2");
                     if (DATA_MODEL.get(position).getPicture2().equals("") || DATA_MODEL.get(position).getPicture2().equals("null")){
                         (( RemarkActivity ) context).OpenCamera(DATA_MODEL.get(position).getID(),DATA_MODEL.get(position).getSensterileDocNo(),"2");
                     }else {
@@ -196,6 +200,7 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
                     }
                 }
                 else if (TitlePic.equals("รูปที่3")){
+                    Log.d("image1","3");
                     if (DATA_MODEL.get(position).getPicture3().equals("") || DATA_MODEL.get(position).getPicture3().equals("null")){
                         (( RemarkActivity ) context).OpenCamera(DATA_MODEL.get(position).getID(),DATA_MODEL.get(position).getSensterileDocNo(),"3");
                     }else {
@@ -251,10 +256,12 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
         image1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("DJGJDGVJ",DATA_MODEL.get(position).getIsPicture());
+//                Log.d("DJGJDGVJ",DATA_MODEL.get(position).getIsPicture());
+                Log.d("janetest",image1.getDrawingCache()+"");
                 if (DATA_MODEL.get(position).getIsPicture().equals("0")){
                     (( RemarkActivity ) context).OpenCamera(DATA_MODEL.get(position).getID(),DATA_MODEL.get(position).getSensterileDocNo(),"1");
                 }else {
+
                     open_pic(position , slideModels1,image1.getDrawingCache());
                 }
 
@@ -285,6 +292,11 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
     }
 
     public void open_pic(int position ,List<SlideModel> slideModels,Bitmap bitmap_pic1){
+        codeData_pic1 = "data:image/jpeg;base64,"+DATA_MODEL.get(position).getPictruetext();
+        codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
+        byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
+        Bitmap bitmap_pic12 = BitmapFactory.decodeByteArray(code_pic1,0,code_pic1.length);
+
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(context);
         final View customLayout = context.getLayoutInflater().inflate( R.layout.activity_dialog_pic_remark, null);
         quitDialog.setView(customLayout);
@@ -301,10 +313,12 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
         if (DATA_MODEL.get(position).getMutiPic_Remark().equals("1")){
             al_imageslide.setImageList(slideModels,true);
             al_images.setVisibility(View.GONE);
-
+            Log.d("image2","1");
         }else{
-            al_images.setImageBitmap(bitmap_pic1);
+
+            al_images.setImageBitmap(bitmap_pic12);
             al_imageslide.setVisibility(View.GONE);
+            Log.d("image2",""+bitmap_pic1);
         }
 
         AlertDialog alert = quitDialog.create();

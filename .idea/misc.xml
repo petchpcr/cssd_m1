@@ -3,20 +3,23 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dispensing.xml" value="0.36666666666666664" />
-        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_receive.xml" value="0.1265625" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_basket_washing.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_dialog_pic_remark.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_dispensing.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_in_sert_image_spore_doc.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_list_display_doc_adapter0_1.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_list_display_doc_remark_adapter.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_main_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_receive.xml" value="0.264" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_record_test_list_doc.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_remark.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_search_item_send_sterile.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/activity_sterile.xml" value="0.36666666666666664" />
+        <entry key="..\:/cssd_m1/app/src/main/res/layout/list_payout_detail_item.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_search_sendsterile.xml" value="0.36666666666666664" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_send_sterile_adapter.xml" value="0.4" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_send_sterile_detail_adapter.xml" value="0.4" />
         <entry key="..\:/cssd_m1/app/src/main/res/layout/list_send_sterile_detail_set.xml" value="0.20520833333333333" />
-        <entry key="app/src/main/res/layout/activity_dispensing.xml" value="0.1015625" />
-        <entry key="app/src/main/res/layout/activity_receive.xml" value="0.19157608695652173" />
-        <entry key="app/src/main/res/layout/activity_search_item_send_sterile.xml" value="0.11822916666666666" />
-        <entry key="app/src/main/res/layout/list_payout_detail_item.xml" value="0.1015625" />
       </map>
     </option>
   </component>
