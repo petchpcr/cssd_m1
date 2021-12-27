@@ -195,16 +195,6 @@ public class BasketWashingActivity extends AppCompatActivity {
                     if(mac_id.equals("null")){
                         list.clear();
 
-                        for (int i = 0; i < rs.length(); i++) {
-                            JSONObject c = rs.getJSONObject(i);
-
-                            if (c.getString("result").equals("A")) {
-                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine")));
-                            }
-                        }
-
-                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0"));
-
                         list_mac_adapter = new ListBoxMachineAdapter(BasketWashingActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
                     }else{

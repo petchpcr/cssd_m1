@@ -2310,13 +2310,13 @@ public class ReceiveActivity extends AppCompatActivity {
                     for(int i=0;i<setRs.length();i++){
                         JSONObject c = setRs.getJSONObject(i);
 
-                        listUSend.add(c.getString("xName"));
+                        listUSend.add(c.getString("xName")+" "+c.getString("LastName"));
 
                         ar_list_user_send_id.add(c.getString("xID"));
                         ar_list_user_receive_id.add(c.getString("xID"));
 
-                        data_user_send_id.put(c.getString("xName"),c.getString("xID"));
-                        data_user_receive_id.put(c.getString("xName"),c.getString("xID"));
+                        data_user_send_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
+                        data_user_receive_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(ReceiveActivity.this,android.R.layout.simple_spinner_dropdown_item,listUSend);
@@ -2334,6 +2334,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_select_user.php",data);
+                Log.d("tog_select_user","re = "+result);
                 return  result;
             }
         }

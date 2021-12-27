@@ -763,10 +763,17 @@ public class DispensingActivity extends AppCompatActivity {
 
                     for(int i=0;i<rs.length();i++){
                         JSONObject c = rs.getJSONObject(i);
-                        if(c.getString("result").equals("E")) {
-                            nMidia.getAudio("repeat_scan");
+                        if(c.getInt("Cnt")>0){
+
+                                nMidia.getAudio("repeat_scan");
+//                            if(c.getString("DocNo").equals(DocNo)){
+//                                nMidia.getAudio("repeat_scan");
+//                            }else{
+//                                nMidia.getAudio("repeat_scan");
+//                            }
 //                            speakText("No");
                         }else{
+
                             if (SR_ReceiveFromDeposit) {
                                 addItem( usagecode );
                             }else{
@@ -792,7 +799,7 @@ public class DispensingActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();
                 data.put("p_usedcode", usagecode);
-                data.put("p_docno", ( DocNo==null?"":DocNo ));
+                data.put("p_docno", (DocNo==null?"":DocNo ));
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 //                Log.d("xxx","p_itemcode : "+itemcode);
