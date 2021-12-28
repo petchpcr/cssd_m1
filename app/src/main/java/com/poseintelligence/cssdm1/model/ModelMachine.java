@@ -7,6 +7,7 @@ public class ModelMachine {
     String IsBrokenMachine;
     String DocNo;
     String SterileProgramID;
+    String SterileProgramName;
     String SterileRoundNumber;
 
     public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo) {
@@ -71,5 +72,13 @@ public class ModelMachine {
 
     public void setSterileRoundNumber(String sterileRoundNumber) {
         SterileRoundNumber = sterileRoundNumber;
+    }
+
+    public String getSterileProgramName() {
+        return SterileProgramName;
+    }
+
+    public void setSterileProgramName(String sterileProgramName) {
+        SterileProgramName = sterileProgramName;
     }
 }

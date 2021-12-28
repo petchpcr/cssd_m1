@@ -59,6 +59,7 @@ public class SterileActivity extends AppCompatActivity{
     TextView bt_delete;
     TextView bt_select_all;
     LinearLayoutManager lm;
+    public TextView title_2;
 
     boolean on_scan_program_mac = false;
     public int mac_id_non_approve = -1;
@@ -117,7 +118,7 @@ public class SterileActivity extends AppCompatActivity{
 
 //        set_program_dialog();
 
-        handler_re_scan_text.postDelayed(runnable_re_scan_text, 500);
+        handler_re_scan_text.postDelayed(runnable_re_scan_text, 200);
     }
 
     public void byIntent(){
@@ -133,6 +134,7 @@ public class SterileActivity extends AppCompatActivity{
     }
 
     public void byWidget(){
+        title_2 = (TextView) findViewById(R.id.title_2);
         list_mac = (RecyclerView) findViewById(R.id.list_mac);
         list_basket = (RecyclerView) findViewById(R.id.list_basket);
         list_item_basket = (ListView) findViewById(R.id.list_item_basket);
@@ -207,9 +209,6 @@ public class SterileActivity extends AppCompatActivity{
     public void get_machine(String mac_id) {
 
         class get_machine extends AsyncTask<String, Void, String> {
-
-            int mac_select_id = -1;
-
             // variable
             @Override
             protected void onPreExecute() {
@@ -323,6 +322,10 @@ public class SterileActivity extends AppCompatActivity{
     }
 
     public void get_basket(String basket_id) {
+
+        xlist_item_basket.clear();
+        list_item_basket_adapter = new ListItemBasketAdapter(SterileActivity.this,xlist_item_basket);
+        list_item_basket.setAdapter(list_item_basket_adapter);
 
         class get_basket extends AsyncTask<String, Void, String> {
 
@@ -498,7 +501,6 @@ public class SterileActivity extends AppCompatActivity{
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
-
                             Log.d("tog_delete_item","Empty = " + list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty"));
                             if(list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                                 get_item_in_basket(list_basket_adapter.select_basket_pos,"");
@@ -562,9 +564,6 @@ public class SterileActivity extends AppCompatActivity{
                     JSONObject jsonObj = new JSONObject(s);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
 
-                    int ib = 0;
-                    int ic = 0;
-
                     for(int i=0;i<rs.length();i++){
                         JSONObject c = rs.getJSONObject(i);
 
@@ -574,6 +573,7 @@ public class SterileActivity extends AppCompatActivity{
                     }
 
                 } catch (JSONException e) {
+                    show_log_error("cssd_remove_sterile_details_json.php Error = "+e);
                     e.printStackTrace();
                 }
             }
@@ -1015,6 +1015,7 @@ public class SterileActivity extends AppCompatActivity{
 
                         if (c.getString("result").equals("A")) {
                             list.get(mac_id_non_approve).setSterileProgramID(c.getString("SterileProgramID"));
+                            list.get(mac_id_non_approve).setSterileProgramName(c.getString("SterileName"));
                             list.get(mac_id_non_approve).setSterileRoundNumber(c.getString("SterileRoundNumber"));
 
                             ProgramID = c.getString("SterileProgramID");
@@ -1216,6 +1217,111 @@ public class SterileActivity extends AppCompatActivity{
 //        obj.execute();
 //    }
 
+
+    public void set_loder(){
+
+        class get_doc_in_mac extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getBoolean("check")) {
+//                            show_dialog("Warning","Employee code is TRUE");
+                            startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                        }else{
+                            show_dialog("Warning","Employee code is invalid");
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    show_log_error("check_qr.php Error = "+e);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("docno", list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                data.put("emp_code", params[0]);
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(getUrl + "check_qr.php", data);
+                } catch (Exception e) {
+                    show_log_error("check_qr.php");
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_sterile_process","result = "+result);
+
+                return result;
+            }
+
+        }
+
+        ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
+        dialog.setMessage("Please scan employee code");
+        dialog.setCancelable(false);
+
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();//dismiss dialog
+
+            }
+        });
+
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
+
+                        get_doc_in_mac obj = new get_doc_in_mac();
+                        obj.execute(mass_onkey);
+
+                        mass_onkey = "";
+
+                        return false;
+                    }
+
+                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
+                        char unicodeChar = (char)keyEvent.getUnicodeChar();
+                        mass_onkey=mass_onkey+unicodeChar;
+                    }
+
+                    return false;
+                }
+                return false;
+            }
+        });
+
+        dialog.show();
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
@@ -1261,7 +1367,8 @@ public class SterileActivity extends AppCompatActivity{
 
                         if(mass_onkey.equals("sc013")){
                             if(list_mac_adapter.select_mac_pos>=0&&list_mac_adapter.select_mac_pos!=list.size()){
-                                startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                                set_loder();
+//                                startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
                             }else{
                                 show_dialog("Warning","Please select machine to start");
                             }

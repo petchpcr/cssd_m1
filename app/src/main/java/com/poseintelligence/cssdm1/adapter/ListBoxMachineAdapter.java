@@ -148,9 +148,13 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         if(select_mac.macname!=null){
             setMacUnSelect(select_mac.macname,select_mac.mac,select_mac.mac_image,select_mac.ll);
         }
+
         if(select_mac_pos>=0){
             select_mac.setItemSelect(macname,mac,mac_image,ll);
             setMacSelect();
+            ((SterileActivity)context).title_2.setText("Program : "+mData.get(select_mac_pos).getSterileProgramName()+"\tRoundNumber : "+mData.get(select_mac_pos).getSterileRoundNumber());
+        }else{
+            ((SterileActivity)context).title_2.setText("Select the device you want to use.");
         }
     }
 
