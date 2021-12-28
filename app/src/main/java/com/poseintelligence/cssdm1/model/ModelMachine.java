@@ -14,7 +14,7 @@ public class ModelMachine {
         MachineName = machineName;
         IsActive = isActive;
         IsBrokenMachine = isBrokenMachine;
-        DocNo = DocNo;
+        this.DocNo = DocNo;
     }
 
     public String getMachineID() {
@@ -39,14 +39,6 @@ public class ModelMachine {
 
     public void setIsBrokenMachine(String isBrokenMachine) {
         IsBrokenMachine = isBrokenMachine;
-    }
-
-    public void setIDocNo(String DocNo) {
-        this.DocNo = DocNo;
-    }
-
-    public String getIDocNo() {
-        return DocNo;
     }
 
     public void setMachineID(String machineID) {

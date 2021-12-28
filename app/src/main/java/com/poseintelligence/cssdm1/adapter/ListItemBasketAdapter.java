@@ -66,7 +66,7 @@ public class ListItemBasketAdapter extends ArrayAdapter<Item> {
         bt_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((SterileActivity)context).item_to_delete(position);
+                ((SterileActivity)context).item_to_delete(list.get(position).getRow_id()+",",list.get(position).getSterileDetailID() + "@" + list.get(position).getWashDetailID() + "@" + list.get(position).getItemStockID());
             }
         });
 

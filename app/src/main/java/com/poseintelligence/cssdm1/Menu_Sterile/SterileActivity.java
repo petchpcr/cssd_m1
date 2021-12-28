@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class SterileActivity extends AppCompatActivity{
@@ -140,13 +141,16 @@ public class SterileActivity extends AppCompatActivity{
         bt_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String id = "";
+                String data = "";
                 for(int i=xlist_item_basket.size()-1;i>=0;i--){
-                    Log.d("tog_delete","position = "+i);
                     if(xlist_item_basket.get(i).isChk()){
-                        item_to_delete(i);
-                        Log.d("tog_delete","position = delete");
+                        id = id+xlist_item_basket.get(i).getRow_id()+",";
+                        data = data+xlist_item_basket.get(i).getSterileDetailID() + "@" + xlist_item_basket.get(i).getWashDetailID() + "@" + xlist_item_basket.get(i).getItemStockID() + "@";
                     }
                 }
+
+                item_to_delete(id,data);
             }
         });
 
@@ -252,7 +256,7 @@ public class SterileActivity extends AppCompatActivity{
                                     if(list.get(j).getMachineID().equals(c.getString("xID"))){
                                         list.get(j).setIsActive(c.getString("IsActive"));
                                         list.get(j).setIsBrokenMachine(c.getString("IsBrokenMachine"));
-                                        list.get(j).setIDocNo(c.getString("DocNo"));
+                                        list.get(j).setDocNo(c.getString("DocNo"));
 
                                         if(c.getString("xID").equals(mac_id)){
                                             if(c.getString("IsActive").equals("1")){
@@ -379,10 +383,10 @@ public class SterileActivity extends AppCompatActivity{
                                                         is_add_item = true;
                                                     }
 
-                                                    get_item_in_basket(j,list.get(mac_pos).getIDocNo());
+                                                    get_item_in_basket(j,list.get(mac_pos).getDocNo());
 
                                                 }else if (c.getString("InMachineID").equals(mac_id)){
-                                                    get_item_in_basket(j,list.get(mac_pos).getIDocNo());
+                                                    get_item_in_basket(j,list.get(mac_pos).getDocNo());
                                                 }else{
                                                     list_basket_adapter.onScanSelect(-1);
                                                     if(mac_pos==list.size()-1){
@@ -452,12 +456,11 @@ public class SterileActivity extends AppCompatActivity{
         int x = 0;
         for(int i=0;i<xlist_item_basket.size();i++){
             if(xlist_item_basket.get(i).isChk()){
-
                 x++;
             }
         }
 
-        if(x==xlist_item_basket.size()){
+        if(x==xlist_item_basket.size() && xlist_item_basket.size()!=0){
             is_select_all = true;
             bt_select_all.setText("Unselect all");
         }else{
@@ -473,11 +476,130 @@ public class SterileActivity extends AppCompatActivity{
 
     }
 
-    public void item_to_delete(int index){
-        xlist_item_basket.remove(index);
-        list_item_basket.invalidateViews();
+    public void item_to_delete(String id,String data){
+        class delete_item extends AsyncTask<String, Void, String> {
 
-        get_item_in_basket(list_basket_adapter.select_basket_pos,"");
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+
+                            Log.d("tog_delete_item","Empty = " + list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty"));
+                            if(list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                                get_item_in_basket(list_basket_adapter.select_basket_pos,"");
+                            }else{
+                                removeSterileDetail(data,list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                            }
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    show_log_error("delete_item_in_basket.php Error = "+e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("ID", id);
+                data.put("basket_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getBasketCode());
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(getUrl + "delete_item_in_basket.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_delete_item","data = " + data);
+                Log.d("tog_delete_item","result = " + result);
+                return result;
+            }
+
+            // =========================================================================================
+        }
+
+        delete_item obj = new delete_item();
+
+        obj.execute();
+    }
+
+    public void removeSterileDetail(String p_data,String doc_no) {
+
+        class RemoveSterileDetail extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    int ib = 0;
+                    int ic = 0;
+
+                    for(int i=0;i<rs.length();i++){
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if(c.getString("result").equals("A")) {
+                            get_item_in_basket(list_basket_adapter.select_basket_pos,"");
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_data", p_data);
+                data.put("p_docno", doc_no);
+
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                // ---------------------------------------------------------------------------------
+                // call php
+                // ---------------------------------------------------------------------------------
+                String result = httpConnect.sendPostRequest(getUrl + "cssd_remove_sterile_details_json.php", data);
+
+                return result;
+            }
+
+            // // ---------------------------------------------------------------
+        }
+
+        RemoveSterileDetail obj = new RemoveSterileDetail();
+        obj.execute();
     }
 
     public void add_item_to_basket(String basket_id,String usage_code){
@@ -503,25 +625,34 @@ public class SterileActivity extends AppCompatActivity{
 
                         if (c.getString("result").equals("A")) {
 
-                            if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("null")){
-                                addSterileDetailById(
-                                        list.get(list_mac_adapter.select_mac_pos).getDocNo(),
-                                        c.getString("w_id"),
-                                        basket_id
-                                );
-                            }else{
+                            if(list_mac_adapter.select_mac_pos != 0){
+                                if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                                    addSterileDetailById(
+                                            list.get(list_mac_adapter.select_mac_pos).getDocNo(),
+                                            c.getString("w_id")+",",
+                                            basket_id
+                                    );
+                                }else{
+                                    reload_basket();
+                                }
+                            }
+                            else{
                                 reload_basket();
                             }
                         }else if (c.getString("result").equals("D")){
-                            show_dialog("Warning","Item has in some basket");
+                            if(c.getString("basket_id").equals(basket_id)){
+                                show_dialog("Warning","Item has in this basket");
+                            }else{
+                                show_dialog("Warning","Item has in some basket");
+                            }
                         }else{
-                            show_dialog("Warning","Not found item");
+                            show_dialog("Warning","Not found item or Program mismatch");
                         }
 
                     }
 
                 } catch (JSONException e) {
-                    show_log_error("add_item_tobasket.php Error = "+e);
+                    show_log_error("add_item_to_basket.php Error = "+e);
                     e.printStackTrace();
                 }
             }
@@ -534,10 +665,17 @@ public class SterileActivity extends AppCompatActivity{
                 data.put("usage_code", usage_code);
                 data.put("p_DB", p_DB);
 
+                Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                if(list_mac_adapter.select_mac_pos >= 0){
+                    if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                        data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getSterileProgramID());
+                    }
+                }
+
                 String result = null;
 
                 try {
-                    result = httpConnect.sendPostRequest(getUrl + "add_item_tobasket.php", data);
+                    result = httpConnect.sendPostRequest(getUrl + "add_item_to_basket.php", data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -552,6 +690,67 @@ public class SterileActivity extends AppCompatActivity{
 
         add_item obj = new add_item();
 
+        obj.execute();
+    }
+
+
+    public void startMachine(String p_doc_no,String p_SterileMachineID) {
+
+        if(p_doc_no.equals("null")){
+            return;
+        }
+
+        class StartMachine extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            list_mac_adapter.select_mac_pos = -1;
+                            list_basket_adapter.select_basket_pos = -1;
+                            get_machine("null");
+                            get_basket("null");
+                        }
+
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_docno", p_doc_no);
+                data.put("p_SterileMachineID", p_SterileMachineID);
+
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_sterile_start_time_json.php", data);
+
+                return result;
+            }
+        }
+
+        StartMachine obj = new StartMachine();
         obj.execute();
     }
 
@@ -581,12 +780,6 @@ public class SterileActivity extends AppCompatActivity{
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
-//                            if(is_add_item){
-//                                add_basket_to_mac(p_docno,basket_id);
-//                            }else{
-//                                reload_basket();
-//                            }
-
                             reload_basket();
                         }
 
@@ -696,6 +889,7 @@ public class SterileActivity extends AppCompatActivity{
                                 Log.d("tog_get_item","mac_id_non_approve = " + mac_id_non_approve);
                                 list_mac_adapter.onScanSelect(mac_id_non_approve);
                                 list_mac_adapter.notifyDataSetChanged();
+                                list_item_basket.invalidateViews();
 
                                 loadind_dialog_dismis();
                             }
@@ -745,6 +939,7 @@ public class SterileActivity extends AppCompatActivity{
 
         list_basket_adapter.notifyDataSetChanged();
         list_mac_adapter.notifyDataSetChanged();
+        list_item_basket.invalidateViews();
 
         loadind_dialog_dismis();
 
@@ -770,12 +965,6 @@ public class SterileActivity extends AppCompatActivity{
         handler.postDelayed(runnable, 1500);
     }
 
-//    public void show_dialog_and_wait(String title,String mass){
-//        show_wait = true;
-//        show_dialog(title,mass);
-//    }
-
-
     public void reload_mac(){
         if(list_mac_adapter.select_mac_pos<list.size()&&list_mac_adapter.select_mac_pos>=0){
             String mac_ID = list.get(list_mac_adapter.select_mac_pos).getMachineID();
@@ -793,69 +982,14 @@ public class SterileActivity extends AppCompatActivity{
             Log.d("tog_basket","getBasketCode = "+xlist_basket.get(basket_pos).getBasketCode());
             get_basket(xlist_basket.get(basket_pos).getBasketCode());
         }else{
+            loadind_dialog_dismis();
+
             list_mac_adapter.onScanSelect(mac_id_non_approve);
             list_basket_adapter.notifyDataSetChanged();
             list_mac_adapter.notifyDataSetChanged();
+            list_item_basket.invalidateViews();
         }
     }
-
-//    public void set_program_dialog(){
-//        program_dialog = new ProgressDialog(SterileActivity.this);
-//        program_dialog.setMessage("Please scan program");
-//        program_dialog.setCancelable(false);
-//
-//        program_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialogInterface) {
-//                Log.d("tog_alert_onDismiss","program_dialog_onDismiss = " + on_scan_program_mac);
-//                on_scan_program_mac = false;
-//            }
-//        });
-//
-//        program_dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                Log.d("tog_alert_onDismiss","program_dialog = " + on_scan_program_mac);
-//                program_dialog.dismiss();//dismiss dialog
-//
-//            }
-//        });
-//
-//        program_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-//            @Override
-//            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
-//                int keyCode = keyEvent.getKeyCode();
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
-//                {
-//                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
-//                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
-//                        String key = mass_onkey.substring(0,1);
-//                        key= key.toLowerCase();
-//                        switch (key)
-//                        {
-//                            case "p":
-//                                if(on_scan_program_mac){
-//                                    check_pro_id(mass_onkey.substring(1));
-//                                }
-//                                break;
-//                            default:
-//                                show_dialog_and_wait("Warning","Not found program id");
-//                        }
-//                        mass_onkey = "";
-//                        return false;
-//                    }
-//
-//                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
-//                        char unicodeChar = (char)keyEvent.getUnicodeChar();
-//                        mass_onkey=mass_onkey+unicodeChar;
-//                    }
-//
-//                    return false;
-//                }
-//                return false;
-//            }
-//        });
-//    }
 
     public void get_doc_in_mac(String docno){
 
@@ -930,6 +1064,70 @@ public class SterileActivity extends AppCompatActivity{
 
         obj.execute();
     }
+
+
+    //    public void show_dialog_and_wait(String title,String mass){
+//        show_wait = true;
+//        show_dialog(title,mass);
+//    }
+
+//    public void set_program_dialog(){
+//        program_dialog = new ProgressDialog(SterileActivity.this);
+//        program_dialog.setMessage("Please scan program");
+//        program_dialog.setCancelable(false);
+//
+//        program_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//            @Override
+//            public void onDismiss(DialogInterface dialogInterface) {
+//                Log.d("tog_alert_onDismiss","program_dialog_onDismiss = " + on_scan_program_mac);
+//                on_scan_program_mac = false;
+//            }
+//        });
+//
+//        program_dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Log.d("tog_alert_onDismiss","program_dialog = " + on_scan_program_mac);
+//                program_dialog.dismiss();//dismiss dialog
+//
+//            }
+//        });
+//
+//        program_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+//            @Override
+//            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+//                int keyCode = keyEvent.getKeyCode();
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+//                {
+//                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
+//                        String key = mass_onkey.substring(0,1);
+//                        key= key.toLowerCase();
+//                        switch (key)
+//                        {
+//                            case "p":
+//                                if(on_scan_program_mac){
+//                                    check_pro_id(mass_onkey.substring(1));
+//                                }
+//                                break;
+//                            default:
+//                                show_dialog_and_wait("Warning","Not found program id");
+//                        }
+//                        mass_onkey = "";
+//                        return false;
+//                    }
+//
+//                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
+//                        char unicodeChar = (char)keyEvent.getUnicodeChar();
+//                        mass_onkey=mass_onkey+unicodeChar;
+//                    }
+//
+//                    return false;
+//                }
+//                return false;
+//            }
+//        });
+//    }
 
 //    public void set_mac_program_id(String mac_name,String mac_id){
 //        mac_id_non_approve = mac_id;
@@ -1048,6 +1246,27 @@ public class SterileActivity extends AppCompatActivity{
                             }
                         }
                         show_dialog("Warning","Not found basket");
+                        break;
+                    case "i":
+
+                        Log.d("tog_dispatchcase","I = ");
+                        if(list_basket_adapter.select_basket_pos>=0){
+                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
+                        }else{
+                            show_dialog("Warning","Please select basket to add");
+                        }
+
+                        break;
+                    case "s":
+
+                        if(mass_onkey.equals("sc013")){
+                            if(list_mac_adapter.select_mac_pos>=0&&list_mac_adapter.select_mac_pos!=list.size()){
+                                startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                            }else{
+                                show_dialog("Warning","Please select machine to start");
+                            }
+                        }
+
                         break;
                     default:
                 }

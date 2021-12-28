@@ -141,6 +141,8 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
             select_item.setItemSelect(name,qty,image,ll);
             setItemSelect();
         }
+
+        ((SterileActivity)context).get_list_checkbox_to_delete();
     }
 
     public class onItemSelect {
