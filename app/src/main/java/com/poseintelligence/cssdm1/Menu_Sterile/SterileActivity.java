@@ -181,6 +181,7 @@ public class SterileActivity extends AppCompatActivity{
         alert_builder = new AlertDialog.Builder(SterileActivity.this);
 
         loadind_dialog = new ProgressDialog(SterileActivity.this);
+        loadind_dialog.setCanceledOnTouchOutside(false);
         loadind_dialog.setMessage("Loading...");
 
         get_machine("null");
@@ -479,16 +480,15 @@ public class SterileActivity extends AppCompatActivity{
         get_item_in_basket(list_basket_adapter.select_basket_pos,"");
     }
 
-    public void add_item_to_basket(String basket_id){
+    public void add_item_to_basket(String basket_id,String usage_code){
         class add_item extends AsyncTask<String, Void, String> {
-            private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
 
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.show();
+
+                loadind_dialog_show();
             }
 
             @Override
@@ -509,22 +509,21 @@ public class SterileActivity extends AppCompatActivity{
                                         c.getString("w_id"),
                                         basket_id
                                 );
+                            }else{
+                                reload_basket();
                             }
+                        }else if (c.getString("result").equals("D")){
+                            show_dialog("Warning","Item has in some basket");
+                        }else{
+                            show_dialog("Warning","Not found item");
                         }
 
                     }
 
                 } catch (JSONException e) {
-                    show_log_error("get_item_in_sterile_basket.php Error = "+e);
+                    show_log_error("add_item_tobasket.php Error = "+e);
                     e.printStackTrace();
                 }
-
-
-                if (dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-
-
             }
 
             @Override
@@ -532,13 +531,13 @@ public class SterileActivity extends AppCompatActivity{
                 HashMap<String, String> data = new HashMap<String, String>();
 
                 data.put("basket_id", basket_id);
-                data.put("usage_code", basket_id);
+                data.put("usage_code", usage_code);
                 data.put("p_DB", p_DB);
 
                 String result = null;
 
                 try {
-                    result = httpConnect.sendPostRequest(getUrl + "get_item_in_sterile_basket.php", data);
+                    result = httpConnect.sendPostRequest(getUrl + "add_item_tobasket.php", data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -685,7 +684,6 @@ public class SterileActivity extends AppCompatActivity{
                         Log.d("tog_get_item","is_add_item && rs.length()!=0 = " + (is_add_item && rs.length()!=0));
                         if(get_data){
                             if(is_add_item){
-//                            add_item_to_basket(pos,basket_id);
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
                                 list_item_basket_adapter = new ListItemBasketAdapter(SterileActivity.this,xlist_item_basket);
@@ -945,7 +943,6 @@ public class SterileActivity extends AppCompatActivity{
 //
 //        Log.d("tog_sterile_process","pro_id = "+pro_id);
 //        class check_pro_id extends AsyncTask<String, Void, String> {
-//            private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
 //
 //            // variable
 //            @Override
