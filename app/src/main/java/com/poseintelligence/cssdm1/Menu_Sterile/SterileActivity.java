@@ -285,6 +285,8 @@ public class SterileActivity extends AppCompatActivity{
 
 
                 } catch (JSONException e) {
+
+                    show_log_error("get_sterilemachine.php Error = "+e);
                     e.printStackTrace();
                 }
             }
@@ -405,6 +407,7 @@ public class SterileActivity extends AppCompatActivity{
                     }
 
                 } catch (JSONException e) {
+                    show_log_error("get_sterilebasket.php Error = "+e);
                     e.printStackTrace();
                 }
 
@@ -476,67 +479,6 @@ public class SterileActivity extends AppCompatActivity{
         get_item_in_basket(list_basket_adapter.select_basket_pos,"");
     }
 
-    public void add_basket_to_mac(String docno,String basket_id) {
-        class add_basket_to_mac extends AsyncTask<String, Void, String> {
-
-            // variable
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                loadind_dialog_show();
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-
-                try {
-                    JSONObject jsonObj = new JSONObject(result);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
-
-                        if (c.getString("result").equals("A")) {
-                            reload_basket();
-                        }
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                HashMap<String, String> data = new HashMap<String, String>();
-
-                data.put("basket_id", basket_id);
-                data.put("docno", docno);
-                data.put("p_DB", p_DB);
-
-                String result = null;
-
-                try {
-                    result = httpConnect.sendPostRequest(getUrl + "set_basket_to_sterile.php", data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("tog_add_item","data = " + data);
-                Log.d("tog_add_item","result = " + result);
-                return result;
-            }
-
-            // =========================================================================================
-        }
-
-        add_basket_to_mac obj = new add_basket_to_mac();
-
-        obj.execute();
-    }
-
     public void add_item_to_basket(String basket_id){
         class add_item extends AsyncTask<String, Void, String> {
             private ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
@@ -573,6 +515,7 @@ public class SterileActivity extends AppCompatActivity{
                     }
 
                 } catch (JSONException e) {
+                    show_log_error("get_item_in_sterile_basket.php Error = "+e);
                     e.printStackTrace();
                 }
 
@@ -613,7 +556,7 @@ public class SterileActivity extends AppCompatActivity{
         obj.execute();
     }
 
-    public void addSterileDetailById(final String p_docno, final String p_data,String basket_id) {
+    public void addSterileDetailById(String p_docno, String p_data,String basket_id) {
 
         final boolean mode = false;
 
@@ -639,16 +582,19 @@ public class SterileActivity extends AppCompatActivity{
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
-                            if(is_add_item){
-                                add_basket_to_mac(p_docno,basket_id);
-                            }else{
-                                reload_basket();
-                            }
+//                            if(is_add_item){
+//                                add_basket_to_mac(p_docno,basket_id);
+//                            }else{
+//                                reload_basket();
+//                            }
+
+                            reload_basket();
                         }
 
                     }
 
                 } catch (JSONException e) {
+                    show_log_error("cssd_add_sterile_detail_by_id.php Error = "+e);
                     e.printStackTrace();
                 }finally{
                     is_add_item = false;
@@ -666,6 +612,8 @@ public class SterileActivity extends AppCompatActivity{
                 data.put("p_is_status", mode ? "-1" : "1");
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("is_new", is_add_item+"");
+                data.put("BasketID", basket_id);
 
                 // Add Select Insert
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_add_sterile_detail_by_id.php", data);
@@ -757,6 +705,7 @@ public class SterileActivity extends AppCompatActivity{
 
 
                     } catch (JSONException e) {
+                        show_log_error("get_item_in_sterile_basket.php Error = "+e);
                         e.printStackTrace();
                     }
 
@@ -837,8 +786,6 @@ public class SterileActivity extends AppCompatActivity{
             get_machine(mac_empty_id);
         }
     }
-
-
 
     public void reload_basket(){
         int basket_pos = basket_pos_non_approve;
@@ -951,6 +898,8 @@ public class SterileActivity extends AppCompatActivity{
 
 
                 } catch (JSONException e) {
+
+                    show_log_error("get_sterile_doc.php Error = "+e);
                     e.printStackTrace();
                 }
 
@@ -968,6 +917,7 @@ public class SterileActivity extends AppCompatActivity{
                 try {
                     result = httpConnect.sendPostRequest(getUrl + "get_sterile_doc.php", data);
                 } catch (Exception e) {
+                    show_log_error("get_sterile_doc.php");
                     e.printStackTrace();
                 }
 
@@ -1122,5 +1072,18 @@ public class SterileActivity extends AppCompatActivity{
         return super.dispatchKeyEvent(event);
     }
 
+    public void show_log_error(String mass){
+        loadind_dialog_dismis();
+
+        alert_builder.setTitle("Error");
+        alert_builder.setMessage(mass);
+
+        alert = alert_builder.create();
+
+        if(true){
+            alert.show();
+        }
+
+    }
 
 }
