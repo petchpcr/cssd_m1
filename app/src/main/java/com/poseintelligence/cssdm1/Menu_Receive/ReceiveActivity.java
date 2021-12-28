@@ -1336,8 +1336,13 @@ public class ReceiveActivity extends AppCompatActivity {
 //                            pCustomer p = new pCustomer();
                            int DepID = Integer.valueOf( c.getString("DepID")).intValue();
 
-                            spn_department_form.setSelection(DepID);
-                            addSterileDetailByQR(p_qr, c.getString("DepID"));
+//                            if (DocNo == null || DocNo.equals("")) {
+                                spn_department_form.setSelection(DepID);
+                                addSterileDetailByQR(p_qr, c.getString("DepID"));
+//                            }else {
+//                                addSterileDetailByQR(p_qr, c.getString("DepID"));
+//                            }
+
                             Log.d("thejane3",""+DepID);
 
                         }else{
@@ -1360,6 +1365,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("p_qr", p_qr);
+                data.put("DocNo", DocNo);
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_getdep_usage_code.php", data);
                 Log.d("thejane7",""+data);
                 Log.d("thejane8",""+result);
