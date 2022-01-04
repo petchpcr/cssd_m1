@@ -52,16 +52,14 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".Menu_BasketWashing.BasketWashingActivity"
+            android:theme="@style/Theme.CssdM1.NoActionBar"
             android:exported="false" />
-        <activity android:name=".adapter.ListItemBasketAdapter" />
-        <activity android:name=".adapter.ListBoxBasketAdapter" />
         <activity
             android:name=".Menu_Sterile.SterileActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".Menu_MachineTest.MachineTestDetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".adapter.ListChkMachineAdapter" />
         <activity android:name=".Menu_MachineTest.MachineTestActivity" />
         <activity
             android:name=".Menu_RecordTest.ATPDocnoActivity"

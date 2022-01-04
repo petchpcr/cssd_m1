@@ -1,23 +1,25 @@
 package com.poseintelligence.cssdm1.model;
 
-public class Item {
+public class ItemInBasket {
     private String Row_id;
     private String ItemStockID;
     private String Name;
     private String usagecode;
+    private String SSDetailID;
     private String WashDetailID;
     private String SterileDetailID;
-    private String SterileProgramID;
+    private String ProgramID;
     private boolean chk;
 
-    public Item(String row_id, String itemStockID, String name, String usagecode, String washDetailID, String sterileDetailID, String sterileProgramID, boolean chk) {
+    public ItemInBasket(String row_id, String itemStockID, String name, String usagecode,String SSDetailID, String washDetailID, String sterileDetailID, String ProgramID, boolean chk) {
         Row_id = row_id;
         ItemStockID = itemStockID;
         Name = name;
         this.usagecode = usagecode;
+        this.SSDetailID = SSDetailID;
         WashDetailID = washDetailID;
         SterileDetailID = sterileDetailID;
-        SterileProgramID = sterileProgramID;
+        this.ProgramID = ProgramID;
         this.chk = chk;
     }
 
@@ -77,11 +79,19 @@ public class Item {
         SterileDetailID = sterileDetailID;
     }
 
-    public String getSterileProgramID() {
-        return SterileProgramID;
+    public String getProgramID() {
+        return ProgramID;
     }
 
-    public void setSterileProgramID(String sterileProgramID) {
-        SterileProgramID = sterileProgramID;
+    public void setProgramID(String programID) {
+        this.ProgramID = programID;
+    }
+
+    public String getSSDetailID() {
+        return SSDetailID;
+    }
+
+    public void setSSDetailID(String SSDetailID) {
+        this.SSDetailID = SSDetailID;
     }
 }

@@ -6,9 +6,9 @@ public class ModelMachine {
     String IsActive;
     String IsBrokenMachine;
     String DocNo;
-    String SterileProgramID;
-    String SterileProgramName;
-    String SterileRoundNumber;
+    String ProgramID;
+    String ProgramName;
+    String RoundNumber;
 
     public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo) {
         MachineID = machineID;
@@ -58,27 +58,27 @@ public class ModelMachine {
         DocNo = docNo;
     }
 
-    public String getSterileProgramID() {
-        return SterileProgramID;
+    public String getProgramID() {
+        return ProgramID;
     }
 
-    public void setSterileProgramID(String sterileProgramID) {
-        SterileProgramID = sterileProgramID;
+    public void setProgramID(String programID) {
+        ProgramID = programID;
     }
 
-    public String getSterileRoundNumber() {
-        return SterileRoundNumber;
+    public String getRoundNumber() {
+        return RoundNumber;
     }
 
-    public void setSterileRoundNumber(String sterileRoundNumber) {
-        SterileRoundNumber = sterileRoundNumber;
+    public void setRoundNumber(String roundNumber) {
+        RoundNumber = roundNumber;
     }
 
-    public String getSterileProgramName() {
-        return SterileProgramName;
+    public String getProgramName() {
+        return ProgramName;
     }
 
-    public void setSterileProgramName(String sterileProgramName) {
-        SterileProgramName = sterileProgramName;
+    public void setProgramName(String programName) {
+        ProgramName = programName;
     }
 }

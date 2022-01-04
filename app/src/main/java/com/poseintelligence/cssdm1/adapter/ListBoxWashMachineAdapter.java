@@ -1,13 +1,8 @@
 package com.poseintelligence.cssdm1.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +12,14 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
+import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
-import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ModelMachine;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAdapter.ViewHolder> {
+public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWashMachineAdapter.ViewHolder> {
 
     private ArrayList<ModelMachine> mData;
     private LayoutInflater mInflater;
@@ -42,12 +31,11 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
 
     // data is passed into the constructor
-    public ListBoxMachineAdapter(Context context, ArrayList<ModelMachine> data,RecyclerView wiget_list) {
+    public ListBoxWashMachineAdapter(Context context, ArrayList<ModelMachine> data,RecyclerView wiget_list) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = data;
         this.wiget_list = wiget_list;
-
     }
 
     // inflates the row layout from xml when needed
@@ -69,8 +57,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                 if(select_mac_pos==position){
                     select_mac_pos=-1;
                 }else{
-                    ((SterileActivity)context).mac_id_non_approve  = position;
-                    ((SterileActivity)context).get_machine(mData.get(position).getMachineID());
+                    ((BasketWashingActivity)context).mac_id_non_approve  = position;
+                    ((BasketWashingActivity)context).get_machine(mData.get(position).getMachineID());
                 }
             }
         });
@@ -80,12 +68,12 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
             onItemSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);
         }else{
             if(mData.get(position).getIsActive().equals("1")){
-                holder.mac_image.setBackgroundResource(R.drawable.ic_sterile_red);
+                holder.mac_image.setBackgroundResource(R.drawable.ic_wash_red);
                 holder.ll.setBackgroundResource(R.drawable.rectangle_red);
                 holder.mac.setTextColor(Color.WHITE);
                 holder.macname.setTextColor(Color.WHITE);
             }else if(mData.get(position).getIsBrokenMachine().equals("1")){
-                holder.mac_image.setBackgroundResource(R.drawable.ic_sterile_black);
+                holder.mac_image.setBackgroundResource(R.drawable.ic_wash_black);
                 holder.ll.setBackgroundResource(R.drawable.rectangle_hard_gray);
                 holder.mac.setTextColor(Color.WHITE);
                 holder.macname.setTextColor(Color.WHITE);
@@ -120,14 +108,14 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     }
 
     public void setMacSelect(){
-        select_mac.mac_image.setBackgroundResource(R.drawable.ic_sterile_blue);
+        select_mac.mac_image.setBackgroundResource(R.drawable.ic_wash_blue);
         select_mac.ll.setBackgroundResource(R.drawable.rectangle_blue);
         select_mac.mac.setTextColor(Color.WHITE);
         select_mac.macname.setTextColor(Color.WHITE);
     }
 
     public void setMacUnSelect(TextView mac, TextView macname, ImageView mac_image, LinearLayout ll){
-        mac_image.setBackgroundResource(R.drawable.ic_sterile_gray);
+        mac_image.setBackgroundResource(R.drawable.ic_wash_grey);
         ll.setBackgroundResource(R.drawable.rectangle_box_g);
         mac.setTextColor(context.getResources().getColor(R.color.colorTitleGray));
         macname.setTextColor(context.getResources().getColor(R.color.colorTitleGray));
@@ -142,12 +130,12 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
             select_mac.setItemSelect(macname,mac,mac_image,ll);
             setMacSelect();
             if(select_mac_pos==mData.size()-1){
-                ((SterileActivity)context).title_2.setText("Select the device you want to use.");
+                ((BasketWashingActivity)context).title_2.setText("Select the device you want to use.");
             }else{
-                ((SterileActivity)context).title_2.setText("Program : "+mData.get(select_mac_pos).getProgramName()+"\tRoundNumber : "+mData.get(select_mac_pos).getRoundNumber());
+                ((BasketWashingActivity)context).title_2.setText("Program : "+mData.get(select_mac_pos).getProgramName()+"\tRoundNumber : "+mData.get(select_mac_pos).getRoundNumber());
             }
         }else{
-            ((SterileActivity)context).title_2.setText("Select the device you want to use.");
+
         }
     }
 

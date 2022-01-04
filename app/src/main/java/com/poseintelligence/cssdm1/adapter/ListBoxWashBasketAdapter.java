@@ -1,15 +1,8 @@
 package com.poseintelligence.cssdm1.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,21 +11,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.poseintelligence.cssdm1.CssdProject;
-import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
-import com.poseintelligence.cssdm1.R;
-import com.poseintelligence.cssdm1.core.string.Cons;
-import com.poseintelligence.cssdm1.model.BasketTag;
-import com.poseintelligence.cssdm1.model.ModelMachine;
+import androidx.recyclerview.widget.RecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
+import com.poseintelligence.cssdm1.R;
+import com.poseintelligence.cssdm1.model.BasketTag;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdapter.ViewHolder> {
+public class ListBoxWashBasketAdapter  extends RecyclerView.Adapter<ListBoxWashBasketAdapter.ViewHolder> {
 
     private ArrayList<BasketTag> mData;
     private LayoutInflater mInflater;
@@ -42,7 +29,7 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
     RecyclerView wiget_list;
 
     // data is passed into the constructor
-    public ListBoxBasketAdapter(Context context, ArrayList<BasketTag> data,RecyclerView wiget_list) {
+    public ListBoxWashBasketAdapter(Context context, ArrayList<BasketTag> data,RecyclerView wiget_list) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
         this.mData = data;
@@ -68,8 +55,8 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
                 if(select_basket_pos==position){
                     select_basket_pos=-1;
                 }else{
-                    ((SterileActivity)context).basket_pos_non_approve = position;
-                    ((SterileActivity)context).reload_mac();
+                    ((BasketWashingActivity)context).basket_pos_non_approve = position;
+                    ((BasketWashingActivity)context).reload_mac();
                 }
 
             }
@@ -140,7 +127,7 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
             setItemSelect();
         }
 
-        ((SterileActivity)context).get_list_checkbox_to_delete();
+        ((BasketWashingActivity)context).get_list_checkbox_to_delete();
     }
 
     public class onItemSelect {
@@ -173,3 +160,4 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
         }
     }
 }
+

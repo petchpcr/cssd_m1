@@ -28,7 +28,7 @@ import com.poseintelligence.cssdm1.adapter.ListItemBasketAdapter;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.BasketTag;
-import com.poseintelligence.cssdm1.model.Item;
+import com.poseintelligence.cssdm1.model.ItemInBasket;
 import com.poseintelligence.cssdm1.model.ModelMachine;
 
 import org.json.JSONArray;
@@ -44,7 +44,7 @@ public class SterileActivity extends AppCompatActivity{
     private String TAG_RESULTS = "result";
     private JSONArray rs = null;
     public HTTPConnect httpConnect = new HTTPConnect();
-    String folder_php = "sterile_basket/";
+    public static String folder_php = "sterile_basket/";
     public String getUrl;
     public String p_DB;
 
@@ -77,7 +77,7 @@ public class SterileActivity extends AppCompatActivity{
     ArrayList<BasketTag> xlist_basket = new ArrayList<>();
     ListBoxBasketAdapter list_basket_adapter;
 
-    ArrayList<Item> xlist_item_basket = new ArrayList<>();
+    ArrayList<ItemInBasket> xlist_item_basket = new ArrayList<>();
     ListItemBasketAdapter list_item_basket_adapter;
 
     public AlertDialog.Builder alert_builder;
@@ -501,8 +501,9 @@ public class SterileActivity extends AppCompatActivity{
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
-                            Log.d("tog_delete_item","Empty = " + list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty"));
-                            if(list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                            if(list_mac_adapter.select_mac_pos<0){
+                                get_item_in_basket(list_basket_adapter.select_basket_pos,"");
+                            }if(list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                                 get_item_in_basket(list_basket_adapter.select_basket_pos,"");
                             }else{
                                 removeSterileDetail(data,list.get(list_mac_adapter.select_mac_pos).getDocNo());
@@ -668,7 +669,9 @@ public class SterileActivity extends AppCompatActivity{
                 Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
                 if(list_mac_adapter.select_mac_pos >= 0){
                     if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
-                        data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getSterileProgramID());
+                        data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getProgramID());
+                    }else if(xlist_item_basket.size()>0){
+                        data.put("program_id", xlist_item_basket.get(0).getProgramID());
                     }
                 }
 
@@ -850,11 +853,12 @@ public class SterileActivity extends AppCompatActivity{
 
                             if (c.getString("result").equals("A")) {
 
-                                xlist_item_basket.add(new Item(
+                                xlist_item_basket.add(new ItemInBasket(
                                         c.getString("xID"),
                                         c.getString("ItemStockID"),
                                         c.getString("itemname"),
                                         c.getString("UsageCode"),
+                                        "",
                                         c.getString("WashDetailID"),
                                         c.getString("SterileDetailID"),
                                         c.getString("SterileProgramID"),
@@ -913,6 +917,7 @@ public class SterileActivity extends AppCompatActivity{
                     String result = null;
 
                     try {
+                        //wash
                         result = httpConnect.sendPostRequest(getUrl + "get_item_in_sterile_basket.php", data);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -1014,9 +1019,9 @@ public class SterileActivity extends AppCompatActivity{
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
-                            list.get(mac_id_non_approve).setSterileProgramID(c.getString("SterileProgramID"));
-                            list.get(mac_id_non_approve).setSterileProgramName(c.getString("SterileName"));
-                            list.get(mac_id_non_approve).setSterileRoundNumber(c.getString("SterileRoundNumber"));
+                            list.get(mac_id_non_approve).setProgramID(c.getString("SterileProgramID"));
+                            list.get(mac_id_non_approve).setProgramName(c.getString("SterileName"));
+                            list.get(mac_id_non_approve).setRoundNumber(c.getString("SterileRoundNumber"));
 
                             ProgramID = c.getString("SterileProgramID");
                             get_data =true;
