@@ -231,11 +231,11 @@ public class SterileActivity extends AppCompatActivity{
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
-                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine"),c.getString("DocNo")));
+                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine"),c.getString("DocNo"),""));
                             }
                         }
 
-                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id));
+                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id,""));
 
                         list_mac_adapter = new ListBoxMachineAdapter(SterileActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
@@ -667,12 +667,11 @@ public class SterileActivity extends AppCompatActivity{
                 data.put("p_DB", p_DB);
 
                 Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
-                if(list_mac_adapter.select_mac_pos >= 0){
-                    if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
-                        data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getProgramID());
-                    }else if(xlist_item_basket.size()>0){
-                        data.put("program_id", xlist_item_basket.get(0).getProgramID());
-                    }
+
+                if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                    data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getProgramID());
+                }else if(xlist_item_basket.size()>0){
+                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
                 }
 
                 String result = null;
@@ -861,7 +860,6 @@ public class SterileActivity extends AppCompatActivity{
                                         "",
                                         c.getString("WashDetailID"),
                                         c.getString("SterileDetailID"),
-                                        c.getString("SterileProgramID"),
                                         false
                                 ));
 
@@ -873,6 +871,8 @@ public class SterileActivity extends AppCompatActivity{
                                     is_add_item = false;
                                     get_data =false;
                                 }
+
+                                xlist_basket.get(pos).setTypeProcessID(c.getString("SterileProgramID"));
                             }else{
                                 is_add_item = false;
                             }

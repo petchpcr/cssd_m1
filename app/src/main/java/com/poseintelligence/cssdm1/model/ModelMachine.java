@@ -7,15 +7,17 @@ public class ModelMachine {
     String IsBrokenMachine;
     String DocNo;
     String ProgramID;
+    String TypeID;
     String ProgramName;
     String RoundNumber;
 
-    public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo) {
+    public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo,String TypeID) {
         MachineID = machineID;
         MachineName = machineName;
         IsActive = isActive;
         IsBrokenMachine = isBrokenMachine;
         this.DocNo = DocNo;
+        this.TypeID = TypeID;
     }
 
     public String getMachineID() {
@@ -80,5 +82,13 @@ public class ModelMachine {
 
     public void setProgramName(String programName) {
         ProgramName = programName;
+    }
+
+    public String getTypeID() {
+        return TypeID;
+    }
+
+    public void setTypeID(String typeID) {
+        TypeID = typeID;
     }
 }

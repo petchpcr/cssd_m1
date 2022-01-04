@@ -62,10 +62,10 @@ public class BasketWashingActivity extends AppCompatActivity {
     public int mac_id_non_approve = -1;
     public int basket_pos_non_approve = -1;
 
-    String ProgramID = "";
-
     boolean is_select_all = false;
     boolean is_add_item = false;
+
+    String typeID="";
 
     ArrayList<ModelMachine> list = new ArrayList<>();
     ListBoxWashMachineAdapter list_mac_adapter;
@@ -229,11 +229,11 @@ public class BasketWashingActivity extends AppCompatActivity {
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
-                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine"),c.getString("DocNo")));
+                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine"),c.getString("DocNo"),c.getString("WashProcessID")));
                             }
                         }
 
-                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id));
+                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id,mac_empty_id));
 
                         list_mac_adapter = new ListBoxWashMachineAdapter(BasketWashingActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
@@ -665,12 +665,11 @@ public class BasketWashingActivity extends AppCompatActivity {
                 data.put("p_DB", p_DB);
 
                 Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
-                if(list_mac_adapter.select_mac_pos >= 0){
-                    if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
-                        data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getProgramID());
-                    }else if(xlist_item_basket.size()>0){
-                        data.put("program_id", xlist_item_basket.get(0).getProgramID());
-                    }
+
+                if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                    data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
+                }else{
+                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
                 }
 
                 String result = null;
@@ -696,7 +695,7 @@ public class BasketWashingActivity extends AppCompatActivity {
     }
 
 
-    public void startMachine(String p_doc_no,String p_MachineID,String p_ProgramID) {
+    public void startMachine(String p_doc_no,String p_MachineID,String p_ProcessID) {
 
         if(p_doc_no.equals("null")){
             return;
@@ -744,7 +743,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                 data.put("p_docno", p_doc_no);
                 data.put("p_WashMachineID", p_MachineID);
-                data.put("p_WashProcessID", p_ProgramID);
+                data.put("p_WashProcessID", p_ProcessID);
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
@@ -845,6 +844,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                         JSONObject jsonObj = new JSONObject(result);
                         rs = jsonObj.getJSONArray(TAG_RESULTS);
                         xlist_item_basket.clear();
+                        xlist_basket.get(pos).setTypeProcessID("");
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
 
@@ -858,18 +858,20 @@ public class BasketWashingActivity extends AppCompatActivity {
                                         c.getString("SSDetailID"),
                                         c.getString("WashDetailID"),
                                         "",
-                                        c.getString("WashProcessID"),
                                         false
                                 ));
 
                                 w_id = w_id+c.getString("WashDetailID")+",";
 
-                                if(is_add_item&&!c.getString("WashProcessID").equals(ProgramID)){
-                                    ProgramID = "";
+                                if(is_add_item&&!c.getString("WashProcessID").equals(typeID)){
+                                    typeID = "";
                                     show_dialog("Warning","Some item in basket program mismatch");
                                     is_add_item = false;
                                     get_data =false;
                                 }
+
+                                xlist_basket.get(pos).setTypeProcessID(c.getString("WashProcessID"));
+
                             }else{
                                 is_add_item = false;
                             }
@@ -880,18 +882,13 @@ public class BasketWashingActivity extends AppCompatActivity {
                             if(is_add_item){
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
-                                list_item_basket_adapter = new ListItemWashBasketAdapter(BasketWashingActivity.this,xlist_item_basket);
-                                list_item_basket.setAdapter(list_item_basket_adapter);
-                                list_basket_adapter.onScanSelect(pos);
-                                xlist_basket.get(pos).setQty(xlist_item_basket.size());
 
-                                list_basket_adapter.notifyDataSetChanged();
-
-                                Log.d("tog_get_item","mac_id_non_approve = " + mac_id_non_approve);
-                                list_mac_adapter.onScanSelect(mac_id_non_approve);
-                                list_mac_adapter.notifyDataSetChanged();
-                                list_item_basket.invalidateViews();
-
+                                if(xlist_basket.get(pos).getTypeProcessID().equals("")){
+                                    set_processID(pos);
+                                }else{
+                                    reload_done(pos);
+                                }
+                                fffffffffffffffffffffffffff
                                 loadind_dialog_dismis();
                             }
                         }
@@ -933,6 +930,121 @@ public class BasketWashingActivity extends AppCompatActivity {
             obj.execute();
         }
 
+    }
+
+    public void reload_done(int pos){
+        list_item_basket_adapter = new ListItemWashBasketAdapter(BasketWashingActivity.this,xlist_item_basket);
+        list_item_basket.setAdapter(list_item_basket_adapter);
+        list_basket_adapter.onScanSelect(pos);
+        xlist_basket.get(pos).setQty(xlist_item_basket.size());
+        list_basket_adapter.notifyDataSetChanged();
+
+        list_mac_adapter.onScanSelect(mac_id_non_approve);
+        list_mac_adapter.notifyDataSetChanged();
+        list_item_basket.invalidateViews();
+    }
+
+    public void set_processID(int pos){
+
+        class set_processID extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getBoolean("check")) {
+                            xlist_basket.get(pos).setTypeProcessID("");
+                            reload_done(pos);
+                        }else{
+                            show_dialog("Warning","Employee process id is invalid");
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    show_log_error("check_qr.php Error = "+e);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("processID", params[0]);
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    //wash1
+                    result = httpConnect.sendPostRequest(getUrl + "check_qr.php", data);
+                } catch (Exception e) {
+                    show_log_error("check_qr.php");
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_sterile_process","result = "+result);
+
+                return result;
+            }
+
+        }
+
+        ProgressDialog dialog = new ProgressDialog(BasketWashingActivity.this);
+        dialog.setMessage("Please scan Process ID");
+        dialog.setCancelable(false);
+
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();//dismiss dialog
+
+            }
+        });
+
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
+
+                        set_processID obj = new set_processID();
+                        obj.execute(mass_onkey);
+
+                        mass_onkey = "";
+
+                        return false;
+                    }
+
+                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
+                        char unicodeChar = (char)keyEvent.getUnicodeChar();
+                        mass_onkey=mass_onkey+unicodeChar;
+                    }
+
+                    return false;
+                }
+                return false;
+            }
+        });
+
+        dialog.show();
     }
 
     public void show_dialog(String title,String mass){
@@ -1020,7 +1132,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                             list.get(mac_id_non_approve).setProgramName(c.getString("WashingProcess"));
                             list.get(mac_id_non_approve).setRoundNumber(c.getString("washRoundNumber"));
 
-                            ProgramID = c.getString("washProgramID");
+                            typeID = list.get(mac_id_non_approve).getTypeID();
                             get_data =true;
                             reload_basket();
                         }
@@ -1243,8 +1355,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getBoolean("check")) {
-//                            show_dialog("Warning","Employee code is TRUE");
-                            startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID(),list.get(list_mac_adapter.select_mac_pos).getProgramID());
+                            startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID(),list.get(list_mac_adapter.select_mac_pos).getTypeID());
                         }else{
                             show_dialog("Warning","Employee code is invalid");
                         }
@@ -1372,7 +1483,6 @@ public class BasketWashingActivity extends AppCompatActivity {
                         if(mass_onkey.equals("sc012")){
                             if(list_mac_adapter.select_mac_pos>=0&&list_mac_adapter.select_mac_pos!=list.size()){
                                 set_loder();
-//                                startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
                             }else{
                                 show_dialog("Warning","Please select machine to start");
                             }

@@ -647,6 +647,12 @@ public class Login extends AppCompatActivity {
                             ((CssdProject) getApplication()).setAP_AddRickReturnToPreviousProcess(c.getInt("AP_AddRickReturnToPreviousProcess"));
                             ((CssdProject) getApplication()).setAP_IsUsedNotification(c.getBoolean("AP_IsUsedNotification"));
                             ((CssdProject) getApplication()).setAP_UsedScanForApprove(c.getBoolean("AP_UsedScanForApprove"));
+                            Log.d("tog_LoadConfig","isNull = "+c.isNull("ST_SoundAndroidVersion9"));
+                            if(!c.isNull("ST_SoundAndroidVersion9")){
+                                ((CssdProject) getApplication()).setST_SoundAndroidVersion9(c.getBoolean("ST_SoundAndroidVersion9"));
+                                Log.d("tog_LoadConfig","ST_SoundAndroidVersion9 = "+c.getBoolean("ST_SoundAndroidVersion9"));
+
+                            }
 
                             get_config_m1();
 

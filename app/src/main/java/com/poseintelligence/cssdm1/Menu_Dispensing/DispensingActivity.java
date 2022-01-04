@@ -83,6 +83,8 @@ public class DispensingActivity extends AppCompatActivity {
     // ---------------------------------------------------------------------------------------------
     // Config
     // ---------------------------------------------------------------------------------------------
+
+    public boolean ST_SoundAndroidVersion9 = false;
     public boolean SS_IsCopyPayout = false;
     public boolean SS_IsShowSender = false;
     public boolean SS_IsReceiverDropdown = false;
@@ -177,6 +179,7 @@ public class DispensingActivity extends AppCompatActivity {
         // -----------------------------------------------------------------------
         // Sound
         // -----------------------------------------------------------------------
+        speakTextInit();
         nMidia = new iAudio(this);
         // -----------------------------------------------------------------------
 
@@ -187,7 +190,22 @@ public class DispensingActivity extends AppCompatActivity {
         byEvent();
 
         byConfig();
+ // -----------------------------------------------------------------------
+        Block_1.setVisibility( View.VISIBLE );
+        Block_2.setVisibility( View.GONE );
+        Block_3.setVisibility( View.GONE );
+        Block_4.setVisibility( View.GONE );
+        spn_zone.setVisibility(Is_Zone?View.VISIBLE:View.GONE);
+        if(Is_Zone==false)
+            displayDepartment(txt_search_department.getText().toString(), -1,"");
 
+    }
+
+    private void byIntent() {
+
+    }
+
+    private void speakTextInit() {
         tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
 
             @Override
@@ -221,20 +239,6 @@ public class DispensingActivity extends AppCompatActivity {
             }
 
         });
-
-        // -----------------------------------------------------------------------
-        Block_1.setVisibility( View.VISIBLE );
-        Block_2.setVisibility( View.GONE );
-        Block_3.setVisibility( View.GONE );
-        Block_4.setVisibility( View.GONE );
-        spn_zone.setVisibility(Is_Zone?View.VISIBLE:View.GONE);
-        if(Is_Zone==false)
-            displayDepartment(txt_search_department.getText().toString(), -1,"");
-
-    }
-
-    private void byIntent() {
-
     }
 
     private void byWidget() {
@@ -690,6 +694,8 @@ public class DispensingActivity extends AppCompatActivity {
         // -----------------------------------------------------------------------------------------
         // Get Config
         // -----------------------------------------------------------------------------------------
+        ST_SoundAndroidVersion9 = ((CssdProject) getApplication()).isST_SoundAndroidVersion9();
+        Log.d("tog_LoadConfig","ST_SoundAndroidVersion9 = "+ST_SoundAndroidVersion9);
         SS_IsGroupPayout = ((CssdProject) getApplication()).isSS_IsGroupPayout();
         SS_IsCopyPayout = ((CssdProject) getApplication()).isSS_IsCopyPayout();
         SS_IsShowSender = ((CssdProject) getApplication()).isSS_IsShowSender();
@@ -765,13 +771,11 @@ public class DispensingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
                         if(c.getInt("Cnt")>0){
 
+                            if(ST_SoundAndroidVersion9){
+                                speakText("no");
+                            }else{
                                 nMidia.getAudio("repeat_scan");
-//                            if(c.getString("DocNo").equals(DocNo)){
-//                                nMidia.getAudio("repeat_scan");
-//                            }else{
-//                                nMidia.getAudio("repeat_scan");
-//                            }
-//                            speakText("No");
+                            }
                         }else{
 
                             if (SR_ReceiveFromDeposit) {
@@ -816,6 +820,9 @@ public class DispensingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                Log.d("tog_duplicate","data = "+data);
+                Log.d("tog_duplicate","result = "+result);
+
                 return result;
             }
         }
@@ -857,9 +864,12 @@ public class DispensingActivity extends AppCompatActivity {
                             }else{
 //                                Log.d("xxx","fifo...");
 
-                                nMidia.getAudio("fifo");
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("fifo");
+                                }else{
+                                    nMidia.getAudio("fifo");
+                                }
 
-//                                speakText("Fifo");
                                 AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("คุณต้องการเพิ่มรายการนี้หรือไม่")
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -888,8 +898,13 @@ public class DispensingActivity extends AppCompatActivity {
                                 dialog.show();
                             }
                         }if(c.getString("result").equals("R")) {
-                            nMidia.getAudio("repeat_scan");
-//                            speakText("No");
+
+                            if(ST_SoundAndroidVersion9){
+                                speakText("no");
+                            }else{
+                                nMidia.getAudio("repeat_scan");
+                            }
+
                         }
                     }
                 } catch (JSONException e) {
@@ -957,22 +972,37 @@ public class DispensingActivity extends AppCompatActivity {
                             Log.d("xxx", "result : " + c.getString("DateDiff"));
 
                             if(c.getInt("DateDiff")<0) {
-                                nMidia.getAudio("expire");
-//                                speakText("expire");
-                            }else if(c.getInt("DateDiff") < 4) {
-                                nMidia.getAudio("expiring");
-                                nMidia.getAudio("within");
-
-//                                speakText("Close expiring ");
-                                if(c.getInt("DateDiff")==0){
-                                    nMidia.getAudio("today");
-
-//                                    speakText("today");
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("expire");
                                 }else{
-                                    nMidia.getAudio(c.getString("DateDiff"));
-                                    nMidia.getAudio("day");
+                                    nMidia.getAudio("expire");
+                                }
+                            }else if(c.getInt("DateDiff") < 4) {
 
-//                                    speakText("in "+c.getString("DateDiff")+" day");
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("close expiring ");
+                                }else{
+                                    nMidia.getAudio("expiring");
+                                    nMidia.getAudio("within");
+                                }
+
+                                if(c.getInt("DateDiff")==0){
+
+                                    if(ST_SoundAndroidVersion9){
+                                        speakText("today");
+                                    }else{
+                                        nMidia.getAudio("today");
+                                    }
+
+                                }else{
+
+                                    if(ST_SoundAndroidVersion9){
+                                        speakText("in "+c.getString("DateDiff")+" day");
+                                    }else{
+                                        nMidia.getAudio(c.getString("DateDiff"));
+                                        nMidia.getAudio("day");
+                                    }
+
                                 }
                                 AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("คุณต้องการเพิ่มรายการนี้หรือไม่")
                                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -1006,8 +1036,12 @@ public class DispensingActivity extends AppCompatActivity {
                             if( (xUsageCode.length() == 6) || (xUsageCode.length() == 11) ) {
                                 addItem( xUsageCode );
                             }else {
-                                nMidia.getAudio("no_item_found");
-//                                speakText("No");
+
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("no");
+                                }else{
+                                    nMidia.getAudio("no_item_found");
+                                }
                             }
                         }
                     }
@@ -1069,8 +1103,12 @@ public class DispensingActivity extends AppCompatActivity {
 
                             //callDialogAddItemCode(p_item_code, c.getString("itemname"), Integer.valueOf(c.getString("c")).intValue());
                         }else{
-                            nMidia.getAudio("no");
-//                            speakText("No");
+
+                            if(ST_SoundAndroidVersion9){
+                                speakText("no");
+                            }else{
+                                nMidia.getAudio("no");
+                            }
                             callDialog(c.getString("Message"));
                         }
                     }
@@ -1143,11 +1181,21 @@ public class DispensingActivity extends AppCompatActivity {
                             if( c.getInt("BQty") == c.getInt("PayQty") ) {
 //                                nMidia.getAudio("pay_in_full" );
 
-                                nMidia.getAudio("okay" );
-//                                speakText("Complete");
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("complete");
+                                }else{
+                                    nMidia.getAudio("okay" );
+                                }
+
+
+
                             }else{
-                                nMidia.getAudio(c.getString("PayQty"));
-//                                speakText(c.getString("PayQty"));
+
+                                if(ST_SoundAndroidVersion9){
+                                    speakText(c.getString("PayQty"));
+                                }else{
+                                    nMidia.getAudio(c.getString("PayQty"));
+                                }
                             }
                             if(DocNo == null){
 
@@ -1245,9 +1293,11 @@ public class DispensingActivity extends AppCompatActivity {
                             }
 
                         }else{
-                            nMidia.getAudio("no");
-
-//                            speakText("No");
+                            if(ST_SoundAndroidVersion9){
+                                speakText("no");
+                            }else{
+                                nMidia.getAudio("no");
+                            }
                             callDialog(msg);
 
                         }
@@ -1355,9 +1405,12 @@ public class DispensingActivity extends AppCompatActivity {
     public void removeItem(final String p_usage_code) {
 
         if(DocNo == null){
-            nMidia.getAudio("no");
 
-//            speakText("No");
+            if(ST_SoundAndroidVersion9){
+                speakText("no");
+            }else{
+                nMidia.getAudio("no");
+            }
             Toast.makeText(DispensingActivity.this, Cons.WARNING_SELECT_DOC, Toast.LENGTH_SHORT).show();
             focus();
             return;
@@ -1378,15 +1431,24 @@ public class DispensingActivity extends AppCompatActivity {
 
                         if (c.getString("result").equals("A")) {
 //                            nMidia.getAudio(c.getString("PayQty"));
-                            nMidia.getAudio("okay");
 //                            speakText(c.getString("PayQty"));
                             // Display Payout Detail
+
+                            if(ST_SoundAndroidVersion9){
+                                speakText("okay");
+                            }else{
+                                nMidia.getAudio("okay");
+                            }
+
                             displayPayoutDetail(DocNo, false);
                         }else{
                             callDialog(c.getString("Message"));
-                            nMidia.getAudio("no");
 
-//                            speakText("No");
+                            if(ST_SoundAndroidVersion9){
+                                speakText("no");
+                            }else{
+                                nMidia.getAudio("no");
+                            }
                         }
                     }
 

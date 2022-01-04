@@ -8,10 +8,9 @@ public class ItemInBasket {
     private String SSDetailID;
     private String WashDetailID;
     private String SterileDetailID;
-    private String ProgramID;
     private boolean chk;
 
-    public ItemInBasket(String row_id, String itemStockID, String name, String usagecode,String SSDetailID, String washDetailID, String sterileDetailID, String ProgramID, boolean chk) {
+    public ItemInBasket(String row_id, String itemStockID, String name, String usagecode,String SSDetailID, String washDetailID, String sterileDetailID, boolean chk) {
         Row_id = row_id;
         ItemStockID = itemStockID;
         Name = name;
@@ -19,7 +18,6 @@ public class ItemInBasket {
         this.SSDetailID = SSDetailID;
         WashDetailID = washDetailID;
         SterileDetailID = sterileDetailID;
-        this.ProgramID = ProgramID;
         this.chk = chk;
     }
 
@@ -77,14 +75,6 @@ public class ItemInBasket {
 
     public void setSterileDetailID(String sterileDetailID) {
         SterileDetailID = sterileDetailID;
-    }
-
-    public String getProgramID() {
-        return ProgramID;
-    }
-
-    public void setProgramID(String programID) {
-        this.ProgramID = programID;
     }
 
     public String getSSDetailID() {

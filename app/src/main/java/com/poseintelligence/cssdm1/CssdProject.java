@@ -91,6 +91,8 @@ public class CssdProject extends Application {
     boolean AP_IsUsedNotification = false;
     boolean AP_UsedScanForApprove = false;
 
+    boolean ST_SoundAndroidVersion9 = false;
+
     public AppCompatActivity getxActivity() { return xActivity; }
     public void setxActivity(AppCompatActivity xActivity) {
         this.xActivity = xActivity;
@@ -630,4 +632,11 @@ public class CssdProject extends Application {
         this.SR_ReceiveFromDeposit = SR_ReceiveFromDeposit;
     }
 
+    public boolean isST_SoundAndroidVersion9() {
+        return ST_SoundAndroidVersion9;
+    }
+
+    public void setST_SoundAndroidVersion9(boolean ST_SoundAndroidVersion9) {
+        this.ST_SoundAndroidVersion9 = ST_SoundAndroidVersion9;
+    }
 }
