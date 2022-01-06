@@ -92,6 +92,7 @@ public class CssdProject extends Application {
     boolean AP_UsedScanForApprove = false;
 
     boolean ST_SoundAndroidVersion9 = false;
+    boolean PA_IsNotificationPopupExpiringScan = false;
 
     public AppCompatActivity getxActivity() { return xActivity; }
     public void setxActivity(AppCompatActivity xActivity) {
@@ -638,5 +639,13 @@ public class CssdProject extends Application {
 
     public void setST_SoundAndroidVersion9(boolean ST_SoundAndroidVersion9) {
         this.ST_SoundAndroidVersion9 = ST_SoundAndroidVersion9;
+    }
+
+    public boolean isPA_IsNotificationPopupExpiringScan() {
+        return PA_IsNotificationPopupExpiringScan;
+    }
+
+    public void setPA_IsNotificationPopupExpiringScan(boolean PA_IsNotificationPopupExpiringScan) {
+        this.PA_IsNotificationPopupExpiringScan = PA_IsNotificationPopupExpiringScan;
     }
 }

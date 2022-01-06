@@ -1313,9 +1313,11 @@ public class SterileActivity extends AppCompatActivity{
                         return false;
                     }
 
-                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
-                        char unicodeChar = (char)keyEvent.getUnicodeChar();
-                        mass_onkey=mass_onkey+unicodeChar;
+                    int unicodeChar = keyEvent.getUnicodeChar();
+
+                    if(unicodeChar!=0){
+                        mass_onkey=mass_onkey+(char)unicodeChar;
+                        Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
                     }
 
                     return false;
@@ -1386,9 +1388,11 @@ public class SterileActivity extends AppCompatActivity{
                 return false;
             }
 
-            if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
-                char unicodeChar = (char)event.getUnicodeChar();
-                mass_onkey=mass_onkey+unicodeChar;
+            int unicodeChar = event.getUnicodeChar();
+
+            if(unicodeChar!=0){
+                mass_onkey=mass_onkey+(char)unicodeChar;
+                Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
             }
 
             Log.d("tog_dispatchKey","keyCode = "+keyCode);

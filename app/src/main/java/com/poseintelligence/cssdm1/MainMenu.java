@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.Menu_MachineTest.MachineTestActivity;
+import com.poseintelligence.cssdm1.Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity;
 import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.Menu_RecordTest.ResultsActivity;
 import com.poseintelligence.cssdm1.Menu_Remark.RemarkActivity;
@@ -97,6 +98,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     case "bt_machine_test": getoPage(MachineTestActivity.class); break;
                     case "bt_sterile": getoPage(SterileActivity.class); break;
                     case "bt_basket_washing": getoPage(BasketWashingActivity.class); break;
+                    case "bt_nonusage": getoPage(ReceivePayNonUsageActivity.class); break;
                 }
             }
         };
@@ -145,6 +147,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_machine_test": t.setText("เก็บข้อมูล\nตรวจสอบเครื่อง"); break;
             case "bt_sterile": t.setText("ฆ่าเชื้อ"); break;
             case "bt_basket_washing": t.setText("นำเข้าตะกร้า-เครื่องล้าง"); break;
+            case "bt_nonusage": t.setText("รับ-จ่าย รายการ non-usage"); break;
         }
 
         t.setGravity(Gravity.CENTER);
@@ -171,5 +174,4 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
 
     }
-
 }

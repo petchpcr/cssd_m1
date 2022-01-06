@@ -100,6 +100,7 @@ public class DispensingActivity extends AppCompatActivity {
     public boolean SS_IsUsedSelfWashDepartment = false;
     public boolean SS_IsUsedClosePayout = false;
     public boolean SS_IsUsedChangeDepartment = false;
+    public boolean PA_IsNotificationPopupExpiringScan = false;
 
     public boolean SR_ReceiveFromDeposit = false;
 
@@ -694,8 +695,9 @@ public class DispensingActivity extends AppCompatActivity {
         // -----------------------------------------------------------------------------------------
         // Get Config
         // -----------------------------------------------------------------------------------------
+        PA_IsNotificationPopupExpiringScan = ((CssdProject) getApplication()).isPA_IsNotificationPopupExpiringScan();
         ST_SoundAndroidVersion9 = ((CssdProject) getApplication()).isST_SoundAndroidVersion9();
-        Log.d("tog_LoadConfig","ST_SoundAndroidVersion9 = "+ST_SoundAndroidVersion9);
+        Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+PA_IsNotificationPopupExpiringScan);
         SS_IsGroupPayout = ((CssdProject) getApplication()).isSS_IsGroupPayout();
         SS_IsCopyPayout = ((CssdProject) getApplication()).isSS_IsCopyPayout();
         SS_IsShowSender = ((CssdProject) getApplication()).isSS_IsShowSender();
@@ -1028,7 +1030,13 @@ public class DispensingActivity extends AppCompatActivity {
                                                 // Do stuff when cancelled
                                             }
                                         }).create();
-                                dialog.show();
+
+                                if(PA_IsNotificationPopupExpiringScan){
+                                    dialog.show();
+                                }else{
+                                    addItem( xUsageCode );
+                                }
+
                             }else{
                                 addItem( xUsageCode );
                             }

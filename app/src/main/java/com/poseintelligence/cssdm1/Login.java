@@ -390,7 +390,6 @@ public class Login extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if (!c.getString("id").equals("false")) {
-                            Intent intent = new Intent(Login.this,MainMenu.class);
                             Parameter pm = new Parameter();
                             pm.setUserid( c.getInt("id") );
                             pm.setName( c.getString("username") );
@@ -404,11 +403,11 @@ public class Login extends AppCompatActivity {
 
                             ((CssdProject) getApplication()).setxUrl(getUrl);
                             ((CssdProject) getApplication()).setPm( pm );
-                            ((CssdProject) getApplication()).setcM1( config_m1 );
-                            startActivity(intent);
-//                            Toast.makeText(Login.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
-                            finish();
-                            return;
+//                            startActivity(intent);
+//                            finish();
+
+//                            return;
+                            getConfigurationMenu(c.getInt("id")+"");
                         }
                     }
                 } catch (JSONException e) {
@@ -647,13 +646,17 @@ public class Login extends AppCompatActivity {
                             ((CssdProject) getApplication()).setAP_AddRickReturnToPreviousProcess(c.getInt("AP_AddRickReturnToPreviousProcess"));
                             ((CssdProject) getApplication()).setAP_IsUsedNotification(c.getBoolean("AP_IsUsedNotification"));
                             ((CssdProject) getApplication()).setAP_UsedScanForApprove(c.getBoolean("AP_UsedScanForApprove"));
-                            Log.d("tog_LoadConfig","isNull = "+c.isNull("ST_SoundAndroidVersion9"));
                             if(!c.isNull("ST_SoundAndroidVersion9")){
                                 ((CssdProject) getApplication()).setST_SoundAndroidVersion9(c.getBoolean("ST_SoundAndroidVersion9"));
                                 Log.d("tog_LoadConfig","ST_SoundAndroidVersion9 = "+c.getBoolean("ST_SoundAndroidVersion9"));
 
                             }
+                            Log.d("tog_LoadConfig","isNull = "+c.isNull("PA_IsNotificationPopupExpiringScan"));
+                            if(!c.isNull("PA_IsNotificationPopupExpiringScan")){
+                                ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
+                                Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+c.getBoolean("PA_IsNotificationPopupExpiringScan"));
 
+                            }
                             get_config_m1();
 
                         }else{
@@ -732,7 +735,6 @@ public class Login extends AppCompatActivity {
         ru.execute();
     }
 
-
     public static String getSerialNumber() {
         String serialNumber;
 
@@ -767,4 +769,87 @@ public class Login extends AppCompatActivity {
             onLogin("user2", "111");
         }
     }
+
+    public void getConfigurationMenu(String userid) {
+
+        class ConfigurationMenu extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+
+                            Log.d("tog_ConfigurationMenu","Desktop_Receive_Pay_NonUsage = "+c.getString("Desktop_Receive_Pay_NonUsage").equals("1"));
+                            if(c.getString("Desktop_Receive_Pay_NonUsage").equals("1")){
+                                ConfigM1 m1 = new ConfigM1();
+                                m1.setCngId( config_m1.size()+"" );
+                                m1.setBtImg("bt_nonusage");
+                                m1.setActive(true);
+                                m1.setStatus(true);
+                                m1.setShowBtn(true);
+                                config_m1.add( m1 );
+                            }
+
+                            ((CssdProject) getApplication()).setcM1( config_m1 );
+                            Intent intent = new Intent(Login.this,MainMenu.class);
+                            startActivity(intent);
+                            finish();
+
+                            // Get
+//                            Desktop_SendSterile = c.getString("Desktop_SendSterile").equals("1");
+//                            Desktop_Wash = c.getString("Desktop_Wash").equals("1");
+////                            Desktop_Sterile = c.getString("Desktop_Sterile").equals("1");
+//                            Desktop_ApproveStock = c.getString("Desktop_ApproveStock").equals("1");
+//                            Desktop_Payout = c.getString("Desktop_Payout").equals("1");
+//
+//                            Desktop_Report = c.getString("Desktop_Report").equals("1");
+//                            Desktop_ItemStock = c.getString("Desktop_ItemStock").equals("1");
+//                            Desktop_Recall = c.getString("Desktop_Recall").equals("1");
+//                            Desktop_Setting = c.getString("Desktop_Setting").equals("1");
+//                            Desktop_Occurrence = c.getString("Desktop_Occurrence").equals("1");
+//
+//                            Desktop_ComputeExpireDate = c.getString("Desktop_ComputeExpireDate").equals("1");
+//                            Desktop_ReturnToStock = c.getString("Desktop_ReturnToStock").equals("1");
+//                            Desktop_TakeBack = c.getString("Desktop_TakeBack").equals("1");
+//                            Desktop_LabelType = c.getString("Desktop_LabelType").equals("1");
+
+                        }else{
+                            System.out.println("E");
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<>();
+
+                data.put("p_user_id", userid);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                String result = http.sendPostRequest(getUrl + "cssd_display_configuration_menu.php", data);
+
+                return result;
+            }
+        }
+
+        ConfigurationMenu ru = new ConfigurationMenu();
+        ru.execute();
+    }
+
 }

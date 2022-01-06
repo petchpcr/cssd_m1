@@ -51,9 +51,13 @@
         android:theme="@style/Theme.CssdM1"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".Menu_BasketWashing.BasketWashingActivity"
-            android:theme="@style/Theme.CssdM1.NoActionBar"
+            android:name=".Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
             android:exported="false" />
+        <activity
+            android:name=".Menu_BasketWashing.BasketWashingActivity"
+            android:exported="false"
+            android:theme="@style/Theme.CssdM1.NoActionBar" />
         <activity
             android:name=".Menu_Sterile.SterileActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

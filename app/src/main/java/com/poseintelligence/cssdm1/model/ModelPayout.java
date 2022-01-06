@@ -12,21 +12,32 @@ public class ModelPayout {
     String Payout_Status;
     String IsWeb = "0";
     String DocDateTime;
+    String Payout_Status_ID;
+    String DocDateSend;
+    boolean boo_Payout_Status;
 
     String PayQty,Count_Qty, Desc, RefDocNo, IsSpecial = "0";
 
     int index = 0;
 
-    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String borrowBalanceQty, String balance, String isStatus, String payout_Status, int index) {
+    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb, String DocDateTime, String Payout_Status_ID, boolean boo_Payout_Status, String DocDateSend, int index) {
         Department_ID = department_ID;
         DepName = depName;
         DocNo = docNo;
         CreateDate = createDate;
         Qty = qty;
-        BorrowBalanceQty = borrowBalanceQty;
-        Balance = balance;
+        PayQty = payQty;
+        Count_Qty = count_Qty;
         IsStatus = isStatus;
         Payout_Status = payout_Status;
+        Desc = desc;
+        RefDocNo = refDocNo;
+        this.IsSpecial = IsSpecial;
+        this.IsWeb = IsWeb;
+        this.DocDateTime = DocDateTime;
+        this.Payout_Status_ID = Payout_Status_ID;
+        this.boo_Payout_Status = boo_Payout_Status;
+        this.DocDateSend = DocDateSend;
         this.index = index;
     }
 
@@ -221,5 +232,29 @@ public class ModelPayout {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public String getPayout_Status_ID() {
+        return Payout_Status_ID;
+    }
+
+    public void setPayout_Status_ID(String payout_Status_ID) {
+        Payout_Status_ID = payout_Status_ID;
+    }
+
+    public String getDocDateSend() {
+        return DocDateSend;
+    }
+
+    public void setDocDateSend(String docDateSend) {
+        DocDateSend = docDateSend;
+    }
+
+    public boolean isBoo_Payout_Status() {
+        return boo_Payout_Status;
+    }
+
+    public void setBoo_Payout_Status(boolean boo_Payout_Status) {
+        this.boo_Payout_Status = boo_Payout_Status;
     }
 }

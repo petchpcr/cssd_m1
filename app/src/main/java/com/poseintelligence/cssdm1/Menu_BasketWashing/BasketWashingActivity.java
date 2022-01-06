@@ -115,7 +115,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
 //        set_program_dialog();
 
-        handler_re_scan_text.postDelayed(runnable_re_scan_text, 200);
+//        handler_re_scan_text.postDelayed(runnable_re_scan_text, 200);
     }
 
     public void byIntent(){
@@ -746,7 +746,9 @@ public class BasketWashingActivity extends AppCompatActivity {
                 data.put("p_WashProcessID", p_ProcessID);
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-
+//                if(IsUsedProcessTimeByWashType) {
+                    data.put("p_process_time_by_wash_type", "1");
+//                }
                 //wash
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_wash_start_time.php", data);
 
@@ -861,7 +863,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                                         false
                                 ));
 
-                                w_id = w_id+c.getString("WashDetailID")+",";
+                                w_id = w_id+c.getString("SSDetailID")+",";
 
                                 if(is_add_item&&!c.getString("WashProcessID").equals(typeID)){
                                     typeID = "";
@@ -888,7 +890,6 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 }else{
                                     reload_done(pos);
                                 }
-                                fffffffffffffffffffffffffff
                                 loadind_dialog_dismis();
                             }
                         }
@@ -936,7 +937,9 @@ public class BasketWashingActivity extends AppCompatActivity {
         list_item_basket_adapter = new ListItemWashBasketAdapter(BasketWashingActivity.this,xlist_item_basket);
         list_item_basket.setAdapter(list_item_basket_adapter);
         list_basket_adapter.onScanSelect(pos);
-        xlist_basket.get(pos).setQty(xlist_item_basket.size());
+        if(pos>=0){
+            xlist_basket.get(pos).setQty(xlist_item_basket.size());
+        }
         list_basket_adapter.notifyDataSetChanged();
 
         list_mac_adapter.onScanSelect(mac_id_non_approve);
@@ -948,6 +951,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
         class set_processID extends AsyncTask<String, Void, String> {
 
+            String processID="";
             // variable
             @Override
             protected void onPreExecute() {
@@ -966,16 +970,18 @@ public class BasketWashingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getBoolean("check")) {
-                            xlist_basket.get(pos).setTypeProcessID("");
+                            xlist_basket.get(pos).setTypeProcessID(processID);
                             reload_done(pos);
                         }else{
-                            show_dialog("Warning","Employee process id is invalid");
+                            xlist_basket.get(pos).setTypeProcessID("");
+                            reload_done(-1);
+                            show_dialog("Warning","Process id is invalid");
                         }
                     }
 
 
                 } catch (JSONException e) {
-                    show_log_error("check_qr.php Error = "+e);
+                    show_log_error("check_wash_process.php Error = "+e);
                     e.printStackTrace();
                 }
 
@@ -984,6 +990,7 @@ public class BasketWashingActivity extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
+                processID = params[0];
                 data.put("processID", params[0]);
                 data.put("p_DB", p_DB);
 
@@ -991,9 +998,9 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                 try {
                     //wash1
-                    result = httpConnect.sendPostRequest(getUrl + "check_qr.php", data);
+                    result = httpConnect.sendPostRequest(getUrl + "check_wash_process.php", data);
                 } catch (Exception e) {
-                    show_log_error("check_qr.php");
+                    show_log_error("check_wash_process.php");
                     e.printStackTrace();
                 }
 
@@ -1012,7 +1019,7 @@ public class BasketWashingActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();//dismiss dialog
-
+                reload_done(-1);
             }
         });
 
@@ -1033,9 +1040,11 @@ public class BasketWashingActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
-                        char unicodeChar = (char)keyEvent.getUnicodeChar();
-                        mass_onkey=mass_onkey+unicodeChar;
+                    int unicodeChar = keyEvent.getUnicodeChar();
+
+                    if(unicodeChar!=0){
+                        mass_onkey=mass_onkey+(char)unicodeChar;
+                        Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
                     }
 
                     return false;
@@ -1044,7 +1053,13 @@ public class BasketWashingActivity extends AppCompatActivity {
             }
         });
 
-        dialog.show();
+        if(typeID.equals("")){
+            dialog.show();
+        }else{
+            xlist_basket.get(pos).setTypeProcessID(typeID);
+            reload_done(pos);
+        }
+
     }
 
     public void show_dialog(String title,String mass){
@@ -1235,7 +1250,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 //
 //                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
 //                        char unicodeChar = (char)keyEvent.getUnicodeChar();
-//                        mass_onkey=mass_onkey+unicodeChar;
+//                        mass_onkey=mass_onkey+unicodeChar;ssssssssssssssssssssssssssssssss
 //                    }
 //
 //                    return false;
@@ -1423,9 +1438,11 @@ public class BasketWashingActivity extends AppCompatActivity {
                         return false;
                     }
 
-                    if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
-                        char unicodeChar = (char)keyEvent.getUnicodeChar();
-                        mass_onkey=mass_onkey+unicodeChar;
+                    int unicodeChar = keyEvent.getUnicodeChar();
+
+                    if(unicodeChar!=0){
+                        mass_onkey=mass_onkey+(char)unicodeChar;
+                        Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
                     }
 
                     return false;
@@ -1494,13 +1511,13 @@ public class BasketWashingActivity extends AppCompatActivity {
                 mass_onkey = "";
                 return false;
             }
+            int unicodeChar = event.getUnicodeChar();
 
-            if(keyCode != KeyEvent.KEYCODE_SHIFT_LEFT && keyCode != KeyEvent.KEYCODE_SHIFT_RIGHT){
-                char unicodeChar = (char)event.getUnicodeChar();
-                mass_onkey=mass_onkey+unicodeChar;
+            if(unicodeChar!=0){
+                mass_onkey=mass_onkey+(char)unicodeChar;
+                Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
             }
 
-            Log.d("tog_dispatchKey","keyCode = "+keyCode);
             Log.d("tog_dispatchKey","mass_onkey = "+mass_onkey);
 
             return false;
