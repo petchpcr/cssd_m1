@@ -184,8 +184,6 @@ public class DispensingActivity extends AppCompatActivity {
         nMidia = new iAudio(this);
         // -----------------------------------------------------------------------
 
-        byIntent();
-
         byWidget();
 
         byEvent();
@@ -199,10 +197,6 @@ public class DispensingActivity extends AppCompatActivity {
         spn_zone.setVisibility(Is_Zone?View.VISIBLE:View.GONE);
         if(Is_Zone==false)
             displayDepartment(txt_search_department.getText().toString(), -1,"");
-
-    }
-
-    private void byIntent() {
 
     }
 

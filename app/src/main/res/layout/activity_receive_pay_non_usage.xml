@@ -21,39 +21,54 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_arrow_back_0" />
 
-        <TextView
-            android:id="@+id/txt_caption2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center|center_vertical"
-            android:text="จ่ายเครื่องมือให้แผนก"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:layout_marginLeft="5dp"
-            android:textStyle="bold"></TextView>
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/label_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center|center_vertical"
-            android:text="เลือก :"
-            android:textColor="#DDDDDD"
-            android:textSize="14dp"></TextView>
+            <TextView
+                android:id="@+id/txt_caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|center_vertical"
+                android:text="จ่ายเครื่องมือให้แผนก"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"></TextView>
 
-        <Space
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
 
-        <Switch
-            android:id="@+id/switch_opt2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="รับเข้า "
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/label_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:text="เลือก :"
+                    android:textColor="#DDDDDD"
+                    android:textSize="12sp"></TextView>
+
+                <Space
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Switch
+                    android:id="@+id/switch_opt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="รับเข้า "
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -68,10 +83,6 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:paddingLeft="4dp"
-            android:paddingTop="0dp"
-            android:paddingRight="4dp"
-            android:paddingBottom="8dp"
             android:visibility="gone">
 
             <LinearLayout
@@ -139,7 +150,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="4dp"
-                android:background="@color/colorWhite"
+                android:background="@color/white"
                 android:divider="@null"></ListView>
 
         </LinearLayout>
@@ -148,7 +159,6 @@
             android:id="@+id/linear_layout_document"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -178,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="ทั้งหมด "
-                    android:textColor="@color/colorWhite"
+                    android:textColor="@color/white"
                     android:textSize="16dp" />
 
 
@@ -192,13 +202,14 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="@color/colorWhite"
+                android:background="@color/white"
                 android:divider="@null"
                 android:listSelector="#FAD7A0"></ListView>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linear_layout_item"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -253,7 +264,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="4dp"
-                android:background="@color/colorWhite"
+                android:background="@color/white"
                 android:divider="@null"
                 android:listSelector="#D6EAF8"></ListView>
 
@@ -264,24 +275,23 @@
     <LinearLayout
         android:id="@+id/BlockB"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="150dp"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginEnd="7dp"
         android:layout_marginBottom="5dp"
         android:layout_weight="1"
         android:orientation="horizontal">
 
         <RelativeLayout
             android:id="@+id/linear_layout_search"
-            android:layout_width="180dp"
+            android:layout_width="230dp"
             android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/label_division"
-            android:layout_alignParentEnd="true"
+            android:layout_weight="1"
             android:gravity="center_vertical">
 
             <EditText
                 android:id="@+id/txt_usage_code"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
@@ -316,8 +326,7 @@
             android:id="@+id/imageCreate"
             android:layout_width="110dp"
             android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/imageBack"
-            android:layout_alignParentEnd="false"
+            android:layout_weight="0"
             android:scaleType="fitCenter"
             android:src="@drawable/bt_close_payout" />
 
