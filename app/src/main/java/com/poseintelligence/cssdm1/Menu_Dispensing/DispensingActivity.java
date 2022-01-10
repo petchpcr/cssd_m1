@@ -1188,9 +1188,7 @@ public class DispensingActivity extends AppCompatActivity {
                                 }else{
                                     nMidia.getAudio("okay" );
                                 }
-
-
-
+                                
                             }else{
 
                                 if(ST_SoundAndroidVersion9){

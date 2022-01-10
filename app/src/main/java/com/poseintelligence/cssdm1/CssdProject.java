@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class CssdProject extends Application {
     private AppCompatActivity xActivity;
 
-    private String D_DATABASE="1";
+    private String D_DATABASE="0";
     private String xUrl;
     private Parameter pm;
     private ArrayList<ConfigM1> cM1;

@@ -63,7 +63,7 @@ public class ReceivePayNonUsageActivity extends AppCompatActivity {
 
     private boolean PA_IsShowToastDialog = true;
 
-    private boolean mode;
+    private boolean mode = true;
 
     private EditText txt_usage_code;
     private TextView label_info;
@@ -155,7 +155,7 @@ public class ReceivePayNonUsageActivity extends AppCompatActivity {
         switch_opt = (Switch) findViewById(R.id.switch_opt);
 
 //         Setting Mode
-//        displayMode(mode);
+        displayMode(mode);
 
     }
 
