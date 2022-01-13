@@ -83,6 +83,8 @@ public class BasketWashingActivity extends AppCompatActivity {
     ProgressDialog program_dialog;
     ProgressDialog loadind_dialog;
 
+    boolean tid = false;
+
     Handler handler  = new Handler();
     Runnable runnable = new Runnable() {
         @Override
@@ -638,14 +640,18 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 reload_basket();
                             }
                         }else if (c.getString("result").equals("D")){
-                        if(c.getString("basket_id").equals(basket_id)){
-                            show_dialog("Warning","รายการซ้ำ");
+                            if(c.getString("basket_id").equals(basket_id)){
+                                show_dialog("Warning","รายการซ้ำ");
+                            }else{
+                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น");
+                            }
+                        }else if(c.getString("result").equals("T")){
+                            show_dialog("Warning","ไม่สามารถเพิ่มได้");
+                        }else if(c.getString("result").equals("M")){
+                            show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้");
                         }else{
-                            show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น");
+                            show_dialog("Warning","ไม่พบรายการ");
                         }
-                    }else{
-                        show_dialog("Warning","ไม่พบรายการ");
-                    }
 
                     }
 
@@ -669,7 +675,9 @@ public class BasketWashingActivity extends AppCompatActivity {
                     data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
                     data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
                 }else{
-                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+                    if(tid){
+                        data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+                    }
                 }
 
                 String result = null;
@@ -847,14 +855,16 @@ public class BasketWashingActivity extends AppCompatActivity {
                     try {
                         JSONObject jsonObj = new JSONObject(result);
                         rs = jsonObj.getJSONArray(TAG_RESULTS);
-                        xlist_item_basket.clear();
+
+                        ArrayList<ItemInBasket> list_item = new ArrayList<>();
+
                         xlist_basket.get(pos).setTypeProcessID("");
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
 
-                                xlist_item_basket.add(new ItemInBasket(
+                                list_item.add(new ItemInBasket(
                                         c.getString("xID"),
                                         c.getString("ItemStockID"),
                                         c.getString("itemname"),
@@ -866,12 +876,15 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 ));
 
                                 w_id = w_id+c.getString("SSDetailID")+",";
-
-                                if(is_add_item&&!c.getString("WashProcessID").equals(typeID)){
+                                if(is_add_item&&(!c.getString("WashProcessID").equals(typeID)||c.getString("WashMachineID").equals("null"))){
                                     typeID = "";
-                                    show_dialog("Warning","ไม่สามารถเพิ่มรายการได้");
                                     is_add_item = false;
                                     get_data =false;
+                                    if(!c.getString("WashProcessID").equals(typeID)){
+                                        show_dialog("Warning","ไม่สามารถเพิ่มได้");
+                                    }else if(c.getString("WashMachineID").equals("null")){
+                                        show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้");
+                                    }
                                 }
 
                                 xlist_basket.get(pos).setTypeProcessID(c.getString("WashProcessID"));
@@ -883,15 +896,24 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                         Log.d("tog_get_item","is_add_item && rs.length()!=0 = " + (is_add_item && rs.length()!=0));
                         if(get_data){
+
+                            xlist_item_basket.clear();
+                            xlist_item_basket = list_item;
+
                             if(is_add_item){
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
 
-                                if(xlist_basket.get(pos).getTypeProcessID().equals("")){
-                                    set_processID(pos);
+                                if(tid){
+                                    if(xlist_basket.get(pos).getTypeProcessID().equals("")){
+                                        set_processID(pos);
+                                    }else{
+                                        reload_done(pos);
+                                    }
                                 }else{
                                     reload_done(pos);
                                 }
+
                                 loadind_dialog_dismis();
                             }
                         }
@@ -910,6 +932,13 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                     data.put("basket_id", basket_id);
                     data.put("p_DB", p_DB);
+                    data.put("typeID", typeID);
+
+                    if(list_mac_adapter.select_mac_pos>=0){
+                        if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                            data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                        }
+                    }
 
                     String result = null;
 
@@ -922,6 +951,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                     Log.d("tog_get_item","data = " + data);
                     Log.d("tog_get_item","result = " + result);
+                    show_log_error(result);
                     return result;
                 }
 
@@ -1014,7 +1044,7 @@ public class BasketWashingActivity extends AppCompatActivity {
         }
 
         ProgressDialog dialog = new ProgressDialog(BasketWashingActivity.this);
-        dialog.setMessage("Please scan Process ID");
+        dialog.setMessage("กรุณาสแกนประเภท");
         dialog.setCancelable(false);
 
         dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
@@ -1412,10 +1442,10 @@ public class BasketWashingActivity extends AppCompatActivity {
         }
 
         ProgressDialog dialog = new ProgressDialog(BasketWashingActivity.this);
-        dialog.setMessage("Please scan employee code");
+        dialog.setMessage("กรุณาสแกนรหัสผู้ใช้งาน");
         dialog.setCancelable(false);
 
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();//dismiss dialog

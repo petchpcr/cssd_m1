@@ -71,6 +71,7 @@ public class SterileActivity extends AppCompatActivity{
     boolean is_add_item = false;
 
     String typeID="";
+    boolean tid = false;
 
     ArrayList<ModelMachine> list = new ArrayList<>();
     ListBoxMachineAdapter list_mac_adapter;
@@ -647,6 +648,10 @@ public class SterileActivity extends AppCompatActivity{
                             }else{
                                 show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น");
                             }
+                        }else if(c.getString("result").equals("T")){
+                            show_dialog("Warning","ไม่สามารถเพิ่มได้");
+                        }else if(c.getString("result").equals("M")){
+                            show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้");
                         }else{
                             show_dialog("Warning","ไม่พบรายการ");
                         }
@@ -673,7 +678,9 @@ public class SterileActivity extends AppCompatActivity{
                     data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
                     data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
                 }else if(xlist_item_basket.size()>0){
-                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+                    if(tid){
+                        data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+                    }
                 }
 
                 String result = null;
@@ -785,6 +792,8 @@ public class SterileActivity extends AppCompatActivity{
 
                         if(c.getString("result").equals("A")) {
                             reload_basket();
+                        }else{
+                            show_dialog("Warning","ไม่สามารถเพิ่มรายการได้");
                         }
 
                     }
@@ -848,14 +857,14 @@ public class SterileActivity extends AppCompatActivity{
                     try {
                         JSONObject jsonObj = new JSONObject(result);
                         rs = jsonObj.getJSONArray(TAG_RESULTS);
-                        xlist_item_basket.clear();
+                        ArrayList<ItemInBasket> list_item = new ArrayList<>();
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
 
                             xlist_basket.get(pos).setTypeProcessID("");
                             if (c.getString("result").equals("A")) {
 
-                                xlist_item_basket.add(new ItemInBasket(
+                                list_item.add(new ItemInBasket(
                                         c.getString("xID"),
                                         c.getString("ItemStockID"),
                                         c.getString("itemname"),
@@ -868,11 +877,15 @@ public class SterileActivity extends AppCompatActivity{
 
                                 w_id = w_id+c.getString("WashDetailID")+",";
 
-                                if(is_add_item&&(!c.getString("SterileProgramID").equals(typeID)||c.getString("SterileProgramID").equals("null"))){
+                                if(is_add_item&&(!c.getString("SterileProgramID").equals(typeID)||c.getString("SterileMachineID").equals("null"))){
                                     typeID = "";
-                                    show_dialog("Warning","ไม่สามารถรายการได้");
                                     is_add_item = false;
                                     get_data =false;
+                                    if(!c.getString("SterileProgramID").equals(typeID)){
+                                        show_dialog("Warning","ไม่สามารถเพิ่มได้");
+                                    }else if(c.getString("SterileMachineID").equals("null")){
+                                        show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้");
+                                    }
                                 }
 
                                 xlist_basket.get(pos).setTypeProcessID(c.getString("SterileProgramID"));
@@ -883,14 +896,23 @@ public class SterileActivity extends AppCompatActivity{
 
                         Log.d("tog_get_item","is_add_item && rs.length()!=0 = " + (is_add_item && rs.length()!=0));
                         if(get_data){
+
+                            xlist_item_basket.clear();
+                            xlist_item_basket = list_item;
+
                             if(is_add_item){
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
-                                if(xlist_basket.get(pos).getTypeProcessID().equals("")){
-                                    set_processID(pos);
+                                if(tid){
+                                    if(xlist_basket.get(pos).getTypeProcessID().equals("")){
+                                        set_processID(pos);
+                                    }else{
+                                        reload_done(pos);
+                                    }
                                 }else{
                                     reload_done(pos);
                                 }
+
                                 loadind_dialog_dismis();
                             }
                         }
@@ -909,6 +931,7 @@ public class SterileActivity extends AppCompatActivity{
 
                     data.put("basket_id", basket_id);
                     data.put("p_DB", p_DB);
+                    data.put("typeID", typeID);
 
                     if(list_mac_adapter.select_mac_pos>=0){
                         if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
@@ -1288,10 +1311,10 @@ public class SterileActivity extends AppCompatActivity{
         }
 
         ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
-        dialog.setMessage("Please scan employee code");
+        dialog.setMessage("กรุณาสแกนรหัสผู้ใช้งาน");
         dialog.setCancelable(false);
 
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();//dismiss dialog
@@ -1411,7 +1434,7 @@ public class SterileActivity extends AppCompatActivity{
         }
 
         ProgressDialog dialog = new ProgressDialog(SterileActivity.this);
-        dialog.setMessage("Please scan Process ID");
+        dialog.setMessage("กรุณาสแกนประเภท");
         dialog.setCancelable(false);
 
         dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
