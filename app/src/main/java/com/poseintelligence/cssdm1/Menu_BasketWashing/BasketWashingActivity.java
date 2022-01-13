@@ -161,10 +161,10 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                 if(!is_select_all){
                     is_select_all = true;
-                    bt_select_all.setText("Unselect all");
+                    bt_select_all.setText("ไม่เลือกทั้งหมด");
                 }else{
                     is_select_all = false;
-                    bt_select_all.setText("Select all");
+                    bt_select_all.setText("เลือกทั้งหมด");
                 }
 
                 for(int i=0;i<xlist_item_basket.size();i++){
@@ -257,16 +257,16 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                                         if(c.getString("xID").equals(mac_id)){
                                             if(c.getString("IsActive").equals("1")){
-                                                show_dialog("Warning","Machine is running");
+                                                show_dialog("Warning","เครื่องกำลังทำงาน");
 
                                             }
                                             else if(c.getString("IsBrokenMachine").equals("1")){
-                                                show_dialog("Warning","Machine is broken");
+                                                show_dialog("Warning","เครื่องไม่พร้อมใช้งาน");
                                             }
                                             else{
                                                 if(c.getString("DocNo").equals("null")){
 
-                                                    show_dialog("Warning","No Document in machine");
+                                                    show_dialog("Warning","ไม่มีเอกสารในเครื่อง");
 //                                                    set_mac_program_id(c.getString("xMachineName2"),c.getString("xID"));
                                                 }else{
                                                     get_doc_in_mac(c.getString("DocNo"));
@@ -392,10 +392,9 @@ public class BasketWashingActivity extends AppCompatActivity {
                                                     list_basket_adapter.onScanSelect(-1);
                                                     if(mac_pos==list.size()-1){
                                                         list_mac_adapter.onScanSelect(-1);
-                                                        show_dialog("Warning","Basket is in some machine");
-                                                    }else{
-                                                        show_dialog("Warning","Basket is in another machine");
                                                     }
+
+                                                    show_dialog("Warning","ตะกร้าไม่พร้อมใช้งาน");
                                                 }
                                             }else{
                                                 list_basket_adapter.onScanSelect(j);
@@ -464,10 +463,10 @@ public class BasketWashingActivity extends AppCompatActivity {
 
         if(x==xlist_item_basket.size() && xlist_item_basket.size()!=0){
             is_select_all = true;
-            bt_select_all.setText("Unselect all");
+            bt_select_all.setText("ไม่เลือกทั้งหมด");
         }else{
             is_select_all = false;
-            bt_select_all.setText("Select all");
+            bt_select_all.setText("เลือกทั้งหมด");
         }
 
         if(x==0){
@@ -639,14 +638,14 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 reload_basket();
                             }
                         }else if (c.getString("result").equals("D")){
-                            if(c.getString("basket_id").equals(basket_id)){
-                                show_dialog("Warning","Item has in this basket");
-                            }else{
-                                show_dialog("Warning","Item has in some basket");
-                            }
+                        if(c.getString("basket_id").equals(basket_id)){
+                            show_dialog("Warning","รายการซ้ำ");
                         }else{
-                            show_dialog("Warning","Not found item or Program mismatch");
+                            show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น");
                         }
+                    }else{
+                        show_dialog("Warning","ไม่พบรายการ");
+                    }
 
                     }
 
@@ -668,6 +667,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                 if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                     data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
+                    data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
                 }else{
                     data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
                 }
@@ -785,6 +785,8 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                         if(c.getString("result").equals("A")) {
                             reload_basket();
+                        }else{
+                            show_dialog("Warning","ไม่สามารถเพิ่มรายการได้");
                         }
 
                     }
@@ -867,7 +869,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                                 if(is_add_item&&!c.getString("WashProcessID").equals(typeID)){
                                     typeID = "";
-                                    show_dialog("Warning","Some item in basket program mismatch");
+                                    show_dialog("Warning","ไม่สามารถเพิ่มรายการได้");
                                     is_add_item = false;
                                     get_data =false;
                                 }
@@ -1015,7 +1017,7 @@ public class BasketWashingActivity extends AppCompatActivity {
         dialog.setMessage("Please scan Process ID");
         dialog.setCancelable(false);
 
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();//dismiss dialog
@@ -1072,7 +1074,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
         loadind_dialog_dismis();
 
-        alert_builder.setTitle(title);
+        alert_builder.setTitle("");
         alert_builder.setMessage(mass);
 
         alert = alert_builder.create();
@@ -1143,7 +1145,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
-                            list.get(mac_id_non_approve).setProgramID(c.getString("washProgramID"));
+//                            list.get(mac_id_non_approve).setProgramID(c.getString("washProgramID"));
                             list.get(mac_id_non_approve).setProgramName(c.getString("WashingProcess"));
                             list.get(mac_id_non_approve).setRoundNumber(c.getString("washRoundNumber"));
 
@@ -1154,7 +1156,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                     }
 
                     if(!get_data){
-                        show_dialog("Warning","Not found program id");
+                        show_dialog("Warning","ไม่พบโปรแกรม");
                         get_data = false;
                     }
 
@@ -1372,7 +1374,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                         if (c.getBoolean("check")) {
                             startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID(),list.get(list_mac_adapter.select_mac_pos).getTypeID());
                         }else{
-                            show_dialog("Warning","Employee code is invalid");
+                            show_dialog("Warning","ไม่พบรหัสผู้ใช้งาน");
                         }
                     }
 
@@ -1483,7 +1485,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 return false;
                             }
                         }
-                        show_dialog("Warning","Not found basket");
+                        show_dialog("Warning","ไม่พบตะกร้า");
                         break;
                     case "i":
 
@@ -1491,7 +1493,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                         if(list_basket_adapter.select_basket_pos>=0){
                             add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
                         }else{
-                            show_dialog("Warning","Please select basket to add");
+                            show_dialog("Warning","กรุณาเลือกตะกร้าที่จะเพิ่มรายการ");
                         }
 
                         break;
@@ -1501,7 +1503,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                             if(list_mac_adapter.select_mac_pos>=0&&list_mac_adapter.select_mac_pos!=list.size()){
                                 set_loder();
                             }else{
-                                show_dialog("Warning","Please select machine to start");
+                                show_dialog("Warning","กรุณาเลือกเครื่องล้าง");
                             }
                         }
 

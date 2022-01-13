@@ -130,9 +130,9 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
             select_mac.setItemSelect(macname,mac,mac_image,ll);
             setMacSelect();
             if(select_mac_pos==mData.size()-1){
-                ((BasketWashingActivity)context).title_2.setText("Select the device you want to use.");
+                ((BasketWashingActivity)context).title_2.setText(" ");
             }else{
-                ((BasketWashingActivity)context).title_2.setText("Program : "+mData.get(select_mac_pos).getProgramName()+"\tRoundNumber : "+mData.get(select_mac_pos).getRoundNumber());
+                ((BasketWashingActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
             }
         }else{
 

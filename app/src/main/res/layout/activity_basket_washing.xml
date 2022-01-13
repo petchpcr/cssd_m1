@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="Machine"
+            android:text="เครื่องล้าง"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -29,8 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:minLines="2"
-            android:text="Select the device you want to use." />
+            android:minLines="2" />
 
     </LinearLayout>
 
@@ -47,7 +46,7 @@
         android:id="@+id/textView9"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Basket"
+        android:text="ตะกร้า"
         android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
@@ -74,7 +73,7 @@
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Item"
+            android:text="รายการ"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -94,7 +93,7 @@
             android:paddingTop="8dp"
             android:paddingRight="10dp"
             android:paddingBottom="8dp"
-            android:text="Delete"
+            android:text="ลบรายการ"
             android:textColor="@color/colorAccent"
             android:textSize="12sp"
             android:visibility="gone" />
@@ -109,7 +108,7 @@
             android:paddingTop="8dp"
             android:paddingRight="8dp"
             android:paddingBottom="8dp"
-            android:text="Select all"
+            android:text="เลือกทั้งหมด"
             android:textColor="@color/colorTitleBlue"
             android:textSize="12sp" />
 

@@ -60,14 +60,6 @@ public class ModelMachine {
         DocNo = docNo;
     }
 
-    public String getProgramID() {
-        return ProgramID;
-    }
-
-    public void setProgramID(String programID) {
-        ProgramID = programID;
-    }
-
     public String getRoundNumber() {
         return RoundNumber;
     }

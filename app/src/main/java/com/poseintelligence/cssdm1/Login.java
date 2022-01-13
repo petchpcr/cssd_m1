@@ -309,7 +309,7 @@ public class Login extends AppCompatActivity {
                             try {
                                 onLogin(uname.getText().toString(), pword.getText().toString());
                             } catch (Exception e) {
-                                Toast.makeText(Login.this, "ข้อมูลไม่ถูกต้อง !!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(Login.this, "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง!", Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                                 focus();
                             }
