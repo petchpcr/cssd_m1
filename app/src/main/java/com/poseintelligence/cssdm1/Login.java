@@ -636,6 +636,7 @@ public class Login extends AppCompatActivity {
                             ((CssdProject) getApplication()).setPA_IsUsedZonePayout(c.getBoolean("PA_IsUsedZonePayout"));
                             ((CssdProject) getApplication()).setPA_IsShowBorrowNotReturn(c.getBoolean("PA_IsShowBorrowNotReturn"));
                             ((CssdProject) getApplication()).setPA_IsUsedFIFO(c.getBoolean("PA_IsUsedFIFO"));
+                            ((CssdProject) getApplication()).setPA_IsWastingPayout(c.getBoolean("PA_IsWastingPayout"));
 
                             ((CssdProject) getApplication()).setWA_IsUsedWash(c.getBoolean("WA_IsUsedWash"));
                             ((CssdProject) getApplication()).setWA_IsUsedNotification(c.getBoolean("WA_IsUsedNotification"));

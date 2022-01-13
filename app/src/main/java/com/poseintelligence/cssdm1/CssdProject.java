@@ -80,6 +80,7 @@ public class CssdProject extends Application {
     boolean PA_IsUsedZonePayout = false;
     boolean PA_IsShowBorrowNotReturn = false;
     boolean PA_IsUsedFIFO = false;
+    boolean PA_IsWastingPayout = false;
 
     boolean WA_IsUsedWash = false;
     boolean WA_IsUsedNotification = false;
@@ -93,6 +94,14 @@ public class CssdProject extends Application {
 
     boolean ST_SoundAndroidVersion9 = false;
     boolean PA_IsNotificationPopupExpiringScan = false;
+
+    public boolean isPA_IsWastingPayout() {
+        return PA_IsWastingPayout;
+    }
+
+    public void setPA_IsWastingPayout(boolean PA_IsWastingPayout) {
+        this.PA_IsWastingPayout = PA_IsWastingPayout;
+    }
 
     public AppCompatActivity getxActivity() { return xActivity; }
     public void setxActivity(AppCompatActivity xActivity) {

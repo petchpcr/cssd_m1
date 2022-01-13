@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class DispensingActivity extends AppCompatActivity {
+
     private String TAG_RESULTS="result";
     private JSONArray rs = null;
     private HTTPConnect httpConnect = new HTTPConnect();
@@ -118,6 +119,7 @@ public class DispensingActivity extends AppCompatActivity {
     private boolean PA_IsUsedRecipienter = false;
     private boolean PA_IsConfirmClosePayout = false;
     private boolean PA_IsUsedFIFO = false;
+    private boolean PA_IsWastingPayout;
 
     private boolean B_IsNonSelectDocument = false;
 
@@ -723,7 +725,7 @@ public class DispensingActivity extends AppCompatActivity {
         PA_IsUsedRecipienter = ((CssdProject) getApplication()).isPA_IsUsedRecipienter();
         PA_IsConfirmClosePayout = ((CssdProject) getApplication()).isPA_IsConfirmClosePayout();
         PA_IsUsedFIFO  = ((CssdProject) getApplication()).isPA_IsUsedFIFO();
-        Log.d("tog_FIFO","PA_IsUsedFIFO = "+PA_IsUsedFIFO);
+        PA_IsWastingPayout = ((CssdProject) getApplication()).isPA_IsWastingPayout();
 
         //======================================================
         //  M1
@@ -2380,7 +2382,7 @@ public class DispensingActivity extends AppCompatActivity {
                                             c.getString("Stock_Qty"),
                                             c.getString("Qty"),
                                             c.getString("Balance_Qty"),
-                                            null,
+                                            c.getString("RefDocNo"),
 
                                             c.getString("IsWasting"),
                                             c.getString("IsReceiveNotSterile"),
@@ -2402,7 +2404,7 @@ public class DispensingActivity extends AppCompatActivity {
                 Model_Payout_Detail_item = list;
 
                 ArrayAdapter<ModelPayoutDetails> adapter;
-                adapter = new ListPayoutDetailItemAdapter(DispensingActivity.this, Model_Payout_Detail_item);
+                adapter = new ListPayoutDetailItemAdapter(DispensingActivity.this, Model_Payout_Detail_item,PA_IsWastingPayout);
                 list_payout_detail_item.setAdapter(adapter);
 
                 if (isShowDialog && dialog.isShowing()) {
