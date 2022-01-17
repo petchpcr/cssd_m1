@@ -24,6 +24,7 @@ import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListBoxWashBasketAdapter;
 import com.poseintelligence.cssdm1.adapter.ListBoxWashMachineAdapter;
 import com.poseintelligence.cssdm1.adapter.ListItemWashBasketAdapter;
+import com.poseintelligence.cssdm1.core.audio.iAudio;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.BasketTag;
@@ -85,6 +86,8 @@ public class BasketWashingActivity extends AppCompatActivity {
 
     boolean tid = false;
 
+    private iAudio nMidia;
+
     Handler handler  = new Handler();
     Runnable runnable = new Runnable() {
         @Override
@@ -97,14 +100,14 @@ public class BasketWashingActivity extends AppCompatActivity {
         }
     };
 
-    Handler handler_re_scan_text  = new Handler();
-    Runnable runnable_re_scan_text = new Runnable() {
-        @Override
-        public void run() {
-            mass_onkey = "";
-            handler_re_scan_text.postDelayed(runnable_re_scan_text, 200);
-        }
-    };
+//    Handler handler_re_scan_text  = new Handler();
+//    Runnable runnable_re_scan_text = new Runnable() {
+//        @Override
+//        public void run() {
+//            mass_onkey = "";
+//            handler_re_scan_text.postDelayed(runnable_re_scan_text, 200);
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +118,8 @@ public class BasketWashingActivity extends AppCompatActivity {
 
         byWidget();
 
+        nMidia = new iAudio(this);
 //        set_program_dialog();
-
-//        handler_re_scan_text.postDelayed(runnable_re_scan_text, 200);
     }
 
     public void byIntent(){
@@ -634,23 +636,25 @@ public class BasketWashingActivity extends AppCompatActivity {
                                     );
                                 }else{
                                     reload_basket();
+                                    nMidia.getAudio("okay");
                                 }
-                            }
-                            else{
+                            }else{
+
                                 reload_basket();
+                                nMidia.getAudio("okay");
                             }
                         }else if (c.getString("result").equals("D")){
                             if(c.getString("basket_id").equals(basket_id)){
-                                show_dialog("Warning","รายการซ้ำ");
+                                show_dialog("Warning","รายการซ้ำ","repeat_scan");
                             }else{
-                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น");
+                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
                             }
                         }else if(c.getString("result").equals("T")){
-                            show_dialog("Warning","ไม่สามารถเพิ่มได้");
+                            show_dialog("Warning","ไม่สามารถเพิ่มได้","no");
                         }else if(c.getString("result").equals("M")){
-                            show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้");
+                            show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้","no");
                         }else{
-                            show_dialog("Warning","ไม่พบรายการ");
+                            show_dialog("Warning","ไม่พบรายการ","no_item_found");
                         }
 
                     }
@@ -792,9 +796,11 @@ public class BasketWashingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
+
                             reload_basket();
+                            nMidia.getAudio("okay");
                         }else{
-                            show_dialog("Warning","ไม่สามารถเพิ่มรายการได้");
+                            show_dialog("Warning","ไม่สามารถเพิ่มรายการได้","no");
                         }
 
                     }
@@ -877,14 +883,14 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                                 w_id = w_id+c.getString("SSDetailID")+",";
                                 if(is_add_item&&(!c.getString("WashProcessID").equals(typeID)||c.getString("WashMachineID").equals("null"))){
+                                    if(!c.getString("WashProcessID").equals(typeID)){
+                                        show_dialog("Warning","ไม่สามารถเพิ่มได้","no");
+                                    }else if(c.getString("WashMachineID").equals("null")){
+                                        show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้","no");
+                                    }
                                     typeID = "";
                                     is_add_item = false;
                                     get_data =false;
-                                    if(!c.getString("WashProcessID").equals(typeID)){
-                                        show_dialog("Warning","ไม่สามารถเพิ่มได้");
-                                    }else if(c.getString("WashMachineID").equals("null")){
-                                        show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้");
-                                    }
                                 }
 
                                 xlist_basket.get(pos).setTypeProcessID(c.getString("WashProcessID"));
@@ -934,9 +940,9 @@ public class BasketWashingActivity extends AppCompatActivity {
                     data.put("p_DB", p_DB);
                     data.put("typeID", typeID);
 
-                    if(list_mac_adapter.select_mac_pos>=0){
-                        if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
-                            data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                    if(mac_id_non_approve>=0){
+                        if(!list.get(mac_id_non_approve).getDocNo().equals("Empty")){
+                            data.put("mac_id", list.get(mac_id_non_approve).getMachineID());
                         }
                     }
 
@@ -951,7 +957,6 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                     Log.d("tog_get_item","data = " + data);
                     Log.d("tog_get_item","result = " + result);
-                    show_log_error(result);
                     return result;
                 }
 
@@ -1094,6 +1099,11 @@ public class BasketWashingActivity extends AppCompatActivity {
 
     }
 
+    public void show_dialog(String title,String mass,String sound){
+        show_dialog(title,mass);
+        nMidia.getAudio(sound);
+    }
+
     public void show_dialog(String title,String mass){
         mac_id_non_approve = list_mac_adapter.select_mac_pos;
         basket_pos_non_approve = list_basket_adapter.select_basket_pos;
@@ -1118,6 +1128,8 @@ public class BasketWashingActivity extends AppCompatActivity {
                     show_wait = false;
                     program_dialog.show();
                 }
+
+                handler.removeCallbacks(runnable);
             }
         });
 
@@ -1186,7 +1198,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                     }
 
                     if(!get_data){
-                        show_dialog("Warning","ไม่พบโปรแกรม");
+                        show_dialog("Warning","ไม่พบเอกสารในเครื่อง");
                         get_data = false;
                     }
 
@@ -1499,8 +1511,8 @@ public class BasketWashingActivity extends AppCompatActivity {
             }
             else if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 Log.d("tog_dispatchKey","enter = "+mass_onkey);
+                mass_onkey= mass_onkey.toLowerCase();
                 String key = mass_onkey.substring(0,1);
-                key= key.toLowerCase();
                 switch (key)
                 {
                     case "m":
@@ -1530,7 +1542,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                     case "s":
 
                         if(mass_onkey.equals("sc012")){
-                            if(list_mac_adapter.select_mac_pos>=0&&list_mac_adapter.select_mac_pos!=list.size()){
+                            if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-1)){
                                 set_loder();
                             }else{
                                 show_dialog("Warning","กรุณาเลือกเครื่องล้าง");

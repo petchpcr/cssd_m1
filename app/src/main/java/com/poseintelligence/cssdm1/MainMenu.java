@@ -145,7 +145,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_results": t.setText("บันทึกผล"); break;
             case "bt_returnofcssd": t.setText("คืนของ\nเข้าสต๊อกจ่ายกลาง"); break;
             case "bt_machine_test": t.setText("เก็บข้อมูล\nตรวจสอบเครื่อง"); break;
-            case "bt_sterile": t.setText("ฆ่าเชื้อ"); break;
+            case "bt_sterile": t.setText("นำเข้าตะกร้า-เครื่องฆ่าเชื้อ"); break;
             case "bt_basket_washing": t.setText("นำเข้าตะกร้า-เครื่องล้าง"); break;
             case "bt_nonusage": t.setText("รับ-จ่าย รายการ non-usage"); break;
         }
