@@ -2,7 +2,6 @@ package com.poseintelligence.cssdm1.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +53,7 @@ public class ListBoxWashBasketAdapter  extends RecyclerView.Adapter<ListBoxWashB
             public void onClick(View v) {
                 if(select_basket_pos==position){
                     select_basket_pos=-1;
+                    ListBoxWashBasketAdapter.this.notifyDataSetChanged();
                 }else{
                     ((BasketWashingActivity)context).basket_pos_non_approve = position;
                     ((BasketWashingActivity)context).reload_mac();
@@ -67,6 +67,11 @@ public class ListBoxWashBasketAdapter  extends RecyclerView.Adapter<ListBoxWashB
             onItemSelect(holder.name,holder.qty,holder.image,holder.ll);
         }else{
             setItemUnSelect(holder.name,holder.qty,holder.image,holder.ll);
+
+            if(!((BasketWashingActivity)context).get_mac_select_id().equals("Empty")&&!((BasketWashingActivity)context).get_mac_select_id().equals(mData.get(position).getMacId())){
+                holder.ll.setVisibility(View.GONE);
+                holder.qty.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -87,7 +92,7 @@ public class ListBoxWashBasketAdapter  extends RecyclerView.Adapter<ListBoxWashB
 
         ViewHolder(View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.name);
+            name = itemView.findViewById(R.id.basketname);
             qty = itemView.findViewById(R.id.text_qty);
             image = itemView.findViewById(R.id.image);
             ll = itemView.findViewById(R.id.ll);
@@ -96,13 +101,18 @@ public class ListBoxWashBasketAdapter  extends RecyclerView.Adapter<ListBoxWashB
     }
 
     public void setItemSelect(){
-        select_item.image.setBackgroundResource(R.drawable.bi_basket_w);
-        select_item.ll.setBackgroundResource(R.drawable.rectangle_blue);
-        select_item.qty.setVisibility(View.VISIBLE);
-        select_item.name.setTextColor(Color.WHITE);
+//        select_item.image.setBackgroundResource(R.drawable.bi_basket_w);
+//        select_item.ll.setBackgroundResource(R.drawable.rectangle_blue);
+//        select_item.qty.setVisibility(View.VISIBLE);
+//        select_item.name.setTextColor(Color.WHITE);
+
+        select_item.ll.setVisibility(View.GONE);
+
+        ((BasketWashingActivity)context).show_basket(select_item.name.getText().toString(),View.VISIBLE);
     }
 
     public void setItemUnSelect(TextView name, TextView qty, ImageView image, LinearLayout ll){
+        ll.setVisibility(View.VISIBLE);
         image.setBackgroundResource(R.drawable.bi_basket_g);
         ll.setBackgroundResource(R.drawable.rectangle_box_g);
         qty.setVisibility(View.GONE);
@@ -111,16 +121,18 @@ public class ListBoxWashBasketAdapter  extends RecyclerView.Adapter<ListBoxWashB
 
     public void onScanSelect(int pos) {
         select_basket_pos = pos;
-
-        Log.d("tog_getbasket","onScanSelect = "+select_basket_pos);
         if(select_basket_pos>=0){
-            wiget_list.smoothScrollToPosition(select_basket_pos);
+            wiget_list.smoothScrollToPosition(0);
+
+            ((BasketWashingActivity)context).show_basket(mData.get(pos).getName(),View.VISIBLE);
         }
     }
 
     public void onItemSelect(TextView name, TextView qty, ImageView image, LinearLayout ll) {
         if(select_item.name!=null){
             setItemUnSelect(select_item.name,select_item.qty,select_item.image,select_item.ll);
+
+            ((BasketWashingActivity)context).show_basket("",View.GONE);
         }
         if(select_basket_pos>=0){
             select_item.setItemSelect(name,qty,image,ll);

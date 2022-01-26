@@ -49,7 +49,7 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
 
         //final LinearLayout relativeLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
         final TextView code = (TextView) view.findViewById(R.id.code);
-        final TextView name = (TextView) view.findViewById(R.id.name);
+        final TextView name = (TextView) view.findViewById(R.id.basketname);
         final TextView name2 = (TextView) view.findViewById(R.id.name2);
 
         //relativeLayout.setBackgroundColor(Color.parseColor(color));

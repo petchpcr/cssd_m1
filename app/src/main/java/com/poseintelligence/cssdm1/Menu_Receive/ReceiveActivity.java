@@ -754,6 +754,8 @@ public class ReceiveActivity extends AppCompatActivity {
         spn_usr_receive.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+                Log.d("tog_spn_usr_receive","setOnTouchListener:spn_usr_receive");
                 if(DocNo.equals("")){
                     Toast.makeText(ReceiveActivity.this, "ยังไม่ได้เพิ่มรายการ กรุณาเพิ่มรายการ", Toast.LENGTH_SHORT).show();
 
@@ -775,6 +777,7 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                Log.d("tog_spn_usr_receive","setOnItemSelectedListener:spn_usr_receive");
                 if(position!=0){
 
                     try {
@@ -2378,13 +2381,19 @@ public class ReceiveActivity extends AppCompatActivity {
                     for(int i=0;i<setRs.length();i++){
                         JSONObject c = setRs.getJSONObject(i);
 
-                        listUSend.add(c.getString("xName")+" "+c.getString("LastName"));
-
                         ar_list_user_send_id.add(c.getString("xID"));
                         ar_list_user_receive_id.add(c.getString("xID"));
 
-                        data_user_send_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
-                        data_user_receive_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
+                        Log.d("tog_select_user","isNull = "+c.isNull("LastName"));
+                        if(!c.isNull("LastName")){
+                            listUSend.add(c.getString("xName")+" "+c.getString("LastName"));
+                            data_user_send_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
+                            data_user_receive_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
+                        }else{
+                            listUSend.add(c.getString("xName"));
+                            data_user_send_id.put(c.getString("xName"),c.getString("xID"));
+                            data_user_receive_id.put(c.getString("xName"),c.getString("xID"));
+                        }
                     }
 
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(ReceiveActivity.this,android.R.layout.simple_spinner_dropdown_item,listUSend);
@@ -2393,6 +2402,7 @@ public class ReceiveActivity extends AppCompatActivity {
 //                    spn_usr_send.setAdapter(adapter);
                     spn_usr_receive.setAdapter(adapter);
                 } catch (JSONException e) {
+                    Log.d("tog_select_user","e = "+e);
                     e.printStackTrace();
                 }
             }

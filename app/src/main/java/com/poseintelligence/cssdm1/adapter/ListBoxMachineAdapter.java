@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
@@ -68,6 +69,7 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
             public void onClick(View v) {
                 if(select_mac_pos==position){
                     select_mac_pos=-1;
+                    ListBoxMachineAdapter.this.notifyDataSetChanged();
                 }else{
                     ((SterileActivity)context).mac_id_non_approve  = position;
                     ((SterileActivity)context).get_machine(mData.get(position).getMachineID());
@@ -120,13 +122,18 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     }
 
     public void setMacSelect(){
-        select_mac.mac_image.setBackgroundResource(R.drawable.ic_sterile_blue);
-        select_mac.ll.setBackgroundResource(R.drawable.rectangle_blue);
-        select_mac.mac.setTextColor(Color.WHITE);
-        select_mac.macname.setTextColor(Color.WHITE);
+//        select_mac.mac_image.setBackgroundResource(R.drawable.ic_sterile_blue);
+//        select_mac.ll.setBackgroundResource(R.drawable.rectangle_blue);
+//        select_mac.mac.setTextColor(Color.WHITE);
+//        select_mac.macname.setTextColor(Color.WHITE);
+
+        select_mac.ll.setVisibility(View.GONE);
+
+        ((SterileActivity)context).show_mac(select_mac.macname.getText().toString(),View.VISIBLE);
     }
 
     public void setMacUnSelect(TextView mac, TextView macname, ImageView mac_image, LinearLayout ll){
+        ll.setVisibility(View.VISIBLE);
         mac_image.setBackgroundResource(R.drawable.ic_sterile_gray);
         ll.setBackgroundResource(R.drawable.rectangle_box_g);
         mac.setTextColor(context.getResources().getColor(R.color.colorTitleGray));
@@ -136,16 +143,14 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     public void onItemSelect(TextView macname, TextView mac, ImageView mac_image, LinearLayout ll) {
         if(select_mac.macname!=null){
             setMacUnSelect(select_mac.macname,select_mac.mac,select_mac.mac_image,select_mac.ll);
+
+            ((SterileActivity)context).show_mac("",View.GONE);
         }
 
         if(select_mac_pos>=0){
             select_mac.setItemSelect(macname,mac,mac_image,ll);
             setMacSelect();
-            if(select_mac_pos==mData.size()-1){
-                ((SterileActivity)context).title_2.setText(" ");
-            }else{
-                ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
-            }
+            setProgramAndRound();
         }else{
             ((SterileActivity)context).title_2.setText(" ");
         }
@@ -154,7 +159,18 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     public void onScanSelect(int pos) {
         select_mac_pos = pos;
         if(select_mac_pos>=0){
-            wiget_list.smoothScrollToPosition(select_mac_pos);
+//            wiget_list.scrollToPosition(select_mac_pos);
+            ((SterileActivity)context).show_mac(mData.get(pos).getMachineName(),View.VISIBLE);
+
+            setProgramAndRound();
+        }
+    }
+
+    public void setProgramAndRound() {
+        if(select_mac_pos==mData.size()-1){
+            ((SterileActivity)context).title_2.setText(" ");
+        }else{
+            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
         }
     }
 

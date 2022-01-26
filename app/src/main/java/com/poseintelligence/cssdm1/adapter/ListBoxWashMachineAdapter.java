@@ -3,6 +3,7 @@ package com.poseintelligence.cssdm1.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.R;
-import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.model.ModelMachine;
 
 import java.util.ArrayList;
@@ -56,13 +56,13 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
             public void onClick(View v) {
                 if(select_mac_pos==position){
                     select_mac_pos=-1;
+                    ListBoxWashMachineAdapter.this.notifyDataSetChanged();
                 }else{
                     ((BasketWashingActivity)context).mac_id_non_approve  = position;
                     ((BasketWashingActivity)context).get_machine(mData.get(position).getMachineID());
                 }
             }
         });
-
 
         if(position==select_mac_pos){
             onItemSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);
@@ -108,13 +108,19 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
     }
 
     public void setMacSelect(){
-        select_mac.mac_image.setBackgroundResource(R.drawable.ic_wash_blue);
-        select_mac.ll.setBackgroundResource(R.drawable.rectangle_blue);
-        select_mac.mac.setTextColor(Color.WHITE);
-        select_mac.macname.setTextColor(Color.WHITE);
+//        select_mac.mac_image.setBackgroundResource(R.drawable.ic_wash_blue);
+//        select_mac.ll.setBackgroundResource(R.drawable.rectangle_blue);
+//        select_mac.mac.setTextColor(Color.WHITE);
+//        select_mac.macname.setTextColor(Color.WHITE);
+
+        Log.d("tog_getmac","ll select_basket_pos = "+select_mac_pos);
+
+        select_mac.ll.setVisibility(View.GONE);
+        ((BasketWashingActivity)context).show_mac(select_mac.macname.getText().toString(),View.VISIBLE);
     }
 
     public void setMacUnSelect(TextView mac, TextView macname, ImageView mac_image, LinearLayout ll){
+        ll.setVisibility(View.VISIBLE);
         mac_image.setBackgroundResource(R.drawable.ic_wash_grey);
         ll.setBackgroundResource(R.drawable.rectangle_box_g);
         mac.setTextColor(context.getResources().getColor(R.color.colorTitleGray));
@@ -124,25 +130,30 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
     public void onItemSelect(TextView macname, TextView mac, ImageView mac_image, LinearLayout ll) {
         if(select_mac.macname!=null){
             setMacUnSelect(select_mac.macname,select_mac.mac,select_mac.mac_image,select_mac.ll);
+            ((BasketWashingActivity)context).show_mac("",View.GONE);
         }
 
         if(select_mac_pos>=0){
             select_mac.setItemSelect(macname,mac,mac_image,ll);
             setMacSelect();
-            if(select_mac_pos==mData.size()-1){
-                ((BasketWashingActivity)context).title_2.setText(" ");
-            }else{
-                ((BasketWashingActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
-            }
-        }else{
-
+            setProgramAndRound();
         }
     }
 
     public void onScanSelect(int pos) {
         select_mac_pos = pos;
         if(select_mac_pos>=0){
-            wiget_list.smoothScrollToPosition(select_mac_pos);
+//            wiget_list.smoothScrollToPosition(select_mac_pos);
+            ((BasketWashingActivity)context).show_mac(mData.get(pos).getMachineName(),View.VISIBLE);
+            setProgramAndRound();
+        }
+    }
+
+    public void setProgramAndRound() {
+        if(select_mac_pos==mData.size()-1){
+            ((BasketWashingActivity)context).title_2.setText(" ");
+        }else{
+            ((BasketWashingActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
         }
     }
 
