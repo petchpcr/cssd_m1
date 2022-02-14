@@ -113,6 +113,11 @@ public class ReceivePayNonUsageActivity extends AppCompatActivity {
 
     }
 
+
+    public void onBackPressed() {
+        imageBack.callOnClick();
+    }
+
     public void focus() {
         txt_usage_code.setText("");
         txt_usage_code.requestFocus();

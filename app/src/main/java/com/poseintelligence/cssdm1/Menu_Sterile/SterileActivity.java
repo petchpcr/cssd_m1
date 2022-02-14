@@ -408,7 +408,7 @@ public class SterileActivity extends AppCompatActivity{
 
                                             Log.d("tog_getbasket","j = "+j);
 
-                                            if(mac_pos>0){
+                                            if(mac_pos>=0){
                                                 String mac_id = list.get(mac_pos).getMachineID();
                                                 if(c.getString("InMachineID").equals("null")){//ตะกร้าไม่มีเครื่อง
                                                     //add basket in mac

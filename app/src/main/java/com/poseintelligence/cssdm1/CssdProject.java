@@ -1,6 +1,8 @@
 package com.poseintelligence.cssdm1;
 
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 

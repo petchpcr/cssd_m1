@@ -38,6 +38,7 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".CssdProject"
@@ -51,9 +52,17 @@
         android:theme="@style/Theme.CssdM1"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".WaitConnectDialog"
+            android:theme="@style/myDialog"
+            android:exported="false" />
+
+        <service
+            android:name=".core.connect.CheckConnectionService"
+            android:exported="false" />
+
+        <activity
             android:name=".Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-            android:exported="false" />
         <activity
             android:name=".Menu_BasketWashing.BasketWashingActivity"
             android:exported="false"

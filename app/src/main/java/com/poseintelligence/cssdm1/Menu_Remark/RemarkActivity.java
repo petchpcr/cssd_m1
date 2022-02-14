@@ -102,10 +102,10 @@ public class RemarkActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//
-//    }
+    @Override
+    public void onBackPressed() {
+        backpage.callOnClick();
+    }
 
     private void byIntent(){
         Intent intent = getIntent();

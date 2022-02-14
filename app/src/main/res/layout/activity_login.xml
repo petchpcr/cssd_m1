@@ -46,26 +46,6 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/form"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                android:background="@drawable/qr_code"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/QrCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="446dp"
-                    android:layout_marginBottom="231dp"
-                    android:background="@drawable/qr_code" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -139,17 +119,41 @@
                     android:layout_height="30dp"
                     android:visibility="gone" />
 
-                <ImageView
-                    android:id="@+id/button_login"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/login_button"
-                    android:paddingTop="5dp"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
+
+                    <ImageView
+                        android:id="@+id/button_qr_login"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_weight="0"
+                        android:background="@drawable/scan"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/button_login"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/login_button"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

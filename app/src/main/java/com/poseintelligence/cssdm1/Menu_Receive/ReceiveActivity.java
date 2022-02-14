@@ -318,6 +318,15 @@ public class ReceiveActivity extends AppCompatActivity {
         focus();
     }
 
+
+    public void onBackPressed() {
+        if(Block_1.getVisibility()==View.VISIBLE){
+            img_back_1.callOnClick();
+        }else{
+            img_back_2.callOnClick();
+        }
+    }
+
     public void defineDepartment(final String str) {
         class DefineDepartment extends AsyncTask<String, Void, String> {
             // variable
@@ -3657,12 +3666,6 @@ public class ReceiveActivity extends AppCompatActivity {
         }
         CheckNotification obj = new CheckNotification();
         obj.execute();
-    }
-
-
-    @Override
-    public void onBackPressed() {
-
     }
 
     @Override

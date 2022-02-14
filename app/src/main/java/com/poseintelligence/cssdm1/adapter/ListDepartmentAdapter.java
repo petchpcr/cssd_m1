@@ -3,12 +3,15 @@ package com.poseintelligence.cssdm1.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.model.ModelDepartment;
 
@@ -45,9 +48,9 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View view = inflater.inflate(R.layout.activity_list_1, parent, false);
+        View view = inflater.inflate(R.layout.activity_list_1, parent, false);
 
-        //final LinearLayout relativeLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
+//        final LinearLayout relativeLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
         final TextView code = (TextView) view.findViewById(R.id.code);
         final TextView name = (TextView) view.findViewById(R.id.basketname);
         final TextView name2 = (TextView) view.findViewById(R.id.name2);
@@ -65,6 +68,20 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
             view.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
 
+
+        if(!((DispensingActivity) context).text_search_department.equals("")){
+            String x = list.get(position).getDepName().toLowerCase();
+            String y = ((DispensingActivity) context).text_search_department.toLowerCase();
+
+            if(x.length()>=y.length()){
+                if(!x.substring(0,y.length()).equals(y)){
+                    view = inflater.inflate(R.layout.activity_list_emtry, parent, false);
+                }
+            }else{
+                view = inflater.inflate(R.layout.activity_list_emtry, parent, false);
+            }
+
+        }
         return view;
     }
 

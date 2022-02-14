@@ -100,6 +100,10 @@ public class MachineTestDetailActivity extends AppCompatActivity {
         Remark = intent.getStringExtra("Remark");
     }
 
+    public void onBackPressed() {
+        backpage.callOnClick();
+    }
+
     public void init() {
 
         ProgressDialog dialog = new ProgressDialog(MachineTestDetailActivity.this);

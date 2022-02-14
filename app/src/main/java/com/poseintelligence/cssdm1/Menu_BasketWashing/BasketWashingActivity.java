@@ -305,9 +305,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                                                 show_dialog("Warning","เครื่องไม่พร้อมใช้งาน");
                                             }else{
                                                 if(c.getString("DocNo").equals("null")||c.getString("DocNo")==null){
-                                                    show_dialog("Warning","ไม่พบเอกสารในเครื่อง --- "+list.get(j).getTypeID());
                                                     dialog_wait_scan(new String[]{wait_scan_program+"",list.get(j).getTypeID(),list.get(j).getMachineID()});
-
                                                 }else{
                                                     get_doc_in_mac(c.getString("DocNo"));
                                                     mac_id_non_approve = j;
@@ -319,9 +317,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                             }
                         }
                     }
-
                 } catch (JSONException e) {
-
                     show_log_error("get_washmachine.php Error = "+e);
                     e.printStackTrace();
                 }
@@ -402,8 +398,9 @@ public class BasketWashingActivity extends AppCompatActivity {
                                             int mac_pos = mac_id_non_approve;
 
                                             Log.d("tog_getbasket","j = "+j);
+                                            Log.d("tog_getbasket_mac_pos","mac_pos = "+mac_pos);
 
-                                            if(mac_pos>0){
+                                            if(mac_pos>=0){
                                                 String mac_id = list.get(mac_pos).getMachineID();
                                                 if(c.getString("InMachineID").equals("null")){//ตะกร้าไม่มีเครื่อง
                                                     //add basket in mac
@@ -1408,6 +1405,7 @@ public class BasketWashingActivity extends AppCompatActivity {
     }
 
     public void dialog_wait_scan(String[] data){
+
         wait_dialog = new ProgressDialog(BasketWashingActivity.this);
         int for_scan = Integer.parseInt(data[0]);
         switch (for_scan){

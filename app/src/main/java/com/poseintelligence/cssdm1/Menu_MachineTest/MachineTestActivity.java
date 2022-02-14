@@ -65,6 +65,10 @@ public class MachineTestActivity extends AppCompatActivity {
         updateDate();
     }
 
+    public void onBackPressed() {
+        backpage.callOnClick();
+    }
+
     public void byIntent() {
         getxUrl = ((CssdProject) getApplication()).getxUrl();
     }

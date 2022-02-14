@@ -316,13 +316,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="-50dp"
+        android:layout_marginTop="-60dp"
         android:layout_marginEnd="10dp"
         android:orientation="horizontal">
 
         <Switch
             android:id="@+id/switch_opt"
-            android:layout_width="77dp"
+            android:layout_width="75dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="5dp"
             android:text="เพิ่ม "
@@ -331,7 +331,7 @@
 
         <RelativeLayout
             android:id="@+id/linear_layout_search"
-            android:layout_width="180dp"
+            android:layout_width="160dp"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/label_division"
             android:layout_alignParentEnd="true"
@@ -367,7 +367,7 @@
 
         <ImageView
             android:id="@+id/imageCreate"
-            android:layout_width="110dp"
+            android:layout_width="150dp"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/imageBack"
             android:layout_alignParentEnd="false"

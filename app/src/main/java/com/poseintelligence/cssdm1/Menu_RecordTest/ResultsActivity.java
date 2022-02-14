@@ -87,16 +87,6 @@ public class ResultsActivity extends AppCompatActivity {
 //            }
 //        });
 
-        decorView = getWindow().getDecorView();
-        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-            @Override
-            public void onSystemUiVisibilityChange(int visibility) {
-                if (visibility == 0) {
-                    decorView.setSystemUiVisibility(hideSystemUI());
-                }
-            }
-        });
-
         byIntent();
 
         init();
@@ -129,13 +119,13 @@ public class ResultsActivity extends AppCompatActivity {
         B_ID = ((CssdProject) getApplication()).getPm().getBdCode()+"";
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            decorView.setSystemUiVisibility(hideSystemUI());
-        }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        if (hasFocus) {
+//            decorView.setSystemUiVisibility(hideSystemUI());
+//        }
+//    }
 
     private int hideSystemUI() {
         return View.SYSTEM_UI_FLAG_IMMERSIVE
@@ -401,23 +391,25 @@ public class ResultsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(ResultsActivity.this);
-        quitDialog.setTitle("CSSD");
-        quitDialog.setIcon(R.drawable.pose_favicon_2x);
-        quitDialog.setMessage("ยืนยันการออกจากโปรแกรม ?");
-        quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(ResultsActivity.this,MainMenu.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-        quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        quitDialog.show();
+
+        backpage.callOnClick();
+//        AlertDialog.Builder quitDialog = new AlertDialog.Builder(ResultsActivity.this);
+//        quitDialog.setTitle("CSSD");
+//        quitDialog.setIcon(R.drawable.pose_favicon_2x);
+//        quitDialog.setMessage("ยืนยันการออกจากโปรแกรม ?");
+//        quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Intent intent = new Intent(ResultsActivity.this,MainMenu.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
+//        quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        });
+//        quitDialog.show();
     }
 }

@@ -13,6 +13,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -79,6 +81,7 @@ public class DispensingActivity extends AppCompatActivity {
     private HashMap<String, String> data_user_receive_id = new HashMap<>();
 
     private ArrayAdapter<String> adapter_spinner;
+    ArrayAdapter<ModelDepartment> list_department_adapter;
 
     // ---------------------------------------------------------------------------------------------
     // Config
@@ -165,6 +168,10 @@ public class DispensingActivity extends AppCompatActivity {
     private String DocDateTime = "";
     private String p_receive_code = null;
     private String p_approve_code = null;
+
+    public static String text_search_department = "";
+
+    boolean s_expiring = false;
 
     private TextToSpeech tts;
 
@@ -296,8 +303,10 @@ public class DispensingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                if(!switch_department.isChecked()) {
-                displayDepartment(txt_search_department.getText().toString(), -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+//                displayDepartment(txt_search_department.getText().toString(), -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 //                }
+                text_search_department = txt_search_department.getText().toString();
+                list_department_adapter.notifyDataSetChanged();
             }
         });
 
@@ -314,6 +323,7 @@ public class DispensingActivity extends AppCompatActivity {
                 Block_4.setVisibility( View.GONE );
                 switch_opt.setVisibility( View.GONE );
                 imageCreate.setVisibility( View.GONE );
+                txt_search_department.setText("");
                 displayDepartment(null, -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
             }
         });
@@ -486,6 +496,25 @@ public class DispensingActivity extends AppCompatActivity {
 
         });
 
+        txt_search_department.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Log.d("top_dep","default");
+                text_search_department = txt_search_department.getText().toString();
+                list_department_adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
         txt_search_department.setOnKeyListener(new View.OnKeyListener()
         {
             public boolean onKey(View v, int keyCode, KeyEvent event)
@@ -520,6 +549,7 @@ public class DispensingActivity extends AppCompatActivity {
                             }
                             return true;
                         default:
+
                             break;
                     }
                 }
@@ -1029,6 +1059,7 @@ public class DispensingActivity extends AppCompatActivity {
                                 if(PA_IsNotificationPopupExpiringScan){
                                     dialog.show();
                                 }else{
+                                    s_expiring = true;
                                     addItem( xUsageCode );
                                 }
 
@@ -1184,18 +1215,25 @@ public class DispensingActivity extends AppCompatActivity {
                             if( c.getInt("BQty") == c.getInt("PayQty") ) {
 //                                nMidia.getAudio("pay_in_full" );
 
-                                if(ST_SoundAndroidVersion9){
-                                    speakText("complete");
-                                }else{
-                                    nMidia.getAudio("okay" );
+                                Log.d("tog_s_expiring","s_expiring: "+s_expiring);
+                                if(!s_expiring){
+                                    s_expiring = false;
+                                    if(ST_SoundAndroidVersion9){
+                                        speakText("complete");
+                                    }else{
+                                        nMidia.getAudio("okay" );
+                                    }
                                 }
                                 
                             }else{
-
-                                if(ST_SoundAndroidVersion9){
-                                    speakText(c.getString("PayQty"));
-                                }else{
-                                    nMidia.getAudio(c.getString("PayQty"));
+                                Log.d("tog_s_expiring","s_expiring: "+s_expiring);
+                                if(!s_expiring){
+                                    s_expiring = false;
+                                    if(ST_SoundAndroidVersion9){
+                                        speakText(c.getString("PayQty"));
+                                    }else{
+                                        nMidia.getAudio(c.getString("PayQty"));
+                                    }
                                 }
                             }
                             if(DocNo == null){
@@ -1229,11 +1267,11 @@ public class DispensingActivity extends AppCompatActivity {
                                 switch_opt.setVisibility( View.VISIBLE );
                                 imageCreate.setVisibility( Is_imageCreate?View.VISIBLE:View.GONE );
                                 LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params1.width = Is_imageCreate?305:505;
+                                params1.width = Is_imageCreate?255:505;
                                 params1.setMargins(0, 0, 15, 0);
                                 linear_layout_search.setLayoutParams(params1);
                                 LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params2.width = 200;
+                                params2.width = 250;
                                 imageCreate.setLayoutParams(params2);
                                 // Display Payout Detail
                                 displayPayoutDetail(DocNo, false);
@@ -1791,9 +1829,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                     Model_Department = list;
 
-                    final ArrayAdapter<ModelDepartment> adapter;
-                    adapter = new ListDepartmentAdapter(DispensingActivity.this, list, "#D6EAF8");
-                    list_department.setAdapter(adapter);
+                    list_department_adapter = new ListDepartmentAdapter(DispensingActivity.this, list, "#D6EAF8");
+                    list_department.setAdapter(list_department_adapter);
 
 //                    if(depIndex > -1) {
 //                        ((ListDepartmentAdapter) adapter).setSelection(depIndex);
@@ -1821,7 +1858,7 @@ public class DispensingActivity extends AppCompatActivity {
                     list_department.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                            ((ListDepartmentAdapter) adapter).setSelection(position);
+                            ((ListDepartmentAdapter) list_department_adapter).setSelection(position);
                             select_dept(position);
                         }
                     });
@@ -2172,6 +2209,7 @@ public class DispensingActivity extends AppCompatActivity {
                     list_pay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                            Log.d("tog_listPay","setOnItemClick");
                             ((ListPayoutDocumentAdapter) adapter).setSelection(position);
 
                             DocNo = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(2)).getText().toString();
@@ -2187,15 +2225,25 @@ public class DispensingActivity extends AppCompatActivity {
                             switch_opt.setVisibility( View.VISIBLE );
                             imageCreate.setVisibility( Is_imageCreate?View.VISIBLE:View.GONE );
                             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            params1.width = Is_imageCreate?305:505;
+                            params1.width = Is_imageCreate?255:505;
                             params1.setMargins(0, 0, 15, 0);
                             linear_layout_search.setLayoutParams(params1);
                             LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            params2.width = 200;
+                            params2.width = 250;
                             imageCreate.setLayoutParams(params2);
                         }
                     });
-                    Log.d("tog_displayPay","DocNo = "+DocNo);
+
+                    list_pay.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                        @Override
+                        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            callDialogMenu(Model_Pay.get(i).getDocNo());
+                            Log.d("tog_listPay","setOnItemLong");
+
+                            return true;
+                        }
+                    });
+
                     // Set Select Index
                     if(DocNo != null) {
                         Iterator li = Model_Pay.iterator();
@@ -2369,6 +2417,10 @@ public class DispensingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
+                            String RefDocNo = null;
+                            if(!c.isNull("RefDocNo")){
+                                RefDocNo = c.getString("RefDocNo");
+                            }
                             list.add(
                                     new ModelPayoutDetails(
                                             c.getString("ID"),
@@ -2381,7 +2433,7 @@ public class DispensingActivity extends AppCompatActivity {
                                             c.getString("Stock_Qty"),
                                             c.getString("Qty"),
                                             c.getString("Balance_Qty"),
-                                            c.getString("RefDocNo"),
+                                            RefDocNo,
 
                                             c.getString("IsWasting"),
                                             c.getString("IsReceiveNotSterile"),
@@ -2975,8 +3027,212 @@ public class DispensingActivity extends AppCompatActivity {
 
     }
 
+
+    private void callDialog_type1(final String Message) {
+
+        if (PA_IsShowToastDialog) {
+
+            final Dialog dialog = new Dialog(DispensingActivity.this, R.style.DialogCustomTheme);
+
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.dialog_warning);
+            dialog.setCancelable(false);
+
+            final TextView txt_title = (TextView) dialog.findViewById(R.id.txt_title);
+            final TextView txt_message = (TextView) dialog.findViewById(R.id.txt_message);
+            final TextView txt_tmp = (TextView) dialog.findViewById(R.id.txt_tmp);
+            final ImageView bt_cancel = (ImageView) dialog.findViewById(R.id.bt_cancel);
+
+            txt_title.setText(Cons.TITLE);
+            txt_message.setText(Message);
+
+            bt_cancel.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+            dialog.show();
+
+            txt_tmp.requestFocus();
+
+            runnable_1 = new Runnable() {
+
+                @Override
+                public void run() {
+                    dialog.dismiss();
+                    handler_1.removeCallbacks(runnable_1);
+                    handler_1.removeCallbacksAndMessages(null);
+                    focus();
+                }
+            };
+
+            handler_1.postDelayed(runnable_1, 2000);
+
+        }else{
+            Toast.makeText(DispensingActivity.this, Message, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     @Override
     public void onBackPressed() {
 
+        if(Block_1.getVisibility()==View.VISIBLE){
+            img_back_1.callOnClick();
+        }else if(Block_2.getVisibility()==View.VISIBLE){
+            img_back_2.callOnClick();
+        }else{
+            img_back_3.callOnClick();
+        }
+
+    }
+
+    public void removePayout(final String p_docno) {
+
+        class RemovePayout extends AsyncTask<String, Void, String> {
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if(c.getString("result").equals("A")){
+
+                            if(B_IsNonSelectDocument){
+
+                                DocNo = null;
+
+                                list_payout_detail_item.setAdapter(null);
+
+                                switch_opt.setChecked(true);
+                                switch_opt.setText(switch_opt.isChecked() ? "ลบ " : "เพิ่ม ");
+
+                                displayDocumentNA();
+
+                            }else {
+                                clearAll(true);
+                            }
+
+                        }else{
+                            Toast.makeText(DispensingActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    focus();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("p_user", ((CssdProject) getApplication()).I_CustomerId+"");
+                data.put("p_docno", p_docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_remove_payout.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+        }
+
+        RemovePayout ru = new RemovePayout();
+
+        ru.execute();
+    }
+
+
+    public void callDialogMenu(String p_docno) {
+
+        class Check extends AsyncTask<String, Void, String> {
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if(c.getString("result").equals("A")){
+                            AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("ยืนยันลบเอกสารนี้หรือไม่")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+
+                                    }).create();
+                            dialog.show();
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("p_docno", p_docno);
+
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_count_payout_detail.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+        }
+
+        Check ru = new Check();
+
+        ru.execute();
     }
 }

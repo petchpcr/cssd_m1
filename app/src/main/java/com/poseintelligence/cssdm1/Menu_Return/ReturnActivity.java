@@ -374,6 +374,6 @@ public class ReturnActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        img_back.callOnClick();
     }
 }

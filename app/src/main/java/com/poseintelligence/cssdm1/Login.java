@@ -4,16 +4,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.StrictMode;
+import android.util.EventLogTags;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,6 +31,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.poseintelligence.cssdm1.core.connect.CheckConnectionService;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
@@ -45,18 +50,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
+    CheckConnectionService checkConnectionService;;
+    boolean mServiceBound = true;
+    Intent intentService;
+
     String getUrl="";
     static final int READ_BLOCK_SIZE = 100;
     static final String FILE_CONFIG = "config.txt";
 
     private EditText uname;
     private EditText pword;
-    private LinearLayout form;
     private ImageView submit;
-    private Spinner spinner_building;
-    private ImageView imageView3;
+    private ImageView button_qr_login;
     private ImageView iSetting;
-    private TextView textView3;
     private TextView building_name;
     private View.OnClickListener clickInLinearLayout;
 
@@ -107,11 +113,34 @@ public class Login extends AppCompatActivity {
 
         onLoadConfiguration();
         get_building_name();
+        try{
+            intentService = new Intent(this, CheckConnectionService.class);
+            startService(intentService);
+            bindService(intentService, mServiceConnection, Context.BIND_AUTO_CREATE);
+            Log.d("tog_ccs","bindService" );
+        }catch (Exception e){
+            Log.d("tog_ccs","e = "+e );
+        }
 
-
+        Log.d("tog_ccs_c","ComponentName "+Login.this );
 //        dep_device();
 
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            CheckConnectionService.MyBinder myBinder = (CheckConnectionService.MyBinder) service;
+            checkConnectionService = myBinder.getService();
+            mServiceBound = true;
+        }
+    };
 
     // ===============================================
     // RW File
@@ -235,18 +264,19 @@ public class Login extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Log.d("tog_ccs","stopService" );
+        stopService(intentService);
         finish();
     }
 
     private void byWidget() {
-        textView3 = (TextView) findViewById(R.id.textView3);
+//        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
-        spinner_building = (Spinner) findViewById(R.id.spinner_building);
+//        spinner_building = (Spinner) findViewById(R.id.spinner_building);
         uname = (EditText) findViewById(R.id.txt_username);
         pword = (EditText) findViewById(R.id.txt_password);
         submit = (ImageView) findViewById(R.id.button_login);
-        imageView3 = (ImageView) findViewById(R.id.QrCode);
-        form = (LinearLayout) findViewById(R.id.form);
+        button_qr_login = (ImageView) findViewById(R.id.button_qr_login);
         building_name = (TextView) findViewById(R.id.building_name);
     }
 
@@ -275,13 +305,6 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        form.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                focus();
-            }
-        });
-
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -291,6 +314,43 @@ public class Login extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+            }
+        });
+
+        button_qr_login.setOnClickListener(new View.OnClickListener() {
+            String mass_onkey = "";
+            @Override
+            public void onClick(View v) {
+                ProgressDialog wait_dialog = new ProgressDialog(Login.this);
+                wait_dialog.setMessage("สแกนรหัสผู้ใช้เพื่อเข้าสู่ระบบ");
+                wait_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                        int keyCode = keyEvent.getKeyCode();
+                        if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                        {
+                            if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                                wait_dialog.dismiss();
+
+                                onLogin("IsUseQrEmCodeLogin",mass_onkey);
+
+                                return false;
+                            }
+
+                            int unicodeChar = keyEvent.getUnicodeChar();
+
+                            if(unicodeChar!=0){
+                                mass_onkey=mass_onkey+(char)unicodeChar;
+                                Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
+                            }
+
+                            return false;
+                        }
+                        return false;
+                    }
+                });
+                wait_dialog.show();
 
             }
         });
@@ -423,8 +483,13 @@ public class Login extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
-                data.put("uname", uname);
-                data.put("pword", pword);
+
+                if(uname.equals("IsUseQrEmCodeLogin")){
+                    data.put("EmpCode", pword);
+                }else{
+                    data.put("uname", uname);
+                    data.put("pword", pword);
+                }
                 Log.d("tog_login","data = "+data);
                 String result = http.sendPostRequest(getUrl + "Login/get_login.php", data);
                 Log.d("tog_login","result = "+result);
@@ -656,7 +721,6 @@ public class Login extends AppCompatActivity {
                             if(!c.isNull("PA_IsNotificationPopupExpiringScan")){
                                 ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
                                 Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+c.getBoolean("PA_IsNotificationPopupExpiringScan"));
-
                             }
                             get_config_m1();
 
