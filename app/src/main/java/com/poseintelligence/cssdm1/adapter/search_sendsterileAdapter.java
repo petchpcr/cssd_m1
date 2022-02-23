@@ -80,14 +80,14 @@ public class search_sendsterileAdapter extends ArrayAdapter {
 //                            }
 //                        }, 1000);
 
-        EditNum1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                EditNum1.requestFocusFromTouch();
-
-            }
-
-        });
+//        EditNum1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                EditNum1.requestFocusFromTouch();
+//
+//            }
+//
+//        });
 
         EditNum1.addTextChangedListener(new TextWatcher() {
 

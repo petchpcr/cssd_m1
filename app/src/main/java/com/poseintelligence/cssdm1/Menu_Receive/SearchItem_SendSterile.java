@@ -138,6 +138,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
 
         if (bd != null){
 
+            String xSel = bd.getString("xSel");
             p_docno = bd.getString("p_docno");
             p_dept_id = bd.getString("p_dept_id");
             p_user_code = bd.getString("p_user_code");
@@ -145,6 +146,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
             p_bid = bd.getString("B_ID");
             p_switch_washdep = bd.getBoolean("p_switch_washdep");
 
+            Log.d("OOOO","xSel = " + xSel);
             Log.d("OOOO","p_docno = " + p_docno);
             Log.d("OOOO","p_dept_id = " + p_dept_id);
             Log.d("OOOO","p_user_code = " + p_user_code);
@@ -182,24 +184,6 @@ public class SearchItem_SendSterile extends AppCompatActivity {
     }
 
     public void byEvent() {
-
-        edt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(!switch_mode.isChecked())
-                    displayItemStock(edt_search.getText().toString().replace(' ','%'));
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-            }
-        });
 
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -460,7 +444,11 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                             newsData.setxFields16(c.getString("IsSet"));
                             newsData.setIs_Check(true);
 
-                            MODEL_ITEM_STOCK.add( newsData );
+//                            if(((CssdProject) getApplication()).isWA_IsUsedWash()){
+//                                if(!c.getString("IsSet").equals("2")){
+//                                    MODEL_ITEM_STOCK.add( newsData );
+//                                }
+//                            }
 
                             if(i==0 && !Usage_code.equals("")){
                                 edt_search.requestFocus();
@@ -765,6 +753,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                     data.put("p_qr", p_qr);
                     data.put("B_ID", p_bid);
                     data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
 
                     if (SS_IsUsedItemSet) {
                         data.put("p_IsUsedItemSet", "1");

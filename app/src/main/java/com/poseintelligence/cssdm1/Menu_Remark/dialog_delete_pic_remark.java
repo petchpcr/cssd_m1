@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,14 +20,15 @@ import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ModelDisplayDocRemark;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
+//import com.squareup.picasso.MemoryPolicy;
+//import com.squareup.picasso.NetworkPolicy;
+//import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -49,13 +52,13 @@ public class dialog_delete_pic_remark extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog_delete_pic_remark);
 
-        try {
-            Picasso.setSingletonInstance(
-                    new Picasso.Builder(this)
-                            .build());
-        } catch ( IllegalStateException e ) {
-
-        }
+//        try {
+//            Picasso.setSingletonInstance(
+//                    new Picasso.Builder(this)
+//                            .build());
+//        } catch ( IllegalStateException e ) {
+//
+//        }
 
         byIntent();
 
@@ -91,36 +94,52 @@ public class dialog_delete_pic_remark extends Activity {
         pic2 = (ImageView) findViewById(R.id.pic2);
         pic3 = (ImageView) findViewById(R.id.pic3);
 
-        URL imageUrl = null;
+        URL imageUrl1 = null;
         URL imageUrl2 = null;
         URL imageUrl3 = null;
+
         try {
-            imageUrl = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/"+Picture);
+            imageUrl1 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/"+Picture);
+            Bitmap bmp = BitmapFactory.decodeStream(imageUrl1.openConnection().getInputStream());
+            pic1.setImageBitmap(bmp);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         try {
             imageUrl2 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/"+Picture2);
+            Bitmap bmp = BitmapFactory.decodeStream(imageUrl2.openConnection().getInputStream());
+            pic2.setImageBitmap(bmp);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         try {
             imageUrl3 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/"+Picture3);
+            Bitmap bmp = BitmapFactory.decodeStream(imageUrl3.openConnection().getInputStream());
+            pic3.setImageBitmap(bmp);
         } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Picasso.get().load(String.valueOf(imageUrl)).networkPolicy(NetworkPolicy.NO_CACHE)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .into(pic1);
 
-        Picasso.get().load(String.valueOf(imageUrl2)).networkPolicy(NetworkPolicy.NO_CACHE)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .into(pic2);
-
-        Picasso.get().load(String.valueOf(imageUrl3)).networkPolicy(NetworkPolicy.NO_CACHE)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .into(pic3);
+//        Picasso.get().load(String.valueOf(imageUrl)).networkPolicy(NetworkPolicy.NO_CACHE)
+//                .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                .into(pic1);
+//
+//        Picasso.get().load(String.valueOf(imageUrl2)).networkPolicy(NetworkPolicy.NO_CACHE)
+//                .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                .into(pic2);
+//
+//        Picasso.get().load(String.valueOf(imageUrl3)).networkPolicy(NetworkPolicy.NO_CACHE)
+//                .memoryPolicy(MemoryPolicy.NO_CACHE)
+//                .into(pic3);
 
 
         submit = (TextView) findViewById(R.id.submit);

@@ -78,7 +78,6 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
 //
 //        }
 
-
         if (DATA_MODEL.get(position).getMutiPic_Remark().equals("1")){
             R1.setVisibility(View.GONE);
             R2.setVisibility(View.VISIBLE);

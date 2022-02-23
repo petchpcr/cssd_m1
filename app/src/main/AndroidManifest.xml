@@ -51,6 +51,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CssdM1"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".WaitConnectDialog"
             android:theme="@style/myDialog"

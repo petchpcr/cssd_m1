@@ -84,9 +84,7 @@
             android:background="@drawable/txt"
             android:inputType="number"
             android:text="0"
-            android:textSize="18sp"
-
-            android:selectAllOnFocus="true"/>
+            android:textSize="18sp"/>
 
 
 

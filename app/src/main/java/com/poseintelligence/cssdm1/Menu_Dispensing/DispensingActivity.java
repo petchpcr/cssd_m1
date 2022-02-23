@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.MainMenu;
+import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListDepartmentAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailItemAdapter;
@@ -125,6 +126,9 @@ public class DispensingActivity extends AppCompatActivity {
 
     private boolean B_IsNonSelectDocument = false;
 
+    private String p_usage_code_pay = null;
+    private String Docno_paylog = null;
+    private String Dep_paylog = null;
 
     private boolean Is_imageCreate = false;
     private boolean Is_Zone = false;
@@ -185,18 +189,17 @@ public class DispensingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dispensing);
         getSupportActionBar().hide();
 
-        // -----------------------------------------------------------------------
-        // Sound
-        // -----------------------------------------------------------------------
-        speakTextInit();
-        nMidia = new iAudio(this);
-        // -----------------------------------------------------------------------
-
         byWidget();
 
         byEvent();
 
         byConfig();
+
+        // -----------------------------------------------------------------------
+        // Sound
+        speakTextInit();
+        nMidia = new iAudio(this);
+        // -----------------------------------------------------------------------
  // -----------------------------------------------------------------------
         Block_1.setVisibility( View.VISIBLE );
         Block_2.setVisibility( View.GONE );
@@ -227,7 +230,7 @@ public class DispensingActivity extends AppCompatActivity {
                     int language=tts.setLanguage(Locale.US);
                     if(language==TextToSpeech.LANG_MISSING_DATA || language==TextToSpeech.LANG_NOT_SUPPORTED)
                     {
-                        Toast.makeText(DispensingActivity.this, "LANG MISSING DATA OR LANG NOT SUPPORTED", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(DispensingActivity.this, "LANG MISSING DATA OR LANG NOT SUPPORTED", Toast.LENGTH_SHORT).show();
                     }else{
 //                        Toast.makeText(DispensingActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
 
@@ -237,7 +240,8 @@ public class DispensingActivity extends AppCompatActivity {
                 else{
 
                     Log.d("tog_textToSpeech","FAIL");
-                    Toast.makeText(DispensingActivity.this, "Your Device Is Missing TTS", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(DispensingActivity.this, "Your Device Is Missing TTS", Toast.LENGTH_SHORT).show();
+                    ST_SoundAndroidVersion9 = false;
                 }
             }
 
@@ -395,6 +399,12 @@ public class DispensingActivity extends AppCompatActivity {
                 //Check Scan Qty
                 boolean B_HasPay = false;
 
+                int pay_balance = 0;
+
+                int pay_qty = 0;
+
+                int pay_qty_doc = 0;
+
                 if(Model_Payout_Detail_item.size() > 0) {
 
                     Iterator li = Model_Payout_Detail_item.iterator();
@@ -404,6 +414,19 @@ public class DispensingActivity extends AppCompatActivity {
                         ModelPayoutDetails m = (ModelPayoutDetails) li.next();
 
                         //System.out.println(m.getPay_Qty() + " = " + (!m.getPay_Qty().equals("")) + " && " + !m.getPay_Qty().equals("0"));
+
+                        for (int i = 0; i < Model_Payout_Detail_item.size(); i++) {
+
+                            if (m.getBalance().equals("0")){
+                                pay_qty = 1;
+                                pay_balance = 1;
+                            }else {
+                                pay_qty = 0;
+                                pay_balance = 0;
+                            }
+                            pay_qty_doc += Integer.parseInt(m.getPay_Qty());
+                        }
+
 
                         if (!m.getPay_Qty().equals("") && !m.getPay_Qty().equals("0")) {
                             B_HasPay = true;
@@ -436,6 +459,7 @@ public class DispensingActivity extends AppCompatActivity {
 //                }
 
                 callCloseDocument();
+
             }
 
         });
@@ -1259,13 +1283,13 @@ public class DispensingActivity extends AppCompatActivity {
                                     displayPay(DepID, DocNo,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
                                 }
                                 switch_opt.setChecked(false);
-                                title_3.setText(DocNo+" / "+DepName);
                                 Block_1.setVisibility( View.GONE );
                                 Block_2.setVisibility( View.GONE );
                                 Block_3.setVisibility( View.VISIBLE );
                                 Block_4.setVisibility( View.VISIBLE );
                                 switch_opt.setVisibility( View.VISIBLE );
                                 imageCreate.setVisibility( Is_imageCreate?View.VISIBLE:View.GONE );
+                                title_3.setText(DocNo+" / "+Model_Pay.get(0).getDepName()+" (M)");
                                 LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 params1.width = Is_imageCreate?255:505;
                                 params1.setMargins(0, 0, 15, 0);
@@ -1337,8 +1361,17 @@ public class DispensingActivity extends AppCompatActivity {
                             }else{
                                 nMidia.getAudio("no");
                             }
-                            callDialog(msg);
+//                            callDialog(msg);
 
+                            if (c.getString("result").equals("E")){
+                                callDialog(msg,"0");
+                            }else {
+                                callDialog(msg,"1");
+                            }
+
+                            p_usage_code_pay = p_usage_code.toUpperCase();
+                            Docno_paylog = c.getString("DocNo");
+                            Dep_paylog = c.getString("DepName");
                         }
                     }
 
@@ -1549,7 +1582,7 @@ public class DispensingActivity extends AppCompatActivity {
 //                }else{
 //                    updatePayout(DocNo, DepID);
 //                }
-                updatePayout(DocNo, DepID);
+                updatePayout(DocNo, DepID,"0");
             }
         });
 
@@ -1590,7 +1623,7 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
     // Update Payout
     // ------------------------------------------------------------------
-    public void updatePayout(final String p_docno, final String p_dept_id){
+    public void updatePayout(final String p_docno, final String p_dept_id, final String type){
 
         if(!B_IsNonSelectDocument){
             if(p_dept_id == null || p_dept_id.equals("") || p_dept_id.equals("0") || p_dept_id.equals("-1")){
@@ -1700,7 +1733,13 @@ public class DispensingActivity extends AppCompatActivity {
                 data.put("p_userid", ((CssdProject) getApplication()).getPm().getUserid()+"");
                 data.put("p_bid", ((CssdProject) getApplication()).getPm().getBdCode()+"");
                 data.put("p_docno", DocNo);
-                data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
+//                data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
+                if (type.equals("1")){
+                    data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "1");
+                }else {
+                    data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
+                }
+
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
@@ -2203,7 +2242,9 @@ public class DispensingActivity extends AppCompatActivity {
                     final ArrayAdapter<ModelPayout> adapter = new ListPayoutDocumentAdapter(DispensingActivity.this, Model_Pay, false);
                     list_pay.setAdapter(adapter);
 
-                    checkUsagecodeNotRetrun(DepID);
+                    if(!WA_IsUsedWash){
+                        checkUsagecodeNotRetrun(DepID);
+                    }
 
                     // OnClick
                     list_pay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -2215,7 +2256,8 @@ public class DispensingActivity extends AppCompatActivity {
                             DocNo = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(2)).getText().toString();
                             RefDocNo = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(4)).getText().toString();
                             switch_opt.setChecked(false);
-                            title_3.setText(DocNo+" / "+DepName);
+
+                            title_3.setText(DocNo+" / "+Model_Pay.get(position).getDepNameByPayItem());
                             displayPayoutDetail(DocNo, true);
 //                            Toast.makeText(DispensingActivity.this, "list_pay...!", Toast.LENGTH_SHORT).show();
                             Block_1.setVisibility( View.GONE );
@@ -2981,6 +3023,53 @@ public class DispensingActivity extends AppCompatActivity {
     private Runnable runnable_1;
 
     private void callDialog(final String Message) {
+        callDialog( Message,"0");
+//        if (PA_IsShowToastDialog) {
+//
+//            final Dialog dialog = new Dialog(DispensingActivity.this, R.style.DialogCustomTheme);
+//
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            dialog.setContentView(R.layout.dialog_warning);
+//            dialog.setCancelable(false);
+//
+//            final TextView txt_title = (TextView) dialog.findViewById(R.id.txt_title);
+//            final TextView txt_message = (TextView) dialog.findViewById(R.id.txt_message);
+//            final TextView txt_tmp = (TextView) dialog.findViewById(R.id.txt_tmp);
+//            final ImageView bt_cancel = (ImageView) dialog.findViewById(R.id.bt_cancel);
+//
+//            txt_title.setText(Cons.TITLE);
+//            txt_message.setText(Message);
+//
+//            bt_cancel.setOnClickListener(new View.OnClickListener() {
+//                public void onClick(View v) {
+//                    dialog.dismiss();
+//                }
+//            });
+//
+//            dialog.show();
+//
+//            txt_tmp.requestFocus();
+//
+//            runnable_1 = new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    dialog.dismiss();
+//                    handler_1.removeCallbacks(runnable_1);
+//                    handler_1.removeCallbacksAndMessages(null);
+//                    focus();
+//                }
+//            };
+//
+//            handler_1.postDelayed(runnable_1, 2000);
+//
+//        }else{
+//            Toast.makeText(DispensingActivity.this, Message, Toast.LENGTH_SHORT).show();
+//        }
+
+    }
+
+    private void callDialog(final String Message, final String type) {
 
         if (PA_IsShowToastDialog) {
 
@@ -2992,11 +3081,33 @@ public class DispensingActivity extends AppCompatActivity {
 
             final TextView txt_title = (TextView) dialog.findViewById(R.id.txt_title);
             final TextView txt_message = (TextView) dialog.findViewById(R.id.txt_message);
+            final EditText edt_message = (EditText) dialog.findViewById(R.id.edt_message);
             final TextView txt_tmp = (TextView) dialog.findViewById(R.id.txt_tmp);
-            final ImageView bt_cancel = (ImageView) dialog.findViewById(R.id.bt_cancel);
+            final Button bt_cancel = (Button) dialog.findViewById(R.id.bt_cancel);
+            final Button bt_submit_pay = (Button) dialog.findViewById(R.id.bt_submit_pay);
+            final Button bt_cancel_pay = (Button) dialog.findViewById(R.id.bt_cancel_pay);
 
-            txt_title.setText(Cons.TITLE);
-            txt_message.setText(Message);
+            if (Message.equals("หมายเหตุ")){
+                txt_message.setVisibility(View.GONE);
+                edt_message.setVisibility(View.VISIBLE);
+
+                //txt_title.setText("เอกสารนี้มีรายการค้างจ่าย กรุณาระบุหมายเหตุเพื่อปิดเอกสาร");
+            }else {
+                txt_message.setVisibility(View.VISIBLE);
+                txt_message.setText(Message);
+
+                txt_title.setText(Cons.TITLE);
+            }
+
+            if (!type.equals("1")){
+                bt_cancel.setVisibility(View.VISIBLE);
+                bt_submit_pay.setVisibility(View.GONE);
+                bt_cancel_pay.setVisibility(View.GONE);
+            }else {
+                bt_cancel.setVisibility(View.GONE);
+                bt_submit_pay.setVisibility(View.VISIBLE);
+                bt_cancel_pay.setVisibility(View.VISIBLE);
+            }
 
             bt_cancel.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -3004,22 +3115,53 @@ public class DispensingActivity extends AppCompatActivity {
                 }
             });
 
+            bt_submit_pay.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    if (Message.equals("หมายเหตุ")){
+                        if (edt_message.getText().toString().equals("")){
+                            Toast.makeText(DispensingActivity.this, "กรุณากรอกหมายเหตุ !!", Toast.LENGTH_SHORT).show();
+                        }else {
+                            dialog_wait_scan("closepayout", "0");
+                            dialog.dismiss();
+                        }
+                    }else {
+                        Delete_Pay_Detail(DocNo,p_usage_code_pay);
+                        dialog.dismiss();
+                    }
+                }
+            });
+
+            bt_cancel_pay.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    if (Message.equals("หมายเหตุ")){
+                        dialog_wait_scan("closepayout", "1");
+                        dialog.dismiss();
+                    }else {
+                        Delete_Pay_Detail(DocNo,p_usage_code_pay);
+                        dialog.dismiss();
+                    }
+                }
+            });
+
             dialog.show();
 
             txt_tmp.requestFocus();
 
-            runnable_1 = new Runnable() {
+            if (!type.equals("1")){
+                runnable_1 = new Runnable() {
 
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                    handler_1.removeCallbacks(runnable_1);
-                    handler_1.removeCallbacksAndMessages(null);
-                    focus();
-                }
-            };
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        handler_1.removeCallbacks(runnable_1);
+                        handler_1.removeCallbacksAndMessages(null);
+                        focus();
+                    }
+                };
 
-            handler_1.postDelayed(runnable_1, 2000);
+                handler_1.postDelayed(runnable_1, 2000);
+            }
 
         }else{
             Toast.makeText(DispensingActivity.this, Message, Toast.LENGTH_SHORT).show();
@@ -3027,52 +3169,159 @@ public class DispensingActivity extends AppCompatActivity {
 
     }
 
+    public void Delete_Pay_Detail(final String DocNo,final String Usagecode) {
 
-    private void callDialog_type1(final String Message) {
+        class Delete_Pay_Detail extends AsyncTask<String, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
 
-        if (PA_IsShowToastDialog) {
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
 
-            final Dialog dialog = new Dialog(DispensingActivity.this, R.style.DialogCustomTheme);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
 
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_warning);
-            dialog.setCancelable(false);
+                    for(int i=0;i<rs.length();i++) {
+                        JSONObject c = rs.getJSONObject(i);
+                        addItem(Usagecode);
+//                        addItem(Usagecode,"0");
+                    }
 
-            final TextView txt_title = (TextView) dialog.findViewById(R.id.txt_title);
-            final TextView txt_message = (TextView) dialog.findViewById(R.id.txt_message);
-            final TextView txt_tmp = (TextView) dialog.findViewById(R.id.txt_tmp);
-            final ImageView bt_cancel = (ImageView) dialog.findViewById(R.id.bt_cancel);
-
-            txt_title.setText(Cons.TITLE);
-            txt_message.setText(Message);
-
-            bt_cancel.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    dialog.dismiss();
+                } catch (JSONException e) {
                 }
-            });
+            }
 
-            dialog.show();
+            //class connect php RegisterUserClass important !!!!!!!
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("p_docno",params[0]);
+                data.put("p_usagecode",params[1]);
+                data.put("p_bid","1");
+                data.put("p_docno_paylog",Docno_paylog);
+                data.put("p_dep_paylog",Dep_paylog);
+                data.put("p_docno_paylog_save",DocNo);
+                data.put("p_dep_paylog_save",DepID);
+                data.put("p_user_code", ((CssdProject) getApplication()).getCustomerId()+"");
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
-            txt_tmp.requestFocus();
+                String result = null;
 
-            runnable_1 = new Runnable() {
+                result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_delete_detail_payout_on_change.php", data);
 
-                @Override
-                public void run() {
-                    dialog.dismiss();
-                    handler_1.removeCallbacks(runnable_1);
-                    handler_1.removeCallbacksAndMessages(null);
-                    focus();
+                return result;
+            }
+        }
+        Delete_Pay_Detail ru = new Delete_Pay_Detail();
+        ru.execute(DocNo,Usagecode);
+    }
+
+
+    String mass_onkey = "";
+    public void dialog_wait_scan(String data,String type){
+        ProgressDialog wait_dialog = new ProgressDialog(DispensingActivity.this);
+
+        wait_dialog.setCancelable(false);
+
+        wait_dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();//dismiss dialog
+            }
+        });
+
+        wait_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+                int keyCode = keyEvent.getKeyCode();
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
+                        wait_dialog.dismiss();
+
+                        Checkuser(mass_onkey,DocNo,"pay",type);
+
+                        mass_onkey = "";
+
+                        return false;
+                    }
+
+                    int unicodeChar = keyEvent.getUnicodeChar();
+
+                    if(unicodeChar!=0){
+                        mass_onkey=mass_onkey+(char)unicodeChar;
+                        Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
+                    }
+
+                    return false;
                 }
-            };
+                return false;
+            }
+        });
 
-            handler_1.postDelayed(runnable_1, 2000);
+        wait_dialog.show();
+    }
 
-        }else{
-            Toast.makeText(DispensingActivity.this, Message, Toast.LENGTH_SHORT).show();
+    public void Checkuser(String qr_code, String docno, String xsel,String type) {
+
+        class Checkuser extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for(int i=0;i<rs.length();i++){
+                        JSONObject c = rs.getJSONObject(i);
+                        if(c.getString("check").equals("true")){
+                            if (type.equals("1")){
+                                updatePayout(DocNo, DepID, "1");
+                            }else {
+                                updatePayout(DocNo, DepID, "0");
+                            }
+                        }else{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(DispensingActivity.this);
+                            builder.setCancelable(true);
+                            builder.setTitle("แจ้งเตือน !!");
+                            builder.setMessage("ไม่พบรหัสผู้ใช้");
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("qr_code",params[0]);
+                data.put("docno",params[1]);
+                data.put("xsel",params[2]);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() +"chk_qr/check_qr.php",data);
+
+                return  result;
+            }
         }
 
+        Checkuser ru = new Checkuser();
+        ru.execute( qr_code,docno,xsel );
     }
 
     @Override
@@ -3110,20 +3359,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                         if(c.getString("result").equals("A")){
 
-                            if(B_IsNonSelectDocument){
-
-                                DocNo = null;
-
-                                list_payout_detail_item.setAdapter(null);
-
-                                switch_opt.setChecked(true);
-                                switch_opt.setText(switch_opt.isChecked() ? "ลบ " : "เพิ่ม ");
-
-                                displayDocumentNA();
-
-                            }else {
-                                clearAll(true);
-                            }
+                            displayDepartment(txt_search_department.getText().toString(), -1,"");
 
                         }else{
                             Toast.makeText(DispensingActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
@@ -3190,7 +3426,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
+                                            removePayout(p_docno);
+//                                            dialog.dismiss();
                                         }
                                     }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 

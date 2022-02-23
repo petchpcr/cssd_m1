@@ -1028,7 +1028,6 @@ public class ReceiveActivity extends AppCompatActivity {
                                     index = Integer.valueOf(S_Code.substring(4)).intValue();
 
 //                                    spn_zone.setSelection(index);
-//
 //                                    setZone(String.valueOf(index));
 
                                 }
@@ -1346,16 +1345,17 @@ public class ReceiveActivity extends AppCompatActivity {
 
                         if(c.getString("result").equals("A")) {
 //                            pCustomer p = new pCustomer();
-                           int DepID = Integer.valueOf( c.getString("DepID")).intValue();
+//                           int DepID = Integer.valueOf( c.getString("DepID")).intValue();
 
 //                            if (DocNo == null || DocNo.equals("")) {
-                                spn_department_form.setSelection(DepID);
+//                                spn_department_form.setSelection(DepID);
+                                spn_department_form.setSelection(getIndexSpinnerDepartment(c.getString("DepID")));
                                 addSterileDetailByQR(p_qr, c.getString("DepID"));
 //                            }else {
 //                                addSterileDetailByQR(p_qr, c.getString("DepID"));
 //                            }
 
-                            Log.d("thejane3",""+DepID);
+//                            Log.d("thejane3",""+DepID);
 
                         }else{
                             Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
@@ -1738,134 +1738,77 @@ public class ReceiveActivity extends AppCompatActivity {
                             focus();
 
                         }else {
-                            if (SS_IsUsedClosePayout){
-                                if (c.getString("IsStatus").equals("3") && c.getString("Ispay").equals("1")){
 
-                                    String payout_Docno = c.getString("DocNo_Payput");
-                                    String text_Message = c.getString("Message");
+                            if (SS_IsUsedClosePayout && c.getString("IsStatus").equals("3") && c.getString("Ispay").equals("1")){
 
-                                    AlertDialog.Builder quitDialog = new AlertDialog.Builder(ReceiveActivity.this);
+                                String payout_Docno = c.getString("DocNo_Payput");
+                                String text_Message = c.getString("Message");
+
+                                AlertDialog.Builder quitDialog = new AlertDialog.Builder(ReceiveActivity.this);
 //                                    quitDialog.setTitle("รายการนี้อยู่ในสถานะจ่ายอุปกรณ์ให้แผนก กำลังรอปิดใบจ่าย คุณต้องการปิดเอกสารการจ่ายหรือไม่ ?");
-                                    final View customLayout = getLayoutInflater().inflate( R.layout.dialog_alert_1, null);
-                                    TextView tView = customLayout.findViewById( R.id.tView);
-                                    tView.setText( "รายการนี้อยู่ในสถานะจ่ายอุปกรณ์ให้แผนก กำลังรอปิดใบจ่าย คุณต้องการปิดเอกสารการจ่ายหรือไม่ ?" );
-                                    quitDialog.setView(customLayout);
+                                final View customLayout = getLayoutInflater().inflate( R.layout.dialog_alert_1, null);
+                                TextView tView = customLayout.findViewById( R.id.tView);
+                                tView.setText( "รายการนี้อยู่ในสถานะจ่ายอุปกรณ์ให้แผนก กำลังรอปิดใบจ่าย คุณต้องการปิดเอกสารการจ่ายหรือไม่ ?" );
+                                quitDialog.setView(customLayout);
 
-                                    quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+                                quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
 
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            updatePayoutDocno(payout_Docno,p_qr);
-                                        }
-                                    });
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        updatePayoutDocno(payout_Docno,p_qr);
+                                    }
+                                });
 
-                                    quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+                                quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
 
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            Toast.makeText(ReceiveActivity.this, text_Message, Toast.LENGTH_SHORT).show();
-                                            no();
-                                            focus();
-                                        }
-                                    });
-
-                                    quitDialog.show();
-                                }else {
-                                    if (SS_IsUsedChangeDepartment){
-                                        if (c.getString("IsStatus").equals("4") || c.getString("IsStatus").equals("5")){
-
-                                            String text_Message = c.getString("Message");
-                                            String S_DeptName = c.getString("DepName");
-
-                                            AlertDialog.Builder quitDialog = new AlertDialog.Builder(ReceiveActivity.this);
-
-                                            quitDialog.setTitle("รับอุปกรณ์ไม่ตรงแผนก !!");
-
-                                            final View customLayout = getLayoutInflater().inflate( R.layout.dialog_alert_1, null);
-                                            TextView tView = customLayout.findViewById( R.id.tView);
-                                            tView.setText( "รหัสใช้งานนี้อยู่ในแผนก " + S_DeptName + " คุณต้องการเปลี่ยนแผนกหรือไม่ ?" );
-                                            quitDialog.setView(customLayout);
-                                            quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    updateDepartmentItem(p_qr);
-                                                }
-                                            });
-
-                                            quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
-
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Toast.makeText(ReceiveActivity.this, text_Message, Toast.LENGTH_SHORT).show();
-                                                    no();
-                                                    focus();
-                                                }
-                                            });
-
-                                            quitDialog.show();
-
-                                        }else {
-                                            Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
-                                            no();
-                                            focus();
-                                        }
-                                    }else {
-                                        Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(ReceiveActivity.this, text_Message, Toast.LENGTH_SHORT).show();
                                         no();
                                         focus();
                                     }
-                                }
+                                });
+
+                                quitDialog.show();
+                            }else if (SS_IsUsedChangeDepartment && c.getString("IsStatus").equals("4") || c.getString("IsStatus").equals("5")){
+
+                                String text_Message = c.getString("Message");
+                                String S_DeptName = c.getString("DepName");
+
+                                AlertDialog.Builder quitDialog = new AlertDialog.Builder(ReceiveActivity.this);
+
+                                quitDialog.setTitle("รับอุปกรณ์ไม่ตรงแผนก !!");
+
+                                final View customLayout = getLayoutInflater().inflate( R.layout.dialog_alert_1, null);
+                                TextView tView = customLayout.findViewById( R.id.tView);
+                                tView.setText( "รหัสใช้งานนี้อยู่ในแผนก " + S_DeptName + " คุณต้องการเปลี่ยนแผนกหรือไม่ ?" );
+                                quitDialog.setView(customLayout);
+                                quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        updateDepartmentItem(p_qr);
+                                    }
+                                });
+
+                                quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Toast.makeText(ReceiveActivity.this, text_Message, Toast.LENGTH_SHORT).show();
+                                        no();
+                                        focus();
+                                    }
+                                });
+
+                                quitDialog.show();
+
                             }else {
-                                if (SS_IsUsedChangeDepartment){
-                                    if (c.getString("IsStatus").equals("4") || c.getString("IsStatus").equals("5")){
-
-                                        String text_Message = c.getString("Message");
-                                        String S_DeptName = c.getString("DepName");
-
-                                        AlertDialog.Builder quitDialog = new AlertDialog.Builder(ReceiveActivity.this);
-
-
-                                        quitDialog.setTitle("รับอุปกรณ์ไม่ตรงแผนก !!");
-
-                                        final View customLayout = getLayoutInflater().inflate( R.layout.dialog_alert_1, null);
-                                        TextView tView = customLayout.findViewById( R.id.tView);
-                                        tView.setText( "รหัสใช้งานนี้อยู่ในแผนก " + S_DeptName + " คุณต้องการเปลี่ยนแผนกหรือไม่ ?" );
-                                        quitDialog.setView(customLayout);
-
-                                        quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
-
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                updateDepartmentItem(p_qr);
-                                            }
-                                        });
-
-                                        quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
-
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Toast.makeText(ReceiveActivity.this, text_Message, Toast.LENGTH_SHORT).show();
-                                                no();
-                                                focus();
-                                            }
-                                        });
-
-                                        quitDialog.show();
-
-                                    }else {
-                                        Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
-                                        no();
-                                        focus();
-                                    }
-                                }else {
-                                    Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
-                                    no();
-                                    focus();
-                                }
+                                Toast.makeText(ReceiveActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
+                                no();
+                                focus();
                             }
                         }
-
                     }
 
                 } catch (JSONException e) {
@@ -2876,7 +2819,8 @@ public class ReceiveActivity extends AppCompatActivity {
         Log.d("tog_dept_id_search","dept_id_search = " + dept_id_search);
         final String Date = txt_doc_date_search.getText().toString();
         final String txt = edt_doc_no_search.getText().toString();
-        final String status = switch_status.isChecked() ? "-1" : "0";
+        String status;
+        status = switch_status.isChecked() ? "-1" : "0";
 
         class DisplaySendSterile extends AsyncTask<String, Void, String> {
             // variable
@@ -3410,7 +3354,7 @@ public class ReceiveActivity extends AppCompatActivity {
             final TextView txt_title = (TextView) dialog.findViewById(R.id.txt_title);
             final TextView txt_message = (TextView) dialog.findViewById(R.id.txt_message);
             final TextView txt_tmp = (TextView) dialog.findViewById(R.id.txt_tmp);
-            final ImageView bt_cancel = (ImageView) dialog.findViewById(R.id.bt_cancel);
+            final Button bt_cancel = (Button) dialog.findViewById(R.id.bt_cancel);
 
             txt_title.setText(Cons.TITLE);
             txt_message.setText(Message);
