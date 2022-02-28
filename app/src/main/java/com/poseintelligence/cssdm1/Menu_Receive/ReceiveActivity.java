@@ -1123,7 +1123,10 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 spn_department_form.setSelection(0);
 
-//                spn_usr_send.setSelection(0);
+                if(SS_IsShowSender){
+                    spn_usr_send.setSelection(0);
+                }
+
                 spn_usr_receive.setSelection(0);
 
                 list_doc_detail.setAdapter(null);
@@ -1623,7 +1626,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                         JSONObject c = rs.getJSONObject(i);
 
-                        if (spn_usr_receive.getSelectedItemPosition() == 0){
+                        if (spn_usr_receive.getSelectedItemPosition() == 0 || !SS_IsShowSender){
                             spn_usr_receive.setSelection(Integer.parseInt(c.getString("ID")));
                             edt_usage_code.setText("");
                             edt_usage_code.requestFocus();
@@ -1901,6 +1904,7 @@ public class ReceiveActivity extends AppCompatActivity {
     }
 
     public void onSave(final String DocNo, final String send_id, final String receive_id, final String zone_id) {
+        Log.d("onSave","onSaveNowash");
         class Save extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(ReceiveActivity.this);
@@ -1981,7 +1985,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_project_id", Integer.toString ( ((CssdProject) getApplication()).getCustomerId()) );
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_complete.php", data);
-
+                Log.d("onSave","data = "+data);
+                Log.d("onSave","result = "+result);
                 return result;
             }
         }
@@ -1992,6 +1997,7 @@ public class ReceiveActivity extends AppCompatActivity {
     }
 
     public void onSaveNowash(final String DocNo, final String send_id, final String receive_id, final String zone_id, final String Usage_nowash_id) {
+        Log.d("onSave","onSaveNowash");
         class onSaveNowash extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(ReceiveActivity.this);
@@ -2053,7 +2059,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_is_group_payout", SS_IsGroupPayout ? "1" : "0");
                 data.put("p_is_copy_to_payout", SS_IsCopyPayout ? "1" : "0");
                 data.put("p_is_approve", SS_IsApprove ? "1" : "0");
-                data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
+//                data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
+                data.put("p_is_usedwash","0");
                 data.put("p_usage_nowash_id", Usage_nowash_id);
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
@@ -2074,7 +2081,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_project_id", Integer.toString ( ((CssdProject) getApplication()).getCustomerId()) );
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_complete.php", data);
-                Log.d("OOOO","result:"+result);
+                Log.d("onSave","data = "+data);
+                Log.d("onSave","result = "+result);
                 return result;
             }
         }
@@ -3273,13 +3281,14 @@ public class ReceiveActivity extends AppCompatActivity {
         Usagecode = Usage;
     }
 
-    public void usageNowash (String RowID, String DelRowid){
+    public void usageNowash (String RowID, String status){
         S_RowId = RowID;
-        String x="0";
-        if(Usage_Nowash.get(DelRowid)=="0"){
-            x="1";
-        }
-        Usage_Nowash.put(DelRowid, x);
+//        String x="0";
+//        if(Usage_Nowash.get(RowID)=="0"){
+//            x="1";
+//        }
+        Usage_Nowash.put(RowID, status);
+        Log.d("onSave","Usage_Nowash = "+Usage_Nowash);
     }
 
     private void showDepartmentForm(boolean B_IsShowDepartmentForm){

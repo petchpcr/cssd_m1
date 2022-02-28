@@ -8,6 +8,7 @@ import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -110,6 +111,7 @@ public class iAudio extends AppCompatActivity{
     }
 
     public void getAudio(String Number) {
+
         if(Number.equals("no_item_found") || Number.equals("pay_in_full") || Number.equals("okay") ||
                 Number.equals("no") || Number.equals("expiring") || Number.equals("fifo") ||
                 Number.equals("repeat_scan") || Number.equals("closedoc") || Number.equals("day") ||

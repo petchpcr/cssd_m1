@@ -692,9 +692,10 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                                                 } else {
                                                     Remark = remark.getText().toString();
                                                 }
-                                                Log.d("janetest1",String.valueOf(pg_spinner.getSelectedItemPosition())+"");
+                                                Log.d("tog_program_m1","SaveDoc = "+pg_spinner.getSelectedItem()+"---"+array_spinner_id.get(pg_spinner.getSelectedItem()));
 
-                                                SaveDoc(DocNo, String.valueOf(pg_spinner.getSelectedItemPosition()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
+                                                SaveDoc(DocNo, array_spinner_id.get(pg_spinner.getSelectedItem()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
+//                                                SaveDoc(DocNo, String.valueOf(pg_spinner.getSelectedItemPosition()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
                                                 uploadImage();
 //                                                uploadImage_T2();
                                                 uploadTextImage();
@@ -1144,6 +1145,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
+
+                        Log.d("tog_program_m1",c.getString("TestProgramName")+"----"+c.getString("ID"));
                         array_spinner_id.put(c.getString("TestProgramName"),c.getString("ID"));
                         if(!c.getString("TestProgramName").equals(program)){
                             list_sp.add(c.getString("TestProgramName"));

@@ -137,19 +137,30 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             bt_risk.setVisibility(View.INVISIBLE);
         }
 
+        chk_box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), "0");
+                }else{
+                    ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), "1");
+                }
+            }
+        });
+
         if (Switch_Mode){
             chk_box.setVisibility(View.VISIBLE);
             chk_box.setChecked(true);
         }else {
             chk_box.setVisibility(View.INVISIBLE);
         }
-
-        chk_box.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), listData.get(position).getItemID());
-            }
-        });
+//
+//        chk_box.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), listData.get(position).getItemID());
+//            }
+//        });
 
         if (listData.get(position).getXremark().equals("")){
             if(listData.get(position).getRemarkSend().equals("1")){

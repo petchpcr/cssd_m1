@@ -1553,7 +1553,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
         alert = alert_builder.create();
 
-        if(true){
+        if(false){
             alert.show();
         }
 

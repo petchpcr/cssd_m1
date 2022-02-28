@@ -656,6 +656,7 @@ public class SterileActivity extends AppCompatActivity{
 
                             if(list_mac_adapter.select_mac_pos != 0){
                                 if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+                                    Log.d("tog_getAudio","addSterileDetailById = 1" );
                                     addSterileDetailById(
                                             list.get(list_mac_adapter.select_mac_pos).getDocNo(),
                                             c.getString("w_id")+",",
@@ -664,17 +665,19 @@ public class SterileActivity extends AppCompatActivity{
                                 }else{
                                     reload_basket();
                                     nMidia.getAudio("okay");
+                                    Log.d("tog_getAudio","Number = 1" );
                                 }
                             }else{
                                 reload_basket();
                                 nMidia.getAudio("okay");
+                                Log.d("tog_getAudio","Number = 2" );
                             }
                         }else if (c.getString("result").equals("D")){
                             if(c.getString("basket_id").equals(basket_id)){
                                 show_dialog("Warning","รายการซ้ำ  ","repeat_scan");
                             }else{
-//                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
-                                show_log_error("Usage = "+c.getString("basket_id")+" --- This = "+basket_id);
+                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
+//                                show_log_error("Usage = "+c.getString("basket_id")+" --- This = "+basket_id);
                             }
                         }else if(c.getString("result").equals("T")){
                             show_dialog("Warning","ไม่สามารถเพิ่มได้","no");
@@ -820,6 +823,7 @@ public class SterileActivity extends AppCompatActivity{
 
                         if(c.getString("result").equals("A")) {
                             nMidia.getAudio("okay");
+                            Log.d("tog_getAudio","Number = 3");
                             reload_basket();
                         }else{
                             show_dialog("Warning","ไม่สามารถเพิ่มรายการได้","no");
@@ -831,6 +835,7 @@ public class SterileActivity extends AppCompatActivity{
                     show_log_error("cssd_add_sterile_detail_by_id.php Error = "+e);
                     e.printStackTrace();
                 }finally{
+                    Log.d("tog_getAudio","is_add_item = "+is_add_item);
                     is_add_item = false;
                 }
             }
@@ -851,6 +856,8 @@ public class SterileActivity extends AppCompatActivity{
 
                 // Add Select Insert
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_add_sterile_detail_by_id.php", data);
+                Log.d("tog_add","data = " + data);
+                Log.d("tog_add","result = " + result);
 
                 return result;
             }
@@ -930,6 +937,7 @@ public class SterileActivity extends AppCompatActivity{
                             xlist_item_basket = list_item;
 
                             if(is_add_item){
+                                Log.d("tog_getAudio","addSterileDetailById = 2" );
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
                                 if(tid){
@@ -1416,10 +1424,10 @@ public class SterileActivity extends AppCompatActivity{
         int for_scan = Integer.parseInt(data[0]);
         switch (for_scan){
             case wait_scan_program :
-                wait_dialog.setMessage("กรุณาสแกนรหัสผู้ใช้งาน");
+                wait_dialog.setMessage("กรุณาสแกนรหัสโปรแกรม");
                 break;
             case wait_scan_employee :
-                wait_dialog.setMessage("กรุณาสแกนรหัสโปรแกรม");
+                wait_dialog.setMessage("กรุณาสแกนรหัสผู้ใช้งาน");
                 break;
             case wait_scan_type :
                 wait_dialog.setMessage("กรุณาสแกนประเภท");
@@ -1560,7 +1568,7 @@ public class SterileActivity extends AppCompatActivity{
 
         alert = alert_builder.create();
 
-        if(true){
+        if(false){
             alert.show();
         }
 
