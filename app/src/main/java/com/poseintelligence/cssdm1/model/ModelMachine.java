@@ -10,6 +10,7 @@ public class ModelMachine {
     String TypeID;
     String ProgramName;
     String RoundNumber;
+    String UserLoader;
 
     public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo,String TypeID) {
         MachineID = machineID;
@@ -82,5 +83,13 @@ public class ModelMachine {
 
     public void setTypeID(String typeID) {
         TypeID = typeID;
+    }
+
+    public String getUserLoader() {
+        return UserLoader;
+    }
+
+    public void setUserLoader(String userLoader) {
+        UserLoader = userLoader;
     }
 }

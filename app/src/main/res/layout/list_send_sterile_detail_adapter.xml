@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="7dp"
                 android:layout_marginTop="28dp"
                 android:layout_marginEnd="10dp"
                 android:layout_toStartOf="@+id/w_date"
@@ -43,7 +43,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="30dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="5dp"
                 android:text="(180 วัน)"
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorGray" />
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="7dp"
                 android:paddingTop="0dp"
                 android:paddingBottom="5dp"
                 android:text="หมายเหตุ :"
@@ -73,8 +73,7 @@
                 android:layout_width="30dp"
                 android:layout_height="25dp"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="3dp"
                 android:buttonTint="@color/colorSwitchBlue"
                 android:textStyle="bold" />
 
@@ -82,9 +81,11 @@
                 android:id="@+id/w_ucode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/bt_add_to_basket"
                 android:layout_alignParentStart="true"
-                android:layout_marginLeft="40dp"
+                android:layout_marginLeft="32dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="0dp"
                 android:text="text"
                 android:textColor="@color/colorGray"
                 android:textStyle="bold" />
@@ -96,8 +97,20 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="5dp"
                 android:background="@android:drawable/ic_delete" />
+
+            <TextView
+                android:id="@+id/bt_add_to_basket"
+                android:layout_width="20dp"
+                android:layout_height="19dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_toStartOf="@+id/w_bt_express"
+                android:background="@drawable/bi_basket_g"
+                android:padding="5dp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/w_bt_express"
@@ -128,7 +141,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="5dp"
-                android:layout_marginEnd="40dp"
+                android:layout_marginEnd="30dp"
                 app:srcCompat="@drawable/ic_r_grey" />
 
             <TextView
@@ -175,13 +188,13 @@
 
             <TextView
                 android:id="@+id/itemqty"
-                android:layout_width="50dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginEnd="40dp"
+                android:layout_marginEnd="35dp"
                 android:layout_marginBottom="2dp"
-                android:text=" [ 1 ] "
+                android:text=" [ 100] "
                 android:textAlignment="textEnd"
                 android:textColor="@color/colorGray"
                 android:textSize="14sp" />
@@ -208,15 +221,6 @@
                 android:visibility="visible" />
 
         </RelativeLayout>
-
-        <Button
-            android:id="@+id/bt_add_to_basket"
-            android:layout_width="45dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dp"
-            android:layout_weight="1"
-            android:background="@drawable/ic_right_blue"
-            android:visibility="gone" />
 
     </LinearLayout>
 

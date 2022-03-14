@@ -146,7 +146,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
             p_bid = bd.getString("B_ID");
             p_switch_washdep = bd.getBoolean("p_switch_washdep");
 
-            Log.d("OOOO","xSel = " + xSel);
+            Log.d("tog_xSel","p_switch_washdep = " + p_switch_washdep);
             Log.d("OOOO","p_docno = " + p_docno);
             Log.d("OOOO","p_dept_id = " + p_dept_id);
             Log.d("OOOO","p_user_code = " + p_user_code);
@@ -444,11 +444,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                             newsData.setxFields16(c.getString("IsSet"));
                             newsData.setIs_Check(true);
 
-//                            if(((CssdProject) getApplication()).isWA_IsUsedWash()){
-//                                if(!c.getString("IsSet").equals("2")){
-//                                    MODEL_ITEM_STOCK.add( newsData );
-//                                }
-//                            }
+                            MODEL_ITEM_STOCK.add( newsData );
 
                             if(i==0 && !Usage_code.equals("")){
                                 edt_search.requestFocus();
@@ -501,6 +497,8 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                 if(!IsReuse){
                     data.put("p_is_reuse", "0");
                 }
+
+                data.put("p_switch_washdep", p_switch_washdep ? "1" : "0");
 
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_item_by_send_sterile.php",data);
                 Log.d("tog_display67","result : "+result);
@@ -771,6 +769,9 @@ public class SearchItem_SendSterile extends AppCompatActivity {
                     if (!IsReuse) {
                         data.put("p_is_reuse", "0");
                     }
+
+
+                    data.put("p_switch_washdep", p_switch_washdep ? "1" : "0");
 
                     String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_item_by_send_sterile.php", data);
                     Log.d("tog_display","result : "+result);

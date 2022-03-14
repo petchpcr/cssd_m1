@@ -36,6 +36,9 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
         this.context = context;
         this.mData = data;
         this.wiget_list = wiget_list;
+
+        ((BasketWashingActivity)context).title_2.setText(" ");
+        ((BasketWashingActivity)context).is_have_loader = false;
     }
 
     // inflates the row layout from xml when needed
@@ -67,6 +70,7 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
         if(position==select_mac_pos){
             onItemSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);
         }else{
+            Log.d("tog_chk_active_mac",mData.get(position).getIsActive());
             if(mData.get(position).getIsActive().equals("1")){
                 holder.mac_image.setBackgroundResource(R.drawable.ic_wash_red);
                 holder.ll.setBackgroundResource(R.drawable.rectangle_red);
@@ -152,8 +156,18 @@ public class ListBoxWashMachineAdapter  extends RecyclerView.Adapter<ListBoxWash
     public void setProgramAndRound() {
         if(select_mac_pos==mData.size()-1){
             ((BasketWashingActivity)context).title_2.setText(" ");
+            ((BasketWashingActivity)context).is_have_loader = false;
         }else{
-            ((BasketWashingActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
+            String loader = mData.get(select_mac_pos).getUserLoader();
+
+            if(loader.equals(" ")){
+                loader = "-";
+                ((BasketWashingActivity)context).is_have_loader = false;
+            }else{
+                ((BasketWashingActivity)context).is_have_loader = true;
+            }
+
+            ((BasketWashingActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber()+"\nผู้ทำรายการ : "+loader);
         }
     }
 

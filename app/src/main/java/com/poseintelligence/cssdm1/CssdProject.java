@@ -96,6 +96,7 @@ public class CssdProject extends Application {
 
     boolean ST_SoundAndroidVersion9 = false;
     boolean PA_IsNotificationPopupExpiringScan = false;
+    boolean PA_IsUsedPayOkSound = false;
 
     public boolean isPA_IsWastingPayout() {
         return PA_IsWastingPayout;
@@ -658,5 +659,13 @@ public class CssdProject extends Application {
 
     public void setPA_IsNotificationPopupExpiringScan(boolean PA_IsNotificationPopupExpiringScan) {
         this.PA_IsNotificationPopupExpiringScan = PA_IsNotificationPopupExpiringScan;
+    }
+
+    public boolean isPA_IsUsedPayOkSound() {
+        return PA_IsUsedPayOkSound;
+    }
+
+    public void setPA_IsUsedPayOkSound(boolean PA_IsUsedPayOkSound) {
+        this.PA_IsUsedPayOkSound = PA_IsUsedPayOkSound;
     }
 }

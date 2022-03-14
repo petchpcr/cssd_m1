@@ -49,6 +49,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         this.mData = data;
         this.wiget_list = wiget_list;
 
+        ((SterileActivity)context).title_2.setText(" ");
+        ((SterileActivity)context).is_have_loader = false;
     }
 
     // inflates the row layout from xml when needed
@@ -167,10 +169,26 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     }
 
     public void setProgramAndRound() {
+//        if(select_mac_pos==mData.size()-1){
+//            ((SterileActivity)context).title_2.setText(" ");
+//        }else{
+//            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
+//        }
+
         if(select_mac_pos==mData.size()-1){
             ((SterileActivity)context).title_2.setText(" ");
+            ((SterileActivity)context).is_have_loader = false;
         }else{
-            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
+            String loader = mData.get(select_mac_pos).getUserLoader();
+
+            if(loader.equals(" ")){
+                loader = "-";
+                ((SterileActivity)context).is_have_loader = false;
+            }else{
+                ((SterileActivity)context).is_have_loader = true;
+            }
+
+            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber()+"\nผู้ทำรายการ : "+loader);
         }
     }
 

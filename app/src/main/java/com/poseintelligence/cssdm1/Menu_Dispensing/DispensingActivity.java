@@ -179,6 +179,8 @@ public class DispensingActivity extends AppCompatActivity {
 
     private TextToSpeech tts;
 
+    boolean PA_IsUsedPayOkSound = true;
+
     public void speakText(String textContents) {
         tts.speak(textContents, TextToSpeech.QUEUE_FLUSH, null, null);
     }
@@ -780,6 +782,9 @@ public class DispensingActivity extends AppCompatActivity {
         PA_IsUsedFIFO  = ((CssdProject) getApplication()).isPA_IsUsedFIFO();
         PA_IsWastingPayout = ((CssdProject) getApplication()).isPA_IsWastingPayout();
 
+        PA_IsUsedPayOkSound = ((CssdProject) getApplication()).isPA_IsUsedPayOkSound();
+
+        Log.d("tog_LoadConfig","PA_IsUsedPayOkSound = "+PA_IsUsedPayOkSound);
         //======================================================
         //  M1
         //======================================================
@@ -827,6 +832,7 @@ public class DispensingActivity extends AppCompatActivity {
                             }else{
                                 nMidia.getAudio("repeat_scan");
                             }
+
                         }else{
 
                             if (SR_ReceiveFromDeposit) {
@@ -1242,10 +1248,12 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring","s_expiring: "+s_expiring);
                                 if(!s_expiring){
                                     s_expiring = false;
-                                    if(ST_SoundAndroidVersion9){
-                                        speakText("complete");
-                                    }else{
-                                        nMidia.getAudio("okay" );
+                                    if(PA_IsUsedPayOkSound){
+                                        if(ST_SoundAndroidVersion9){
+                                            speakText("complete");
+                                        }else{
+                                            nMidia.getAudio("okay" );
+                                        }
                                     }
                                 }
                                 
@@ -1253,13 +1261,17 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring","s_expiring: "+s_expiring);
                                 if(!s_expiring){
                                     s_expiring = false;
-                                    if(ST_SoundAndroidVersion9){
-                                        speakText(c.getString("PayQty"));
-                                    }else{
-                                        nMidia.getAudio(c.getString("PayQty"));
+                                    if(PA_IsUsedPayOkSound){
+                                        if(ST_SoundAndroidVersion9){
+                                            speakText(c.getString("PayQty"));
+                                        }else{
+                                            nMidia.getAudio(c.getString("PayQty"));
+                                        }
                                     }
+
                                 }
                             }
+
                             if(DocNo == null){
 
                                 DocNo = c.getString("DocNo");

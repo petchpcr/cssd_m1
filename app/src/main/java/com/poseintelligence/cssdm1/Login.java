@@ -722,6 +722,12 @@ public class Login extends AppCompatActivity {
                                 ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
                                 Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+c.getBoolean("PA_IsNotificationPopupExpiringScan"));
                             }
+
+                            if(!c.isNull("PA_IsNotificationPopupExpiringScan")){
+                                ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
+                                Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+c.getBoolean("PA_IsNotificationPopupExpiringScan"));
+                            }
+                            ((CssdProject) getApplication()).setPA_IsUsedPayOkSound(c.getBoolean("PA_IsUsedPayOkSound"));
                             get_config_m1();
 
                         }else{

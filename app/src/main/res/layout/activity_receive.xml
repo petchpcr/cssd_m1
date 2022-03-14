@@ -447,11 +447,28 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
                     android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                         android:id="@+id/spn_usr_receive"
+                        style="@style/spinner_style_register"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:textColor="@android:color/black"
+                        android:textSize="14dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                        android:id="@+id/spin_basket"
                         style="@style/spinner_style_register"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
@@ -477,6 +494,7 @@
                         android:text=""
                         android:textSize="14dp"
                         android:visibility="visible" />
+
                 </LinearLayout>
 
             </LinearLayout>

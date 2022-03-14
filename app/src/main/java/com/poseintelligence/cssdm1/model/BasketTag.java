@@ -12,6 +12,17 @@ public class BasketTag {
 
     Boolean MacActive = false;
 
+    public BasketTag(String ID, String name, String macId, String macName, int qty, String BasketCode, String IsActive_Basket, String RefDocNo) {
+        this.ID = ID;
+        Name = name;
+        MacId = macId;
+        MacName = macName;
+        this.qty = qty;
+        this.BasketCode =BasketCode ;
+        this.IsActive_Basket = IsActive_Basket ;
+        this.RefDocNo = RefDocNo ;
+    }
+
     public BasketTag(String ID, String name, String macId, String macName, int qty, String BasketCode, String IsActive_Basket, String RefDocNo, String TypeProcessID) {
         this.ID = ID;
         Name = name;

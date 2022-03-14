@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,6 +52,7 @@ import com.poseintelligence.cssdm1.core.audio.iAudio;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.data.Master;
+import com.poseintelligence.cssdm1.model.BasketTag;
 import com.poseintelligence.cssdm1.model.pCustomer;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
@@ -101,6 +103,11 @@ public class ReceiveActivity extends AppCompatActivity {
     private String usr_receive_old_id = "";
     private String Usagecode = "";
 
+    //basket value
+    String Basket_washtag_code="";
+
+    ArrayList<BasketTag> basket_ar = new ArrayList<>();
+
     private boolean IsItemClick = false;
     private boolean B_IsSearch = false;
     private boolean IsSU;
@@ -117,6 +124,9 @@ public class ReceiveActivity extends AppCompatActivity {
     private ArrayList<String> ar_list_zone = new ArrayList<String>();
 
     ArrayList<pCustomer> item_doc_detail_set = new ArrayList<pCustomer>();
+    ArrayList<pCustomer> item_in_basket = new ArrayList<pCustomer>();
+
+    private boolean basket_is_resterile = false;
 
     private ArrayAdapter<String> adapter_spinner;
     private boolean SS_IsShowToastDialog = true;
@@ -145,7 +155,6 @@ public class ReceiveActivity extends AppCompatActivity {
     private Button btn_approve;
 
     private TextView txt_title;
-    private TextView txt_doc_no;
     private TextView txt_usr_receive;
     private TextView txt_doc_date;
     private TextView txt_doc_time;
@@ -165,6 +174,8 @@ public class ReceiveActivity extends AppCompatActivity {
     private SearchableSpinner spn_zone;
     private SearchableSpinner spn_department_search;
 
+    private SearchableSpinner spin_basket;
+
     private Switch switch_status;
     private Switch switch_non_select_department;
     private Switch switch_washdep;
@@ -172,8 +183,6 @@ public class ReceiveActivity extends AppCompatActivity {
     private ListView list_doc_detail_set;
     private ListView list_doc_detail;
     private ListView list_doc;
-
-    private TabLayout tabs;
 
     private LinearLayout Block_1;
     private LinearLayout Block_2;
@@ -439,6 +448,8 @@ public class ReceiveActivity extends AppCompatActivity {
         spn_usr_receive = ( SearchableSpinner ) findViewById(R.id.spn_usr_receive);
         list_doc_detail = ( ListView ) findViewById(R.id.list_doc_detail);
         switch_non_select_department = ( Switch ) findViewById(R.id.switch_non_select_department);
+
+        spin_basket = findViewById(R.id.spin_basket);
     }
 
     public void byConfig() {
@@ -648,6 +659,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 // TODO Auto-generated method
                 Block_1.setVisibility( View.GONE );
                 Block_2.setVisibility( View.VISIBLE );
+                SelectBasket();
 
                 IsStatus = "0";
 
@@ -1074,7 +1086,21 @@ public class ReceiveActivity extends AppCompatActivity {
                 }
                 return false;
             }
+        });
 
+        spin_basket.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                if(position!=0){
+//                    CheckBasket(basket_ar.get(position).getBasketCode(),true);
+//                }
+                CheckBasket(basket_ar.get(position).getBasketCode(),true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
         btn_add_item.setOnClickListener(new View.OnClickListener() {
@@ -1123,7 +1149,10 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 spn_department_form.setSelection(0);
 
-//                spn_usr_send.setSelection(0);
+                if(SS_IsShowSender){
+                    spn_usr_send.setSelection(0);
+                }
+
                 spn_usr_receive.setSelection(0);
 
                 list_doc_detail.setAdapter(null);
@@ -1437,7 +1466,6 @@ public class ReceiveActivity extends AppCompatActivity {
                     index = -1;
 
                     // Widget
-                    txt_doc_no.setText("");
                     txt_doc_time.setText("");
                     txt_count_list.setText("");
                     spn_department_form.setSelection(0);
@@ -1453,9 +1481,9 @@ public class ReceiveActivity extends AppCompatActivity {
 
                     // List
                     item_doc_detail_set.clear();
-                    if(tabs.getSelectedTabPosition()==0){
-                        list_doc_detail_set.setAdapter(null);
-                    }
+//                    if(tabs.getSelectedTabPosition()==0){
+//                        list_doc_detail_set.setAdapter(null);
+//                    }
                     list_doc_detail.setAdapter(null);
                     list_doc.setAdapter(null);
 
@@ -1623,7 +1651,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                         JSONObject c = rs.getJSONObject(i);
 
-                        if (spn_usr_receive.getSelectedItemPosition() == 0){
+                        if (spn_usr_receive.getSelectedItemPosition() == 0 || !SS_IsShowSender){
                             spn_usr_receive.setSelection(Integer.parseInt(c.getString("ID")));
                             edt_usage_code.setText("");
                             edt_usage_code.requestFocus();
@@ -1901,6 +1929,7 @@ public class ReceiveActivity extends AppCompatActivity {
     }
 
     public void onSave(final String DocNo, final String send_id, final String receive_id, final String zone_id) {
+        Log.d("onSave","onSaveNowash");
         class Save extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(ReceiveActivity.this);
@@ -1981,7 +2010,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_project_id", Integer.toString ( ((CssdProject) getApplication()).getCustomerId()) );
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_complete.php", data);
-
+                Log.d("onSave","data = "+data);
+                Log.d("onSave","result = "+result);
                 return result;
             }
         }
@@ -1992,6 +2022,7 @@ public class ReceiveActivity extends AppCompatActivity {
     }
 
     public void onSaveNowash(final String DocNo, final String send_id, final String receive_id, final String zone_id, final String Usage_nowash_id) {
+        Log.d("onSave","onSaveNowash");
         class onSaveNowash extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(ReceiveActivity.this);
@@ -2053,7 +2084,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_is_group_payout", SS_IsGroupPayout ? "1" : "0");
                 data.put("p_is_copy_to_payout", SS_IsCopyPayout ? "1" : "0");
                 data.put("p_is_approve", SS_IsApprove ? "1" : "0");
-                data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
+//                data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
+                data.put("p_is_usedwash","0");
                 data.put("p_usage_nowash_id", Usage_nowash_id);
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
@@ -2074,7 +2106,8 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_project_id", Integer.toString ( ((CssdProject) getApplication()).getCustomerId()) );
 
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_complete.php", data);
-                Log.d("OOOO","result:"+result);
+                Log.d("onSave","data = "+data);
+                Log.d("onSave","result = "+result);
                 return result;
             }
         }
@@ -2271,7 +2304,6 @@ public class ReceiveActivity extends AppCompatActivity {
         index = -1;
 
         // Widget
-        txt_doc_no.setText("");
         txt_doc_time.setText("");
         txt_count_list.setText("");
         spn_department_form.setSelection(0);
@@ -2294,9 +2326,9 @@ public class ReceiveActivity extends AppCompatActivity {
 
         // List
         item_doc_detail_set.clear();
-        if(tabs.getSelectedTabPosition()==0){
-            list_doc_detail_set.setAdapter(null);
-        }
+//        if(tabs.getSelectedTabPosition()==0){
+//            list_doc_detail_set.setAdapter(null);
+//        }
         //list_doc.setSelection(-1);
 
         defineDocDate();
@@ -2807,6 +2839,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
         Block_1.setVisibility( View.GONE );
         Block_2.setVisibility( View.VISIBLE );
+        SelectBasket();
     }
 
     public void displaySendSterile(final boolean IsDisplayForm, final String p_docno, int I_Result ) {
@@ -2964,7 +2997,6 @@ public class ReceiveActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObj = new JSONObject(s);
                     JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
-
                     model_send_sterile_detail.clear();
 
                     int count = 0;
@@ -3125,7 +3157,6 @@ public class ReceiveActivity extends AppCompatActivity {
                     lable_qty.setText("[ " +cnt+ "  รายการ  / ");
                     getListDetailQty(UsageCode);
                     list_doc_detail_set.setAdapter(new ListSendSterileDetailSetAdapter(ReceiveActivity.this, item_doc_detail_set));
-                    tabs.getTabAt(0).select();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -3136,7 +3167,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_is_used_remarks", SS_IsUsedRemarks ? "1" : "0");
                 data.put("UsageCode", UsageCode);
-                data.put("DocNo", txt_doc_no.getText().toString());
+                data.put("DocNo", DocNo);
                 data.put("B_ID", B_ID);
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
@@ -3197,7 +3228,7 @@ public class ReceiveActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("UsageCode", UsageCode);
-                data.put("DocNo",txt_doc_no.getText().toString());
+                data.put("DocNo",DocNo);
                 data.put("B_ID",B_ID);
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 String result = null;
@@ -3273,13 +3304,14 @@ public class ReceiveActivity extends AppCompatActivity {
         Usagecode = Usage;
     }
 
-    public void usageNowash (String RowID, String DelRowid){
+    public void usageNowash (String RowID, String status){
         S_RowId = RowID;
-        String x="0";
-        if(Usage_Nowash.get(DelRowid)=="0"){
-            x="1";
-        }
-        Usage_Nowash.put(DelRowid, x);
+//        String x="0";
+//        if(Usage_Nowash.get(RowID)=="0"){
+//            x="1";
+//        }
+        Usage_Nowash.put(RowID, status);
+        Log.d("onSave","Usage_Nowash = "+Usage_Nowash);
     }
 
     private void showDepartmentForm(boolean B_IsShowDepartmentForm){
@@ -3385,7 +3417,7 @@ public class ReceiveActivity extends AppCompatActivity {
         intent.putExtra("IsAdmin",IsAdmin);
         intent.putExtra("IsSU",IsSU);
         intent.putExtra("IsStatus",IsStatus);
-        intent.putExtra("DocNo",txt_doc_no.getText().toString());
+        intent.putExtra("DocNo",DocNo);
         intent.putExtra("Type",type);
         intent.putExtra("page","sendsterile");
         intent.putExtra("Qty",Qty);
@@ -3696,4 +3728,451 @@ public class ReceiveActivity extends AppCompatActivity {
         }
 
     }
+
+    public void Clear_wash_tag(){
+        Basket_washtag_code = "";
+    }
+
+    public void CheckBasket(final String xBasket,Boolean isDropdown) {
+
+        Log.d("tog_CheckBasket","CheckBasket Basket_washtag_code = "+Basket_washtag_code);
+        if(xBasket.equals("")){
+            Clear_wash_tag();
+            return;
+        }
+
+        for(int i=0;i<basket_ar.size();i++){
+
+            Log.d("tog_CheckBasket","xBasket i = "+i+" --- "+basket_ar.get(i).getBasketCode()+" --- "+xBasket);
+            if(basket_ar.get(i).getBasketCode().equals(xBasket)){
+
+                if(basket_ar.get(i).getMacId().equals("")){
+
+                    get_washtag_detail(basket_ar.get(i).getBasketCode(),basket_ar.get(i).getName(),basket_ar.get(i).getQty());
+
+                }else {
+
+//                    if(isDropdown){
+//                        call_washtag_dialog(basket_ar.get(i).getBasketCode(),basket_ar.get(i).getName());
+//                    }else{
+//                        Toast.makeText(ReceiveActivity.this, "ไม่สามารถเลือกได้ Wash Tag นี้อยู่ในเครื่องล้าง", Toast.LENGTH_SHORT).show();
+//                    }
+
+                    Toast.makeText(ReceiveActivity.this, "ไม่สามารถเลือกได้ Wash Tag นี้อยู่ในเครื่องล้าง", Toast.LENGTH_SHORT).show();
+                    spin_basket.setSelection(0);
+                }
+                return;
+            }
+        }
+
+        Toast.makeText(ReceiveActivity.this, "ไม่พบข้อมูล", Toast.LENGTH_SHORT).show();
+        spin_basket.setSelection(0);
+    }
+
+    public void get_washtag_detail(String BasketCode,String basket_name,int qty){
+//        basket.setText(basket_name);
+//        Basket_washtag_code = BasketCode;
+
+        if(BasketCode!=""){
+//            txt_basket_lable.setText(basket_name+" [ "+qty+" รายการ ]");
+//            washtag_detail(BasketCode);
+
+            Log.d("tog_CheckBasket2","Basket_washtag_code = "+!Basket_washtag_code.equals(BasketCode));
+            if(!Basket_washtag_code.equals(BasketCode)){
+                Basket_washtag_code = BasketCode;
+                SelectBasket();
+            }
+        }
+        focus();
+    }
+
+    public void SelectBasket() {
+        class Add extends AsyncTask<String, Void, String> {
+
+            private ProgressDialog dialog = new ProgressDialog(ReceiveActivity.this);
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
+                this.dialog.setCancelable(false);
+                this.dialog.show();
+            }
+
+            int pos = 0;
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                basket_ar.clear();
+                BasketTag x = new BasketTag("0","","","",0,"","","");
+                basket_ar.add(x);
+
+                ArrayList<String> basket_ar_text = new ArrayList<>();
+                ArrayList<String> dummy_basket_ar_text = new ArrayList<>();
+                ArrayList<BasketTag> dummy_basket_ar = new ArrayList<>();
+                basket_ar_text.add("");
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    int mid = rs.length()/2;
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+                        if (c.getString("result").equals("A")) {
+                            BasketTag washTag = new BasketTag(c.getString("ID"),
+                                    c.getString("BasketName"),
+                                    c.getString("InMachineID"),
+                                    c.getString("MachineName"),
+                                    c.getInt("cnt"),
+                                    c.getString("BasketCode"),
+                                    c.getString("IsActive_Basket"),
+                                    c.getString("RefDocNo"));
+
+                            String text1 = washTag.getName();
+                            if(washTag.getMacId().equals("") && washTag.getRefDocNo().equals("")){
+                                if(washTag.getQty()>0){
+                                    text1 += " : [ "+washTag.getQty()+" รายการ ]";
+                                    basket_ar_text.add(text1);
+                                    basket_ar.add(washTag);
+                                }else{
+                                    basket_ar_text.add(1,text1);
+                                    basket_ar.add(1,washTag);
+                                }
+
+                            }else{
+                                if (!c.getString("RefDocNo").equals("") || !c.getString("InMachineID").equals("")){
+                                    if (!c.getString("InMachineID").equals("") && !c.getString("RefDocNo").equals("")){
+                                        text1 += " ** อยู่ในเครื่องล้าง"+washTag.getMacName()+" **";
+                                        dummy_basket_ar_text.add(text1);
+                                        dummy_basket_ar.add(washTag);
+                                    }else {
+                                        text1 += " ** ล้างเสร็จแล้ว รอห่อ/แพ็ค "+ " **";
+                                        dummy_basket_ar_text.add(text1);
+                                        dummy_basket_ar.add(washTag);
+                                    }
+                                }else {
+                                    text1 += " ** อยู่ในเครื่องล้าง"+washTag.getMacName()+" **";
+                                    dummy_basket_ar_text.add(text1);
+                                    dummy_basket_ar.add(washTag);
+                                }
+                            }
+                        }
+                    }
+
+//                    for (int i = 0; i < dummy_basket_ar_text.size(); i++){
+//                        basket_ar_text.add(dummy_basket_ar_text.get(i));
+//                        basket_ar.add(dummy_basket_ar.get(i));
+//                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(ReceiveActivity.this, android.R.layout.simple_spinner_dropdown_item, basket_ar_text);
+                    spin_basket.setAdapter(adapter);
+
+                    for (int i = 0; i < basket_ar.size(); i++){
+                        if(Basket_washtag_code.equals(basket_ar.get(i).getBasketCode())){
+                            pos = i;
+                        }
+                    }
+
+                    spin_basket.setSelection(pos);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "washtag/cssd_select_basket_send.php", data);
+
+                return result;
+            }
+        }
+        Add ru = new Add();
+        ru.execute();
+    }
+
+    public void insert_item_to_basket_and_re(String ItemStockID,String SSDetailID){
+        if(Basket_washtag_code!=""){
+            basket_is_resterile = true;
+            insert_item_to_basket(ItemStockID,SSDetailID);
+        }else{
+            Toast.makeText(ReceiveActivity.this, "ยังไม่ได้เลือกตะกร้า", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void insert_item_to_basket(String ItemStockID,String SSDetailID){
+        class insert_item_to_basket extends AsyncTask<String, Void, String> {
+            // variable
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                boolean bo = false;
+                try{
+                    JSONObject jsonObj = new JSONObject(s);
+                    JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for(int i=0;i<setRs.length();i++) {
+                        JSONObject c = setRs.getJSONObject(i);
+
+                        bo = c.getBoolean("result");
+
+                        displaySendSterileDetail(DocNo);
+
+                        washtag_detail(c.getString("BasketCode"),false);
+                    }
+
+                    if(bo){
+                        Toast.makeText(ReceiveActivity.this, "เพิ่มรายการในตะกร้าแล้ว", Toast.LENGTH_SHORT).show();
+
+                        if(basket_is_resterile){
+                            basket_resterile(1);
+                        }else{
+                            SelectBasket();
+                        }
+                    }else {
+                        Toast.makeText(ReceiveActivity.this, "รายการไม่ถูกต้อง !!", Toast.LENGTH_SHORT).show();
+                    }
+
+                }catch (JSONException e){
+
+                }
+
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("BasketID",params[0]);
+                data.put("ItemStockID",params[1]);
+                data.put("SSDetailID",params[2]);
+                data.put("p_docno",DocNo);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "washtag/insert_item_in_washtag.php",data);
+
+                return result;
+            }
+        }
+
+        if(Basket_washtag_code!=""){
+
+            for(int i=0;i<basket_ar.size();i++){
+
+                if(Basket_washtag_code.equals(basket_ar.get(i).getBasketCode())){
+
+                    for(int j=0;j<item_in_basket.size();j++){
+
+                        if(item_in_basket.get(j).getSs_rowid().equals(SSDetailID)){
+
+                            Toast.makeText(ReceiveActivity.this, "มีรายการอยู่ในตะกร้าแล้ว", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                    String BasketID = basket_ar.get(i).getID();
+                    insert_item_to_basket ru = new insert_item_to_basket();
+                    ru.execute(BasketID,ItemStockID,SSDetailID);
+
+                    break;
+                }
+            }
+        }else{
+
+            Toast.makeText(ReceiveActivity.this, "ยังไม่ได้เลือกตะกร้า", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void basket_resterile(final int IsResterile){
+
+        class basket_resterile extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                item_in_basket.clear();
+                boolean Resterile = false;
+                try{
+                    JSONObject jsonObj = new JSONObject(s);
+                    JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
+                    String bo = "";
+
+                    for(int i=0;i<setRs.length();i++) {
+                        JSONObject c = setRs.getJSONObject(i);
+                        bo=c.getString("result");
+
+                        if (bo.equals("A")){
+
+                            SelectBasket();
+
+                            displaySendSterileDetail(DocNo);
+                        }
+
+                    }
+                }catch (JSONException e){
+
+                }
+
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("BasketID",params[0]);
+                data.put("IsResterile",IsResterile+"");
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl()+"washtag/resterile_from_washtag.php",data);
+
+                return result;
+            }
+        }
+
+        if(Basket_washtag_code!=""){
+
+            for(int i=0;i<basket_ar.size();i++){
+
+                if(Basket_washtag_code.equals(basket_ar.get(i).getBasketCode())){
+                    String BasketID = basket_ar.get(i).getID();
+
+                    if(item_in_basket.size()>0){
+                        basket_resterile ru = new basket_resterile();
+                        ru.execute(BasketID);
+
+                    }else{
+                        Toast.makeText(ReceiveActivity.this, "ไม่มีรายการในตะกร้า", Toast.LENGTH_SHORT).show();
+                    }
+
+                    break;
+                }
+            }
+        }else{
+            if(IsResterile==0){
+                Toast.makeText(ReceiveActivity.this, "ยังไม่ได้เลือกตะกร้า", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    public void washtag_detail(String BasketCode,final Boolean InMc){
+
+        class washtag_detail extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                item_in_basket.clear();
+                basket_is_resterile = false;
+                try{
+                    JSONObject jsonObj = new JSONObject(s);
+                    JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
+                    String bo = "";
+                    for(int i=0;i<setRs.length();i++) {
+                        JSONObject c = setRs.getJSONObject(i);
+                        bo = c.getString("result");
+                        if (bo.equals("A")){
+                            pCustomer item = new pCustomer();
+                            item.setItemname(c.getString("itemname"));
+                            item.setUsageCode(c.getString("UsageCode"));
+                            item.setPackdate(c.getString("Shelflife"));
+                            item.setSs_rowid(c.getString("SSDetailID"));
+                            item.setResteriletype(c.getString("ResterileType"));
+                            item.setBasketID(c.getString("ID"));
+                            item_in_basket.add(item);
+
+                            if(c.getString("ResterileType").equals("1")){
+                                basket_is_resterile = true;
+                            }
+                        }
+
+                    }
+                }catch (JSONException e){
+                }
+
+//                if(InMc){
+//                    if(gv_washtag_item!=null){
+//                        gv_washtag_item.setAdapter(new Adapter_Washtag_SS(CssdSendSterile.this,item_in_basket,true));
+//                    }
+//                }else{
+//                    if(basket_is_resterile){
+//                        txt_basketexpire_lable.setVisibility(View.VISIBLE);
+//                        txt_basketexpire_lable.setText(" (Expire)");
+//                    }else{
+//                        txt_basketexpire_lable.setVisibility(View.INVISIBLE);
+//                        txt_basketexpire_lable.setText("");
+//                    }
+//
+//                }
+
+                edt_usage_code.setText("");
+                edt_usage_code.requestFocus();
+
+//                list_doc_detail_set.setAdapter(new Adapter_Washtag_SS(CssdSendSterile.this,item_in_basket,true));
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("BasketCode",params[0]);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl()+"washtag/cssd_get_basket_detail.php",data);
+
+                return result;
+            }
+        }
+        washtag_detail ru = new washtag_detail();
+        ru.execute(BasketCode);
+    }
+
+    public void basket_detail_delete(String ssID, final String type){
+        class deletewashtag_detail extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                SelectBasket();
+                displaySendSterileDetail(DocNo);
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("ssID",params[0]);
+                data.put("type",type);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl()+"washtag/remove_item_in_washtag_by_ssID.php",data);
+
+                return result;
+            }
+        }
+        deletewashtag_detail ru = new deletewashtag_detail();
+        ru.execute(ssID);
+    }
+
 }

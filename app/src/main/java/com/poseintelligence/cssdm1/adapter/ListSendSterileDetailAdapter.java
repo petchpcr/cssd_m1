@@ -103,7 +103,7 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
         final RelativeLayout rel_row = ( RelativeLayout ) v.findViewById(R.id.rel_row);
 
         final ImageView btdel = (ImageView) v.findViewById(R.id.w_btdel);
-        final Button bt_add_to_basket = (Button) v.findViewById(R.id.bt_add_to_basket);
+        final TextView bt_add_to_basket = (TextView) v.findViewById(R.id.bt_add_to_basket);
 
         // Set
         txtitemname.setText(listData.get(position).getItemname());
@@ -120,9 +120,9 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
         txtxremark_detail.setText(listData.get(position).getXremark());
         basket_name.setText(listData.get(position).getBasketname());
 
-//        if((( ReceiveActivity ) atv).SS_IsUsedBasket){
-//            bt_add_to_basket.setVisibility(View.VISIBLE);
-//        }
+        if((( ReceiveActivity ) atv).SS_IsUsedBasket){
+            bt_add_to_basket.setVisibility(View.VISIBLE);
+        }
 
         if (WA_IsUsedWash){
             w_bt_express.setVisibility(View.VISIBLE);
@@ -137,19 +137,30 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             bt_risk.setVisibility(View.INVISIBLE);
         }
 
+        chk_box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), "0");
+                }else{
+                    ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), "1");
+                }
+            }
+        });
+
         if (Switch_Mode){
             chk_box.setVisibility(View.VISIBLE);
             chk_box.setChecked(true);
         }else {
             chk_box.setVisibility(View.INVISIBLE);
         }
-
-        chk_box.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), listData.get(position).getItemID());
-            }
-        });
+//
+//        chk_box.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ((ReceiveActivity) atv).usageNowash(listData.get(position).getItemID(), listData.get(position).getItemID());
+//            }
+//        });
 
         if (listData.get(position).getXremark().equals("")){
             if(listData.get(position).getRemarkSend().equals("1")){
@@ -429,39 +440,45 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             }
         });
 
-//        if(!listData.get(position).getBasketname().equals("")){
-//            bt_add_to_basket.setVisibility(View.INVISIBLE);
-//        }else {
-//            bt_add_to_basket.setVisibility(View.VISIBLE);
-//        }
-//        bt_add_to_basket.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if(listData.get(position).getResteriletype().equals("1")){
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(atv);
-//                    builder.setCancelable(true);
-//                    builder.setTitle("ยืนยัน");
-//                    builder.setMessage("ต้องการนำรายการหมดอายุ เข้าตะกร้า Wash Tag หรือไม่");
-//                    builder.setPositiveButton("ใช่",
-//                            new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-////                                    ((ReceiveActivity) atv ).insert_item_to_basket_and_re(listData.get(position).getItemID(),listData.get(position).getSs_rowid());
-//                                }
-//                            });
-//                    builder.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                        }
-//                    });
-//                    AlertDialog dialog = builder.create();
-//                    dialog.show();
-//
-//                }else{
-////                    ((ReceiveActivity) atv ).insert_item_to_basket(listData.get(position).getItemID(),listData.get(position).getSs_rowid());
-//                }
-//            }
-//        });
+        if(!listData.get(position).getBasketname().equals("")){
+            bt_add_to_basket.setBackgroundResource(R.drawable.bi_basket_b);
+        }else {
+            bt_add_to_basket.setBackgroundResource(R.drawable.bi_basket_g);
+        }
+
+        bt_add_to_basket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!listData.get(position).getBasketname().equals("")){
+                    basket_detail_delete(listData.get(position).getSs_rowid());
+                }else {
+                    if(listData.get(position).getResteriletype().equals("1")){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(atv);
+                        builder.setCancelable(true);
+                        builder.setTitle("ยืนยัน");
+                        builder.setMessage("ต้องการนำรายการหมดอายุ เข้าตะกร้า Wash Tag หรือไม่");
+                        builder.setPositiveButton("ใช่",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        ((ReceiveActivity) atv ).insert_item_to_basket_and_re(listData.get(position).getItemID(),listData.get(position).getSs_rowid());
+                                    }
+                                });
+                        builder.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+                    }else{
+                        ((ReceiveActivity) atv ).insert_item_to_basket(listData.get(position).getItemID(),listData.get(position).getSs_rowid());
+                    }
+                }
+
+            }
+        });
 
 //        bt_risk.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -753,6 +770,9 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
     }
 
 
+    public void basket_detail_delete(String BasketID){
+        ((ReceiveActivity) atv).basket_detail_delete(BasketID,"1");
+    }
 }
 
 
