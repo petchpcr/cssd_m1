@@ -11,14 +11,16 @@ public class ModelMachine {
     String ProgramName;
     String RoundNumber;
     String UserLoader;
+    String FinishTime;
 
-    public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo,String TypeID) {
+    public ModelMachine(String machineID, String machineName, String isActive, String isBrokenMachine,String DocNo,String TypeID,String FinishTime) {
         MachineID = machineID;
         MachineName = machineName;
         IsActive = isActive;
         IsBrokenMachine = isBrokenMachine;
         this.DocNo = DocNo;
         this.TypeID = TypeID;
+        this.FinishTime = FinishTime;
     }
 
     public String getMachineID() {
@@ -91,5 +93,13 @@ public class ModelMachine {
 
     public void setUserLoader(String userLoader) {
         UserLoader = userLoader;
+    }
+
+    public String getFinishTime() {
+        return FinishTime;
+    }
+
+    public void setFinishTime(String finishTime) {
+        FinishTime = finishTime;
     }
 }

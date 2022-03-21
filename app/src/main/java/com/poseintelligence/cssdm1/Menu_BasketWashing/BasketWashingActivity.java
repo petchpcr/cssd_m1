@@ -119,15 +119,17 @@ public class BasketWashingActivity extends AppCompatActivity {
         }
     };
 
-//    Handler check_active_machine_handler  = new Handler();
-//    Runnable check_active_machine_runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            check_active_machine();
-//
-//            check_active_machine_handler.postDelayed(check_active_machine_runnable, 30000);
-//        }
-//    };
+    HashMap<String, Integer> map_machine = new HashMap<String, Integer>();
+    Handler check_active_machine_handler  = new Handler();
+    Runnable check_active_machine_runnable = new Runnable() {
+        @Override
+        public void run() {
+
+            check_active_machine();
+
+            check_active_machine_handler.postDelayed(check_active_machine_runnable, 30000);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +153,7 @@ public class BasketWashingActivity extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(BasketWashingActivity.this, MainMenu.class);
         startActivity(intent);
+        check_active_machine_handler.removeCallbacks(check_active_machine_runnable);
         finish();
     }
 
@@ -283,22 +286,33 @@ public class BasketWashingActivity extends AppCompatActivity {
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
-                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine"),c.getString("DocNo"),c.getString("WashProcessID")));
+                                list.add(new ModelMachine(c.getString("xID"),c.getString("xMachineName2"),c.getString("IsActive"),c.getString("IsBrokenMachine"),c.getString("DocNo"),c.getString("WashProcessID"),c.getString("FinishTime")));
+                                map_machine.put(c.getString("xID"),i);
+
+
+                                if(c.getInt("IsActive")==1){
+                                    if(c.getInt("FinishTime")<=0){
+                                        updateFinishMachine(c.getInt("xID"),c.getString("DocNo"));
+                                    }
+                                }
                             }
                         }
 
-                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id,mac_empty_id));
+                        list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id,mac_empty_id,""));
 
                         list_mac_adapter = new ListBoxWashMachineAdapter(BasketWashingActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
 
                         show_mac("",View.GONE);
                         mac_id_non_approve = -1;
+                        show_basket("",View.GONE);
+                        basket_pos_non_approve = -1;
                         Log.d("tog_get_machine","mac_id_non_approve = "+mac_id_non_approve);
 
                         loading_dialog_dismiss();
 
-//                        check_active_machine_handler.postDelayed(check_active_machine_runnable, 3000);
+                        //toy
+                        check_active_machine_handler.postDelayed(check_active_machine_runnable, 5000);
                     }else{
                         if(mac_id.equals(mac_empty_id)){
                             list.get(list.size()-1).setIsActive("0");
@@ -495,10 +509,85 @@ public class BasketWashingActivity extends AppCompatActivity {
         obj.execute();
     }
 
-//    public void check_active_machine() {
-//
-//        Log.d("tog_chk_active_mac","check_active_machine");
-//        class check_active_machine extends AsyncTask<String, Void, String> {
+    public void check_active_machine() {
+
+        Log.d("tog_chk_active_mac","check_active_machine");
+        class check_active_machine extends AsyncTask<String, Void, String> {
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            list.get(map_machine.get(c.getString("xID"))).setFinishTime(c.getString("FinishTime"));
+                            list.get(map_machine.get(c.getString("xID"))).setIsActive(c.getString("IsActive"));
+                            if(c.getInt("IsActive")==1){
+                                if(c.getInt("FinishTime")<=0){
+                                    updateFinishMachine(c.getInt("xID"),c.getString("DocNo"));
+                                }
+                            }
+                        }
+                    }
+
+                    list_mac_adapter.notifyDataSetChanged();
+
+                } catch (JSONException e) {
+//                    show_log_error("get_washmachine.php Error = "+e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("mac_id", "null");
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    //wash1
+                    result = httpConnect.sendPostRequest(getUrl + "get_washmachine.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+
+            // =========================================================================================
+        }
+
+        check_active_machine obj = new check_active_machine();
+
+        obj.execute();
+    }
+
+
+    public void updateFinishMachine(final int p_machine_no, final String p_doc_no) {
+
+        class UpdateFinishMachine extends AsyncTask<String, Void, String> {
+
+            //------------------------------------------------
+            // Background Worker Process Variable
+//            private boolean Success = false;
+//            private ArrayList<String> data = null;
+//            private int size = 0;
+            //------------------------------------------------
+
 //            // variable
 //            @Override
 //            protected void onPreExecute() {
@@ -509,61 +598,63 @@ public class BasketWashingActivity extends AppCompatActivity {
 //            protected void onPostExecute(String result) {
 //                super.onPostExecute(result);
 //
-//                try {
-//                    JSONObject jsonObj = new JSONObject(result);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+//                AsonData ason = new AsonData(result);
 //
-//                    HashMap<String, String> IsActive = new HashMap<String, String>();
+//                Success = ason.isSuccess();
+//                size = ason.getSize();
+//                data = ason.getASONData();
 //
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        if (c.getString("result").equals("A")) {
-//                            IsActive.put(c.getString("xID"),c.getString("IsActive"));
-//                        }
-//                    }
-//
-//                    for (int i = 0; i < list.size(); i++) {
-//                        Log.d("tog_chk_active_mac",i+"---"+IsActive.get(list.get(i).getMachineID()));
-//                        if(IsActive.get(list.get(i).getMachineID())!=null){
-//                            list.get(i).setIsActive(IsActive.get(list.get(i).getMachineID()));
-//                        }
-//                    }
-//
-//                    list_mac_adapter.notifyDataSetChanged();
-//
-//                } catch (JSONException e) {
-////                    show_log_error("get_washmachine.php Error = "+e);
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                HashMap<String, String> data = new HashMap<String, String>();
-//
-//                data.put("mac_id", "null");
-//                data.put("p_DB", p_DB);
-//
-//                String result = null;
+//                //if(Success && data != null) {
+//                int MachineNo = 0;
 //
 //                try {
-//                    //wash1
-//                    result = httpConnect.sendPostRequest(getUrl + "get_washmachine.php", data);
-//                } catch (Exception e) {
+//                    MachineNo = Integer.valueOf(data.get(0)).intValue();
+//                }catch(Exception e){
 //                    e.printStackTrace();
+//                    return ;
 //                }
 //
-//                return result;
+//                // New Button Sterile Machine (Set Machine Data)
+//                newMachine(
+//                        getMachineId(MachineNo),
+//                        getMachineName(MachineNo),
+//                        "0",
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        null,
+//                        MachineNo);
+//
+//                // Clear Machine
+//                clearMachine(MachineNo);
+//
+//                //}
 //            }
-//
-//            // =========================================================================================
-//        }
-//
-//        check_active_machine obj = new check_active_machine();
-//
-//        obj.execute();
-//    }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_docno", p_doc_no);
+                data.put("p_machine_no", Integer.toString(p_machine_no));
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                //String result = httpConnect.sendPostRequest(Url.URL + "cssd_update_wash_finish_time_.php", data);
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_wash_finish_time_.php", data);
+                return result;
+            }
+
+            // =========================================================================================
+        }
+
+        UpdateFinishMachine obj = new UpdateFinishMachine();
+        obj.execute();
+    }
 
     public void show_bt_delete(boolean s){
         if(s){
