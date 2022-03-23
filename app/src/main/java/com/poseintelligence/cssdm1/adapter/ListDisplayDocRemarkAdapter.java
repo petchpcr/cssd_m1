@@ -134,7 +134,8 @@ public class ListDisplayDocRemarkAdapter extends ArrayAdapter {
             Log.d("tog_remark"+DATA_MODEL.get(position).getSensterileDocNo()," slideModels4");
             imageSlider.setImageList(slideModels1,true);
 
-            if(num_pic == 3){
+//            if(num_pic == 3){
+            if(num_pic >= 1){
                 txt_no.setTextColor(Color.BLACK);
                 txt_docno.setTextColor(Color.BLACK);
                 txt_itemname.setTextColor(Color.BLACK);

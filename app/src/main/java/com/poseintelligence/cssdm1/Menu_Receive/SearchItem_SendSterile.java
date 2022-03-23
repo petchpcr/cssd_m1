@@ -519,6 +519,7 @@ public class SearchItem_SendSterile extends AppCompatActivity {
         }
 
         String d_data = "";
+        String b_data = "";
 
         try {
 

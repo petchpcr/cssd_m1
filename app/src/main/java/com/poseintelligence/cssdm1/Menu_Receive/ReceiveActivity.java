@@ -3654,13 +3654,13 @@ public class ReceiveActivity extends AppCompatActivity {
 
         if(resultCode == 100 && resultCode == 100) {
 
-            // Import Item
-//            get_ss_to_add_basket(data.getStringExtra("p_data"),data.getStringExtra("DocNo"));
+            if(Basket_washtag_code!=""){
+                get_ss_to_add_basket(data.getStringExtra("p_data"),data.getStringExtra("DocNo"));
+            }
 
             try {
 
                 String p_docno = data.getStringExtra("DocNo");
-
 
                 if (DocNo == null || DocNo.equals("")) {
 
@@ -4069,7 +4069,6 @@ public class ReceiveActivity extends AppCompatActivity {
         }
     }
 
-
     public void washtag_detail(String BasketCode,final Boolean InMc){
 
         class washtag_detail extends AsyncTask<String, Void, String> {
@@ -4156,6 +4155,13 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 SelectBasket();
+                for(int j=0;j<item_in_basket.size();j++){
+
+                    if(item_in_basket.get(j).getSs_rowid().equals(ssID)){
+
+                        item_in_basket.remove(j);
+                    }
+                }
                 displaySendSterileDetail(DocNo);
             }
 
@@ -4173,6 +4179,71 @@ public class ReceiveActivity extends AppCompatActivity {
         }
         deletewashtag_detail ru = new deletewashtag_detail();
         ru.execute(ssID);
+    }
+
+
+    public void get_ss_to_add_basket(final String p_data,final String p_docno){
+
+        class get_ss_to_add_basket extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                String ItemStockID="";
+                String SSID="";
+                try{
+                    JSONObject jsonObj = new JSONObject(s);
+                    JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
+                    String bo = "";
+                    for(int i=0;i<setRs.length();i++) {
+                        JSONObject c = setRs.getJSONObject(i);
+                        bo=c.getString("result");
+                        if (bo.equals("A")){
+
+                            ItemStockID +=c.getString("ItemStockID")+"@";
+                            SSID +=c.getString("ID")+"@";
+                        }else{
+                        }
+
+                    }
+                }catch (JSONException e){
+
+                }
+
+                insert_item_to_basket(ItemStockID,SSID);
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("p_data_itemcode",params[0]);
+                data.put("p_data_number",params[1]);
+                data.put("p_docno",p_docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl()+"washtag/get_ss_detail.php",data);
+
+                return result;
+            }
+        }
+
+        if(Basket_washtag_code!="" && SS_IsUsedBasket){
+            String[] ary = p_data.split(",");
+            String p_data_itemcode ="";
+            String p_data_number ="";
+            for(int i=0;i<ary.length;i=i+2){
+                p_data_itemcode +=ary[i]+"@";
+                p_data_number +=ary[i+1]+"@";
+            }
+
+            get_ss_to_add_basket ru = new get_ss_to_add_basket();
+            ru.execute(p_data_itemcode,p_data_number);
+        }
+
     }
 
 }
