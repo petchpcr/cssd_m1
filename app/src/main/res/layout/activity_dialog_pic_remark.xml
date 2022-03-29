@@ -20,15 +20,20 @@
 
         </TextView>
 
-        <com.denzcoskun.imageslider.ImageSlider
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/imageslide"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:padding="5dp"
-            app:corner_radius="1"
-            app:placeholder="@drawable/camera">
+            android:layout_height="250dp" />
 
-        </com.denzcoskun.imageslider.ImageSlider>
+<!--        <com.denzcoskun.imageslider.ImageSlider-->
+<!--            android:id="@+id/imageslide"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="250dp"-->
+<!--            android:padding="5dp"-->
+<!--            app:corner_radius="1"-->
+<!--            app:placeholder="@drawable/camera">-->
+
+<!--        </com.denzcoskun.imageslider.ImageSlider>-->
 
         <ImageView
             android:id="@+id/images"

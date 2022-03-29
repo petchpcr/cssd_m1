@@ -82,6 +82,7 @@ public class pCustomer {
 
     private String Qty1;
     private String Qty2;
+    private String NoWash;
 
     public String getIsRemarkExpress() {
         return IsRemarkExpress;
@@ -641,5 +642,13 @@ public class pCustomer {
     }
     public void setQty2(String Qty2) {
         this.Qty2 = Qty2;
+    }
+
+    public String getNoWash() {
+        return NoWash;
+    }
+
+    public void setNoWash(String noWash) {
+        NoWash = noWash;
     }
 }

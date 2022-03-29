@@ -33,6 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
@@ -344,7 +346,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                         openCamere();
                     }
                 }else {
-                    open_pic(PicText1,PicText2,"1");
+                    open_pic("1");
                 }
 
             }
@@ -369,14 +371,15 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                         openCamere1();
                     }
                 }else {
-                    open_pic(PicText1,PicText2,"2");
+                    open_pic("2");
                 }
 
             }
         });
 
-        check_code.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        check_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 if (Page.equals("1")) {
                     if (!IsATP.equals("1")) {
                         if (pg_spinner.getSelectedItem().equals("")){
@@ -458,7 +461,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                             }
                         });
                     }
-                }else {
+                }
+                else {
                     if (!IsATP.equals("1")) {
                         if (pg_spinner.getSelectedItem().equals("")){
                             check_code.setChecked(false);
@@ -539,6 +543,172 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 }
             }
         });
+
+//        check_code.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            public void onCheckedChanged(CompoundButton buttonView, boolean c) {
+//                if (Page.equals("1")) {
+//                    if (!IsATP.equals("1")) {
+//                        if (pg_spinner.getSelectedItem().equals("")){
+//                            check_code.setChecked(false);
+//                            Toast.makeText(InSertImageSporeDocActivity.this, "กรุณาเลือกโปรแกรมทดสอบ", Toast.LENGTH_SHORT).show();
+//                        }else {
+//                            Intent intent = new Intent(InSertImageSporeDocActivity.this, ATPDocnoActivity.class);
+//                            intent.putExtra("DocNo", DocNo);
+//                            intent.putExtra("WashMachineID", WashMachineID);
+//                            intent.putExtra("WashRoundNumber", WashRoundNumber);
+//                            intent.putExtra("TestProgramName", String.valueOf(pg_spinner.getSelectedItem()));
+//                            intent.putExtra("SterileMachineID", SterileMachineID);
+//                            intent.putExtra("DoSterileRoundNumbercNo", SterileRoundNumber);
+//                            intent.putExtra("IsActive", IsActive);
+//                            intent.putExtra("xSel1", xSel2);
+//                            intent.putExtra("B_ID", B_ID);
+//                            intent.putExtra("EmpCode", EmpCode);
+//                            intent.putExtra("Page", Page);
+//                            intent.putExtra("DocNo", DocNo);
+//                            intent.putExtra("Username", Username);
+//                            intent.putExtra("CssdTest_std",CssdTest_std);
+//                            startActivity(intent);
+//
+//                        }
+//                    } else {
+//                        check_code.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                Log.d("FMDLHD",countatpint+"");
+//                                if (countatpint >= 1 && countatpint != 3){
+//                                    AlertDialog.Builder quitDialog = new AlertDialog.Builder(InSertImageSporeDocActivity.this);
+//                                    quitDialog.setTitle(Cons.TITLE);
+//                                    quitDialog.setIcon(R.drawable.pose_favicon_2x);
+//                                    quitDialog.setMessage("ต้องการบันทึก ATP รอบที่"+countatpint+ "หรือไม่ ?");
+//                                    quitDialog.setCancelable(false);
+//                                    quitDialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            Intent intent = new Intent(InSertImageSporeDocActivity.this, ATPDocnoActivity.class);
+//                                            intent.putExtra("DocNo", DocNo);
+//                                            intent.putExtra("WashMachineID", WashMachineID);
+//                                            intent.putExtra("WashRoundNumber", WashRoundNumber);
+//                                            intent.putExtra("TestProgramName", String.valueOf(pg_spinner.getSelectedItem()));
+//                                            intent.putExtra("SterileMachineID", SterileMachineID);
+//                                            intent.putExtra("DoSterileRoundNumbercNo", SterileRoundNumber);
+//                                            intent.putExtra("IsActive", IsActive);
+//                                            intent.putExtra("xSel1", xSel2);
+//                                            intent.putExtra("B_ID", B_ID);
+//                                            intent.putExtra("EmpCode", EmpCode);
+//                                            Log.d("KFLHDL",EmpCode);
+//                                            intent.putExtra("Page", Page);
+//                                            intent.putExtra("DocNo", DocNo);
+//                                            intent.putExtra("Username", Username);
+//                                            intent.putExtra("CssdTest_std",CssdTest_std);
+//                                            startActivity(intent);
+//                                        }
+//                                    });
+//                                    quitDialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            check_code.setChecked(true);
+//                                        }
+//                                    });
+//                                    quitDialog.show();
+//                                }else{
+//                                    AlertDialog.Builder quitDialog = new AlertDialog.Builder(InSertImageSporeDocActivity.this);
+//                                    quitDialog.setTitle(Cons.TITLE);
+//                                    quitDialog.setIcon(R.drawable.pose_favicon_2x);
+//                                    quitDialog.setMessage("ไม่สามารถบันทึกค่า ATP เกิน 2 รอบ");
+//                                    quitDialog.setCancelable(false);
+//                                    quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            check_code.setChecked(true);
+//                                        }
+//                                    });
+//                                    quitDialog.show();
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//                else {
+//                    if (!IsATP.equals("1")) {
+//                        if (pg_spinner.getSelectedItem().equals("")){
+//                            check_code.setChecked(false);
+//                            Toast.makeText(InSertImageSporeDocActivity.this, "กรุณาเลือกโปรแกรมทดสอบ", Toast.LENGTH_SHORT).show();
+//                        }else {
+//                            Intent intent = new Intent(InSertImageSporeDocActivity.this, ATPDocnoActivity.class);
+//                            intent.putExtra("DocNo", DocNo);
+//                            intent.putExtra("WashMachineID", WashMachineID);
+//                            intent.putExtra("WashRoundNumber", WashRoundNumber);
+//                            intent.putExtra("TestProgramName", String.valueOf(pg_spinner.getSelectedItem()));
+//                            intent.putExtra("SterileMachineID", SterileMachineID);
+//                            intent.putExtra("DoSterileRoundNumbercNo", SterileRoundNumber);
+//                            intent.putExtra("IsActive", IsActive);
+//                            intent.putExtra("xSel1", xSel1);
+//                            intent.putExtra("B_ID", B_ID);
+//                            intent.putExtra("EmpCode", EmpCode);
+//                            intent.putExtra("Page", Page);
+//                            intent.putExtra("DocNo", DocNo);
+//                            intent.putExtra("Username", Username);
+//                            intent.putExtra("CssdTest_std",CssdTest_std);
+//                            startActivity(intent);
+//                        }
+//                    } else {
+//                        check_code.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                if (countatpint >= 1 && countatpint != 3){
+//                                    AlertDialog.Builder quitDialog = new AlertDialog.Builder(InSertImageSporeDocActivity.this);
+//                                    quitDialog.setTitle(Cons.TITLE);
+//                                    quitDialog.setIcon(R.drawable.pose_favicon_2x);
+//                                    quitDialog.setMessage("ต้องการบันทึก ATP รอบที่ "+countatpint+" หรือไม่ ?");
+//                                    quitDialog.setCancelable(false);
+//                                    quitDialog.setPositiveButton("ใช่", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            Intent intent = new Intent(InSertImageSporeDocActivity.this, ATPDocnoActivity.class);
+//                                            intent.putExtra("DocNo", DocNo);
+//                                            intent.putExtra("WashMachineID", WashMachineID);
+//                                            intent.putExtra("WashRoundNumber", WashRoundNumber);
+//                                            intent.putExtra("TestProgramName", String.valueOf(pg_spinner.getSelectedItem()));
+//                                            intent.putExtra("SterileMachineID", SterileMachineID);
+//                                            intent.putExtra("DoSterileRoundNumbercNo", SterileRoundNumber);
+//                                            intent.putExtra("IsActive", IsActive);
+//                                            intent.putExtra("xSel1", xSel1);
+//                                            intent.putExtra("B_ID", B_ID);
+//                                            intent.putExtra("EmpCode", EmpCode);
+//                                            intent.putExtra("Page", Page);
+//                                            intent.putExtra("DocNo", DocNo);
+//                                            intent.putExtra("Username", Username);
+//                                            intent.putExtra("CssdTest_std",CssdTest_std);
+//                                            startActivity(intent);
+//                                        }
+//                                    });
+//                                    quitDialog.setNegativeButton("ไม่", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            check_code.setChecked(true);
+//                                        }
+//                                    });
+//                                    quitDialog.show();
+//                                }else{
+//                                    AlertDialog.Builder quitDialog = new AlertDialog.Builder(InSertImageSporeDocActivity.this);
+//                                    quitDialog.setTitle(Cons.TITLE);
+//                                    quitDialog.setIcon(R.drawable.pose_favicon_2x);
+//                                    quitDialog.setMessage("ไม่สามารถบันทึกค่า ATP เกิน 2 รอบ");
+//                                    quitDialog.setCancelable(false);
+//                                    quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(DialogInterface dialog, int which) {
+//                                            check_code.setChecked(true);
+//                                        }
+//                                    });
+//                                    quitDialog.show();
+//                                }
+//                            }
+//                        });
+//                    }
+//                }
+//            }
+//        });
 
         pg_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1426,6 +1596,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
 
+                check_code.setChecked(false);
                 try {
                     JSONObject jsonObj = new JSONObject(result);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
@@ -1686,7 +1857,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         obj.execute();
     }
 
-    public void open_pic(String bitmap_pic1, String bitmap_pic2,String numpic){
+    public void open_pic(String numpic){
         codeData_pic1 = "data:image/jpeg;base64,"+PicText1;
         codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
         byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
@@ -1703,7 +1874,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         final View customLayout = InSertImageSporeDocActivity.this.getLayoutInflater().inflate( R.layout.activity_dialog_pic_remark, null);
         quitDialog.setView(customLayout);
 
-        ImageSlider al_imageslide = (ImageSlider) customLayout.findViewById(R.id.imageslide);
+        ViewPager2 al_imageslide = (ViewPager2) customLayout.findViewById(R.id.imageslide);
 
         ImageView al_images = (ImageView) customLayout.findViewById(R.id.images);
         TextView text_remark = (TextView) customLayout.findViewById(R.id.text_remark);
@@ -1717,7 +1888,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             al_imageslide.setVisibility(View.GONE);
         }
 
-        Log.d("image2",""+bitmap_pic1);
+//        Log.d("image2",""+bitmap_pic1);
 
         AlertDialog alert = quitDialog.create();
 

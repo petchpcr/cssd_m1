@@ -91,12 +91,12 @@
             android:name=".Menu_Remark.dialog_delete_pic_remark"
             android:theme="@style/myDialog" />
         <activity
-            android:name=".Menu_Remark.dialog_Load_Img"
+            android:name=".Menu_Receive.dialog_Load_Img"
             android:exported="true"
             android:label="@string/title_activity_dialog_load_img"
             android:theme="@style/Theme.CssdM1.NoActionBar" />
         <activity
-            android:name=".Menu_Remark.dialog_Load_Img_Remark"
+            android:name=".Menu_Receive.dialog_Load_Img_Remark"
             android:exported="true" />
         <activity
             android:name=".Menu_Return.ReturnActivity"

@@ -1,4 +1,4 @@
-package com.poseintelligence.cssdm1.Menu_Remark;
+package com.poseintelligence.cssdm1.Menu_Receive;
 
 import androidx.appcompat.app.AppCompatActivity;
 

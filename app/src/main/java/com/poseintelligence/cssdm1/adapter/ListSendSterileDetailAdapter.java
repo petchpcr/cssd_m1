@@ -440,9 +440,17 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             }
         });
 
+        if(listData.get(position).getNoWash().equals("1")){
+            bt_add_to_basket.setVisibility(View.INVISIBLE);
+        }
+        else{
+            bt_add_to_basket.setVisibility(View.VISIBLE);
+        }
+
         if(!listData.get(position).getBasketname().equals("")){
             bt_add_to_basket.setBackgroundResource(R.drawable.bi_basket_b);
-        }else {
+        }
+        else{
             bt_add_to_basket.setBackgroundResource(R.drawable.bi_basket_g);
         }
 

@@ -134,13 +134,19 @@
                 android:layout_marginTop="35dp"
                 android:visibility="visible">
 
-                <com.denzcoskun.imageslider.ImageSlider
-                    android:id="@+id/imageslide"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:corner_radius="1">
 
-                </com.denzcoskun.imageslider.ImageSlider>
+                <!--                <com.denzcoskun.imageslider.ImageSlider-->
+                <!--                    android:id="@+id/imageslide"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="match_parent"-->
+                <!--                    app:corner_radius="1">-->
+
+                <!--                </com.denzcoskun.imageslider.ImageSlider>-->
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/img_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
                 <ImageView
                     android:id="@+id/del_pic1"

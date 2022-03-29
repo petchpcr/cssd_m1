@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,11 +37,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.google.android.material.tabs.TabLayout;
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.MainMenu;
-import com.poseintelligence.cssdm1.Menu_Remark.dialog_Load_Img;
-import com.poseintelligence.cssdm1.Menu_Remark.dialog_Load_Img_Remark;
 import com.poseintelligence.cssdm1.Menu_Remark.dialog_remark_sendsterile;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListSendSterileAdapter;
@@ -326,7 +322,6 @@ public class ReceiveActivity extends AppCompatActivity {
 
         focus();
     }
-
 
     public void onBackPressed() {
         if(Block_1.getVisibility()==View.VISIBLE){
@@ -685,7 +680,8 @@ public class ReceiveActivity extends AppCompatActivity {
 //                txt_usr_receive.setContentDescription(null);
 //
                 spn_department_form.setSelection(0);
-//
+                spn_department_form.setEnabled(true);
+
 //                spn_usr_send.setSelection(0);
                 spn_usr_receive.setSelection(0);
 //
@@ -847,7 +843,22 @@ public class ReceiveActivity extends AppCompatActivity {
                             Log.d("OOOO","S_Code:"+S_Code);
 //                            Log.d("OOOO","IsSU:"+IsSU);
 
-                            if (S_Code.substring(0,1).equals("d")|| S_Code.substring(0,1).equals("D") ) {
+                            if (S_Code.substring(0,2).equals("bk") ) {
+                                boolean x = true;
+                                for (int i = 0; i < basket_ar.size(); i++){
+                                    if(S_Code.equals(basket_ar.get(i).getBasketCode())){
+                                        spin_basket.setSelection(i);
+                                        x = false;
+                                    }
+                                }
+
+                                if(x){
+                                    Toast.makeText(ReceiveActivity.this, "ไม่ตะกร้า !!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                edt_usage_code.setText("");
+                                return false;
+                            }else if (S_Code.substring(0,1).equals("d")|| S_Code.substring(0,1).equals("D") ) {
                                 boolean x = true;
                                 for(int i = 0;i<ar_list_dept_id.size();i++){
 
@@ -2903,7 +2914,6 @@ public class ReceiveActivity extends AppCompatActivity {
                             p.setQty2(c.getString("Qty2"));
                         }
 
-
                         ar_data.add(p);
                     }
 
@@ -2914,7 +2924,6 @@ public class ReceiveActivity extends AppCompatActivity {
                     if(IsDisplayForm){
                         // Display Form
 //                        setSterileForm(p_docno);
-
                         //DocNo = c.getString("DocNo");
                     }
 
@@ -3032,11 +3041,14 @@ public class ReceiveActivity extends AppCompatActivity {
                         p.setRemarkExpress(c.getString("RemarkExpress"));
                         p.setRemarkEms(c.getString("IsRemarkExpress"));
                         p.setIsDenger(c.getString("IsDenger"));
+                        p.setNoWash(c.getString("NoWash"));
+
                         if(c.getString("basket").equals("null")){
                             p.setBasketname("");
                         }else {
                             p.setBasketname(c.getString("basket"));
                         }
+
                         model_send_sterile_detail.add(p);
 
                         IsStatus = c.getString("IsStatus");
@@ -3406,6 +3418,7 @@ public class ReceiveActivity extends AppCompatActivity {
             Toast.makeText(ReceiveActivity.this, Message, Toast.LENGTH_SHORT).show();
         }
     }
+
     public void callDialog(final String Itemname ,final String type, final String Qty, final String Qty_save) {
 
         Intent intent = new Intent(ReceiveActivity.this, dialog_remark_sendsterile.class);
@@ -3541,7 +3554,6 @@ public class ReceiveActivity extends AppCompatActivity {
         CheckStatusDocNo obj = new CheckStatusDocNo();
         obj.execute();
     }
-
 
     public void CheckNotification() {
         class CheckNotification extends AsyncTask<String, Void, String> {
@@ -3943,7 +3955,7 @@ public class ReceiveActivity extends AppCompatActivity {
                             SelectBasket();
                         }
                     }else {
-                        Toast.makeText(ReceiveActivity.this, "รายการไม่ถูกต้อง !!", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(ReceiveActivity.this, "รายการไม่ถูกต้อง !!", Toast.LENGTH_SHORT).show();
                     }
 
                 }catch (JSONException e){
@@ -4180,7 +4192,6 @@ public class ReceiveActivity extends AppCompatActivity {
         deletewashtag_detail ru = new deletewashtag_detail();
         ru.execute(ssID);
     }
-
 
     public void get_ss_to_add_basket(final String p_data,final String p_docno){
 
