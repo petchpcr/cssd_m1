@@ -241,6 +241,42 @@ public class SterileActivity extends AppCompatActivity{
             }
         });
 
+        rl_basket.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+
+                if(xlist_basket.get(basket_pos_non_approve).getMacId().equals("null")){
+                    return false;
+                }
+
+                new AlertDialog.Builder(SterileActivity.this)
+                        .setMessage("ต้องการลบตะกร้าออกจากเครื่องหรือไม่")
+
+                        .setPositiveButton("ยืนยัน", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                String id = "";
+                                String data = "";
+
+                                for(int i=xlist_item_basket.size()-1;i>=0;i--){
+                                    id = id+xlist_item_basket.get(i).getRow_id()+",";
+                                    data = data+xlist_item_basket.get(i).getSterileDetailID() + "@" + xlist_item_basket.get(i).getWashDetailID() + "@" + xlist_item_basket.get(i).getItemStockID() + "@";
+                                    Log.d("tog_delete","data = "+data);
+                                }
+
+                                delete_basket_from_mac(data,list.get(list_mac_adapter.select_mac_pos).getDocNo());
+
+                            }
+                        })
+
+                        .setNegativeButton("ยกเลิก", null)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                return false;
+            }
+        });
+
         macname = (TextView) findViewById(R.id.macname);
         basketname = (TextView) findViewById(R.id.basketname);
         text_qty = (TextView) findViewById(R.id.text_qty);
@@ -779,6 +815,9 @@ public class SterileActivity extends AppCompatActivity{
                 // call php
                 // ---------------------------------------------------------------------------------
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_remove_sterile_details_json.php", data);
+
+                Log.d("tog_delete_basket","data = " + data);
+                Log.d("tog_delete_basket","result = " + result);
 
                 return result;
             }
@@ -1801,6 +1840,73 @@ public class SterileActivity extends AppCompatActivity{
         basketname.setText(name);
 
         Log.d("tog_show_basket","show_basket = "+name+"----"+v);
+    }
+
+    public void delete_basket_from_mac(String p_data,String doc_no){
+        class delete_basket_from_mac extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+
+                            xlist_basket.get(basket_pos_non_approve).setMacId("null");
+                            rl_basket.callOnClick();
+                            removeSterileDetail(p_data,doc_no);
+                        }else{
+                            show_dialog("Warning","เครื่องกำลังทำงานไม่สามารถลบตะกร้าได้");
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    show_log_error("delete_basket_from_mac.php Error = "+e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("basket_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getBasketCode());
+                data.put("mac_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getMacId());
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    //wash
+                    result = httpConnect.sendPostRequest(getUrl + "delete_basket_from_mac.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_delete_basket","data = " + data);
+                Log.d("tog_delete_basket","result = " + result);
+                return result;
+            }
+
+            // =========================================================================================
+        }
+
+        delete_basket_from_mac obj = new delete_basket_from_mac();
+
+        obj.execute();
     }
 
 }
