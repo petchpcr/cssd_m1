@@ -824,10 +824,12 @@ public class ReceiveActivity extends AppCompatActivity {
                     Switch_Mode = true;
                     displaySendSterile(false, null, 0);
                     h_wash_dep.setVisibility(View.VISIBLE);
+                    spin_basket.setVisibility(View.GONE);
                 }else {
                     Switch_Mode = false;
                     displaySendSterile(false, null, 0);
                     h_wash_dep.setVisibility(View.GONE);
+                    spin_basket.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -1119,6 +1121,7 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                Log.d("tog_IsStatus","btn_add_item IsStatus = "+IsStatus);
                 if(IsStatus != null && !IsStatus.equals("0")){
                     Toast.makeText(ReceiveActivity.this, "ไม่สามารถเพิ่มรายการได้ !!", Toast.LENGTH_SHORT).show();
                     return;
@@ -1139,7 +1142,9 @@ public class ReceiveActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 IsStatus = "0";
+                DocNo = "";
 
+                Log.d("tog_IsStatus","btn_new IsStatus = "+IsStatus);
                 defineDocDate();
 
                 dept_id = "";
@@ -1159,6 +1164,7 @@ public class ReceiveActivity extends AppCompatActivity {
 //                txt_usr_receive.setContentDescription(null);
 
                 spn_department_form.setSelection(0);
+                spn_department_form.setEnabled(true);
 
                 if(SS_IsShowSender){
                     spn_usr_send.setSelection(0);
@@ -1172,7 +1178,7 @@ public class ReceiveActivity extends AppCompatActivity {
                     spn_zone.setSelection(0);
                 }
 
-                displaySendSterile(false, null, 0);
+//                displaySendSterile(false, null, 0);
 
             }
         });
@@ -2914,6 +2920,14 @@ public class ReceiveActivity extends AppCompatActivity {
                             p.setQty2(c.getString("Qty2"));
                         }
 
+//                        if(switch_status.isChecked()){
+//                            if(!IsStatus.equals("0")){
+//                                ar_data.add(p);
+//                            }
+//                        }else{
+//                            ar_data.add(p);
+//                        }
+
                         ar_data.add(p);
                     }
 
@@ -4070,7 +4084,6 @@ public class ReceiveActivity extends AppCompatActivity {
                     }else{
                         Toast.makeText(ReceiveActivity.this, "ไม่มีรายการในตะกร้า", Toast.LENGTH_SHORT).show();
                     }
-
                     break;
                 }
             }

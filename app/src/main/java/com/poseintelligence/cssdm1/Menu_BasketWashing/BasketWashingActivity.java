@@ -1359,16 +1359,18 @@ public class BasketWashingActivity extends AppCompatActivity {
             Log.d("tog_basket","getBasketCode = "+xlist_basket.get(basket_pos).getBasketCode());
             get_basket(xlist_basket.get(basket_pos).getBasketCode());
         }else{
-            loading_dialog_dismiss();
+
+            get_basket("null");
+//            loading_dialog_dismiss();
 
             xlist_item_basket.clear();
             list_item_basket_adapter = new ListItemWashBasketAdapter(BasketWashingActivity.this,xlist_item_basket);
             list_item_basket.setAdapter(list_item_basket_adapter);
 
             list_mac_adapter.onScanSelect(mac_id_non_approve);
-            list_basket_adapter.notifyDataSetChanged();
+//            list_basket_adapter.notifyDataSetChanged();
             list_mac_adapter.notifyDataSetChanged();
-            list_item_basket.invalidateViews();
+//            list_item_basket.invalidateViews();
         }
     }
 
