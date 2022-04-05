@@ -1301,7 +1301,12 @@ public class DispensingActivity extends AppCompatActivity {
                                 Block_4.setVisibility( View.VISIBLE );
                                 switch_opt.setVisibility( View.VISIBLE );
                                 imageCreate.setVisibility( Is_imageCreate?View.VISIBLE:View.GONE );
-                                title_3.setText(DocNo+" / "+Model_Pay.get(0).getDepName()+" (M)");
+                                if(Model_Pay.size()>0){
+                                    title_3.setText(DocNo+" / "+Model_Pay.get(0).getDepName()+" (M)");
+                                }else{
+                                    title_3.setText(DocNo+" / "+DepName+" (M)");
+                                }
+
                                 LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                                 params1.width = Is_imageCreate?255:505;
                                 params1.setMargins(0, 0, 15, 0);

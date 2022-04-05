@@ -837,7 +837,7 @@ public class Login extends AppCompatActivity {
 
     public void dep_device(){
         if(getSerialNumber().equals("L203P85U01743")){
-            onLogin("user2", "111");
+            onLogin("user3", "1112");
         }
     }
 
