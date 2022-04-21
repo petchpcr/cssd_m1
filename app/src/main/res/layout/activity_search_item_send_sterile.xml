@@ -21,7 +21,7 @@
         android:textSize="24dp"
         android:textStyle="bold" />
 
-    <GridView
+    <ListView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,7 +30,9 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="60dp"
         android:background="@drawable/form_layout_smoky"
-        android:numColumns="1" />
+        android:numColumns="1" >
+
+    </ListView>
 
     <Switch
         android:id="@+id/switch_mode"

@@ -65,6 +65,7 @@ import java.util.Locale;
 public class DispensingActivity extends AppCompatActivity {
 
     private String TAG_RESULTS="result";
+    private String TAG_RESULTS_API = "data";
     private JSONArray rs = null;
     private HTTPConnect httpConnect = new HTTPConnect();
 
@@ -442,23 +443,6 @@ public class DispensingActivity extends AppCompatActivity {
                     Toast.makeText(DispensingActivity.this, "ไม่มีรายการจ่าย !!", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                // Check User Receive
-//                if(PA_IsUsedRecipienter) {
-//                    try {
-//                        p_receive_code = data_user_receive_id.get(spn_usr_receive.getSelectedItem());
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                        Toast.makeText(CssdPayout.this, "ยังไม่ได้เลือกผู้รับ !!", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//
-//
-//                    if (p_receive_code == null) {
-//                        Toast.makeText(CssdPayout.this, "ยังไม่ได้เลือกผู้รับ !!", Toast.LENGTH_SHORT).show();
-//                        return;
-//                    }
-//                }
 
                 callCloseDocument();
 
@@ -1599,7 +1583,10 @@ public class DispensingActivity extends AppCompatActivity {
 //                }else{
 //                    updatePayout(DocNo, DepID);
 //                }
-                updatePayout(DocNo, DepID,"0");
+
+//                updatePayout(DocNo, DepID,"0");
+
+                getQRPay("payrow", "0");
             }
         });
 
@@ -1612,6 +1599,16 @@ public class DispensingActivity extends AppCompatActivity {
         });
 
         quitDialog.show();
+    }
+
+    private void getQRPay(final String msg, final String type){
+        Intent i = new Intent(DispensingActivity.this, CheckQR_Approve.class);
+        i.putExtra("xSel", "payrow");
+        i.putExtra("remark", msg);
+        i.putExtra("DocNo", DocNo);
+        i.putExtra("B_ID", "1");
+        i.putExtra("type", type);
+        startActivityForResult(i, 1155);
     }
 
     private void clearDocument(){
@@ -1776,6 +1773,152 @@ public class DispensingActivity extends AppCompatActivity {
 
         Update obj = new Update();
         obj.execute();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+
+            if (resultCode == 1998) {
+
+                String RETURN_TYPE = data.getStringExtra("RETURN_TYPE");
+                String RETURN_DATA = data.getStringExtra("RETURN_DATA");
+                String d_type = data.getStringExtra("RETURN_TYPE");
+                String d_round = data.getStringExtra("RETURN_DATA");
+
+                getUserPay(DocNo,d_round,d_type);
+
+            }
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void SetPrintCountReportAndPrintCountSlip(String p_Type, String p_SubType, String p_Docno) {
+
+        class SetPrintCountReportAndPrintCountSlip extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS_API);
+
+                    for(int i = 0 ;i < rs.length(); i++){
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")){
+
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("p_Type", p_Type);
+                data.put("p_SubType", p_SubType);
+                data.put("p_Docno", p_Docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_printcount_payout.php", data);
+
+                Log.d("BANKTEST",data+"");
+                Log.d("BANKTEST",result+"");
+
+                return result;
+            }
+        }
+
+        SetPrintCountReportAndPrintCountSlip ru = new SetPrintCountReportAndPrintCountSlip();
+        ru.execute();
+    }
+
+    private void getUserPay(String p_Docno, String p_Round, String p_Type) {
+
+        class getUserPay extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for(int i = 0 ;i < rs.length(); i++){
+                        JSONObject c = rs.getJSONObject(i);
+
+//                        user_name_pay = "คุณ " + c.getString("FirstName") + " " + c.getString("LastName");
+
+//                        displayPayoutDetailSlip(DocNo, false, d_round);
+
+                        updatePayout(DocNo, DepID, "3");
+
+                        Log.d("BANKTEST",p_Type + "");
+
+                        if (p_Type.equals("1")){
+
+//                            printSlip();
+
+                            SetPrintCountReportAndPrintCountSlip("1","0",DocNo);
+
+                        }else {
+
+//                            String url = ((CssdProject) getApplication()).getUrl() + "report/cssd_report_payout_by_docno.php?p_docno=" + DocNo + "&p_DB=" + ((CssdProject) getApplication()).getD_DATABASE() + "&p_Round=" + d_round;
+
+//                            callAction(url);
+
+                            SetPrintCountReportAndPrintCountSlip("0","2",DocNo);
+
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("p_Docno", p_Docno);
+                data.put("p_Round", p_Round);
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_user_pay_round.php", data);
+
+                Log.d("BANKTEST",data+"");
+                Log.d("BANKTEST",result+"");
+
+                return result;
+            }
+        }
+
+        getUserPay ru = new getUserPay();
+        ru.execute();
     }
 
     // ------------------------------------------------------------------

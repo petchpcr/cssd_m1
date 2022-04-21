@@ -409,6 +409,8 @@ public class BasketWashingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                Log.d("tog_get_mac","get_machine data = "+data);
+                Log.d("tog_get_mac","get_machine result = "+result);
                 return result;
             }
 

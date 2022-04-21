@@ -131,11 +131,14 @@ public class RemarkActivity extends AppCompatActivity {
                 if (event.getAction()==KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                     getlistdata(convertdate(DocDate),text_scan.getText().toString());
                     text_scan.setText("");
+
                     return true;
                 }
                 return false;
             }
         });
+
+        text_scan.requestFocus();
 
         check_date = (CheckBox) findViewById(R.id.check_date);
         check_date.setOnClickListener(new View.OnClickListener() {

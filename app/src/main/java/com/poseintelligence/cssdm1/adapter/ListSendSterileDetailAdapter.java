@@ -340,11 +340,15 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //if(IsAdmin){
-                                if(mode == 1)
-                                    ( (ReceiveActivity)atv ).onDeleteSterileDetail(listData.get(position).getSs_rowid());
-//                                else
+                                if(mode == 1) {
+                                    ((ReceiveActivity) atv).onDeleteSterileDetail(listData.get(position).getSs_rowid());
+                                    if(!listData.get(position).getBasketname().equals("")){
+                                        basket_detail_delete(listData.get(position).getSs_rowid());
+                                    }
+                                }
+//                              else{
 //                                    ( (CssdApproveSendSterile)atv ).onDeleteSterileDetail(listData.get(position).getSs_rowid());
-
+//                                }
                             }
                         });
 

@@ -51,11 +51,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CssdM1"
         android:usesCleartextTraffic="true">
-
         <activity
-            android:name=".WaitConnectDialog"
+            android:name=".Menu_Dispensing.CheckQR_Approve"
             android:theme="@style/myDialog"
             android:exported="false" />
+        <activity
+            android:name=".WaitConnectDialog"
+            android:exported="false"
+            android:theme="@style/myDialog" />
 
         <service
             android:name=".core.connect.CheckConnectionService"

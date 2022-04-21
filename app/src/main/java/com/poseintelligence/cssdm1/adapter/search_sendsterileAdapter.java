@@ -63,14 +63,6 @@ public class search_sendsterileAdapter extends ArrayAdapter {
         System.out.println(listData.get(position).getFields8());
         System.out.println(listData.get(position).getFields9());
         */
-//
-//        EditNum1.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-//            public void onFocusChange(View v, boolean hasFocus){
-//                if (hasFocus) {
-//                    EditNum1.selectAll();
-//                }
-//            }
-//        });
 
 //                new android.os.Handler().postDelayed(
 //                        new Runnable() {
@@ -79,15 +71,6 @@ public class search_sendsterileAdapter extends ArrayAdapter {
 //                                EditNum1.requestFocus();
 //                            }
 //                        }, 1000);
-
-//        EditNum1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                EditNum1.requestFocusFromTouch();
-//
-//            }
-//
-//        });
 
         EditNum1.addTextChangedListener(new TextWatcher() {
 

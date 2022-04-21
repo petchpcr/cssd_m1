@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -64,7 +65,9 @@ public class SearchItem_SendSterile extends AppCompatActivity {
     private ImageView img_back;
     private Button button_search;
     private ImageView button_import;
-    private GridView grid;
+//    private GridView grid;
+    private ListView grid;
+
     private EditText edt_search;
     private LinearLayout LinearLayout_department_search;
     private Switch switch_mode;
@@ -158,7 +161,8 @@ public class SearchItem_SendSterile extends AppCompatActivity {
     }
 
     private void byWidget(){
-        grid = (GridView) findViewById(R.id.grid);
+//        grid = (GridView) findViewById(R.id.grid);
+        grid = (ListView) findViewById(R.id.grid);
         edt_search = (EditText) findViewById(R.id.edt_search);
 
         img_back = (ImageView) findViewById(R.id.img_back);
