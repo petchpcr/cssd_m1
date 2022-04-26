@@ -1601,6 +1601,16 @@ public class DispensingActivity extends AppCompatActivity {
         quitDialog.show();
     }
 
+    private void getQR(final String msg, final String type){
+        Intent i = new Intent(DispensingActivity.this, CheckQR_Approve.class);
+        i.putExtra("xSel", "pay");
+        i.putExtra("remark", msg);
+        i.putExtra("DocNo", DocNo);
+        i.putExtra("B_ID", 1);
+        i.putExtra("type", type);
+        startActivityForResult(i, 1050);
+    }
+
     private void getQRPay(final String msg, final String type){
         Intent i = new Intent(DispensingActivity.this, CheckQR_Approve.class);
         i.putExtra("xSel", "payrow");
@@ -1747,13 +1757,13 @@ public class DispensingActivity extends AppCompatActivity {
                 data.put("p_userid", ((CssdProject) getApplication()).getPm().getUserid()+"");
                 data.put("p_bid", ((CssdProject) getApplication()).getPm().getBdCode()+"");
                 data.put("p_docno", DocNo);
-//                data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
                 if (type.equals("1")){
-                    data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "1");
-                }else {
+                    data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "0" : "0");
+                }else if(type.equals("3")){
                     data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
+                }else {
+                    data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "0" : "0");
                 }
-
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
@@ -1764,7 +1774,8 @@ public class DispensingActivity extends AppCompatActivity {
                 }catch(Exception e){
                     e.printStackTrace();
                 }
-
+                Log.d("tog_updatePayout",data+"");
+                Log.d("tog_updatePayout",result+"");
                 return result;
             }
 
@@ -1789,6 +1800,14 @@ public class DispensingActivity extends AppCompatActivity {
                 String d_round = data.getStringExtra("RETURN_DATA");
 
                 getUserPay(DocNo,d_round,d_type);
+
+            }else if (resultCode == 1035) {
+
+                if (data.getStringExtra("RETURN_Type").equals("1")){
+                    updatePayout(DocNo, DepID, "3");
+                }else {
+                    updatePayout(DocNo, DepID, "0");
+                }
 
             }
 
@@ -2439,6 +2458,8 @@ public class DispensingActivity extends AppCompatActivity {
                     list_pay.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                         @Override
                         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            DocNo = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(2)).getText().toString();
                             callDialogMenu(Model_Pay.get(i).getDocNo());
                             Log.d("tog_listPay","setOnItemLong");
 
@@ -3282,7 +3303,8 @@ public class DispensingActivity extends AppCompatActivity {
                         if (edt_message.getText().toString().equals("")){
                             Toast.makeText(DispensingActivity.this, "กรุณากรอกหมายเหตุ !!", Toast.LENGTH_SHORT).show();
                         }else {
-                            dialog_wait_scan("closepayout", "0");
+//                            dialog_wait_scan("closepayout", "0");
+                            getQR("closepayout", "0");
                             dialog.dismiss();
                         }
                     }else {
@@ -3294,13 +3316,15 @@ public class DispensingActivity extends AppCompatActivity {
 
             bt_cancel_pay.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    if (Message.equals("หมายเหตุ")){
-                        dialog_wait_scan("closepayout", "1");
-                        dialog.dismiss();
-                    }else {
-                        Delete_Pay_Detail(DocNo,p_usage_code_pay);
-                        dialog.dismiss();
-                    }
+//                    if (Message.equals("หมายเหตุ")){
+//                        dialog_wait_scan("closepayout", "1");
+//                        dialog.dismiss();
+//                    }else {
+//                        Delete_Pay_Detail(DocNo,p_usage_code_pay);
+//                        dialog.dismiss();
+//                    }
+
+                    dialog.dismiss();
                 }
             });
 
@@ -3382,50 +3406,50 @@ public class DispensingActivity extends AppCompatActivity {
 
 
     String mass_onkey = "";
-    public void dialog_wait_scan(String data,String type){
-        ProgressDialog wait_dialog = new ProgressDialog(DispensingActivity.this);
-
-        wait_dialog.setCancelable(false);
-
-        wait_dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();//dismiss dialog
-            }
-        });
-
-        wait_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
-                int keyCode = keyEvent.getKeyCode();
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
-                {
-                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
-                        wait_dialog.dismiss();
-
-                        Checkuser(mass_onkey,DocNo,"pay",type);
-
-                        mass_onkey = "";
-
-                        return false;
-                    }
-
-                    int unicodeChar = keyEvent.getUnicodeChar();
-
-                    if(unicodeChar!=0){
-                        mass_onkey=mass_onkey+(char)unicodeChar;
-                        Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
-                    }
-
-                    return false;
-                }
-                return false;
-            }
-        });
-
-        wait_dialog.show();
-    }
+//    public void dialog_wait_scan(String data,String type){
+//        ProgressDialog wait_dialog = new ProgressDialog(DispensingActivity.this);
+//
+//        wait_dialog.setCancelable(false);
+//
+//        wait_dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "ยกเลิก", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                dialog.dismiss();//dismiss dialog
+//            }
+//        });
+//
+//        wait_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+//            @Override
+//            public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
+//                int keyCode = keyEvent.getKeyCode();
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+//                {
+//                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+//                        Log.d("tog_diKeyListener","enter = "+mass_onkey);
+//                        wait_dialog.dismiss();
+//
+//                        Checkuser(mass_onkey,DocNo,"pay",type);
+//
+//                        mass_onkey = "";
+//
+//                        return false;
+//                    }
+//
+//                    int unicodeChar = keyEvent.getUnicodeChar();
+//
+//                    if(unicodeChar!=0){
+//                        mass_onkey=mass_onkey+(char)unicodeChar;
+//                        Log.d("tog_dispatchKey","unicodeChar = "+unicodeChar);
+//                    }
+//
+//                    return false;
+//                }
+//                return false;
+//            }
+//        });
+//
+//        wait_dialog.show();
+//    }
 
     public void Checkuser(String qr_code, String docno, String xsel,String type) {
 
@@ -3598,6 +3622,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                                     }).create();
                             dialog.show();
+                        }else{
+                            callDialog("หมายเหตุ","1");
                         }
 
                     }

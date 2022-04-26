@@ -194,8 +194,8 @@ public class CheckQR_Approve extends Activity {
 
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() +"chk_qr/check_qr.php",data);
 
-                Log.d("BANKTEST",data+"");
-                Log.d("BANKTEST",result+"");
+                Log.d("Checkuser",data+"");
+                Log.d("Checkuser",result+"");
 
                 return  result;
             }
