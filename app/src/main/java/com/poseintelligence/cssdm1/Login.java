@@ -12,11 +12,16 @@ import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.text.format.Formatter;
 import android.util.EventLogTags;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +38,7 @@ import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.core.connect.CheckConnectionService;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
+import com.poseintelligence.cssdm1.core.connect.HTTPPostRaw;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
 import com.poseintelligence.cssdm1.model.Parameter;
@@ -43,6 +49,7 @@ import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
@@ -64,6 +71,7 @@ public class Login extends AppCompatActivity {
     private ImageView button_qr_login;
     private ImageView iSetting;
     private TextView building_name;
+    private TextView api_e;
     private View.OnClickListener clickInLinearLayout;
 
     private String TAG_RESULTS = "result";
@@ -71,6 +79,9 @@ public class Login extends AppCompatActivity {
     private HTTPConnect http = new HTTPConnect();
 
     ArrayList<ConfigM1> config_m1 = new ArrayList<>();
+
+    public String ST_UrlAuthentication = "";
+    public boolean ST_IsUsedEnterPasswordAfterScanLogin = false;
 
     //Check if internet is present or not
     private boolean isConnectingToInternet() {
@@ -110,7 +121,6 @@ public class Login extends AppCompatActivity {
         byWidget();
 
         byEvent();
-
         onLoadConfiguration();
         get_building_name();
         try{
@@ -278,6 +288,11 @@ public class Login extends AppCompatActivity {
         submit = (ImageView) findViewById(R.id.button_login);
         button_qr_login = (ImageView) findViewById(R.id.button_qr_login);
         building_name = (TextView) findViewById(R.id.building_name);
+        api_e = (TextView) findViewById(R.id.api_e);
+
+//        if (!ST_IsUsedEnterPasswordAfterScanLogin){
+//            button_qr_login.setVisibility(View.GONE);
+//        }
     }
 
     private void byEvent(){
@@ -309,8 +324,20 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+
                     dep_device();
-                    onLogin(uname.getText().toString(), pword.getText().toString());
+                    if (!pword.getText().toString().equals("")) {
+
+                        if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
+                            onLogin(uname.getText().toString(), pword.getText().toString());
+                        }else {
+                            onLoginApi(uname.getText().toString(), pword.getText().toString());
+                        }
+
+                    }else {
+                        Toast.makeText(Login.this, "กรุณากรอกข้อมูลให้ครบถ้วน", Toast.LENGTH_SHORT).show();
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -322,6 +349,7 @@ public class Login extends AppCompatActivity {
             String mass_onkey = "";
             @Override
             public void onClick(View v) {
+                mass_onkey = "";
                 ProgressDialog wait_dialog = new ProgressDialog(Login.this);
                 wait_dialog.setMessage("สแกนรหัสผู้ใช้เพื่อเข้าสู่ระบบ");
                 wait_dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
@@ -333,7 +361,11 @@ public class Login extends AppCompatActivity {
                             if (keyCode == KeyEvent.KEYCODE_ENTER) {
                                 wait_dialog.dismiss();
 
-                                onLogin("IsUseQrEmCodeLogin",mass_onkey);
+                                if (ST_IsUsedEnterPasswordAfterScanLogin){
+                                    getADtoLogin(mass_onkey);
+                                }else {
+                                    onLogin("IsUseQrEmCodeLogin",mass_onkey);
+                                }
 
                                 return false;
                             }
@@ -350,6 +382,16 @@ public class Login extends AppCompatActivity {
                         return false;
                     }
                 });
+//                wait_dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialogInterface) {
+//                        Log.d("tog_Dismiss","uname = "+uname.getText().length());
+//                        if(!uname.getText().toString().equals("")){
+//                            Log.d("tog_Dismiss","requestFocus = pword");
+//                            pword.requestFocus();
+//                        }
+//                    }
+//                });
                 wait_dialog.show();
 
             }
@@ -367,7 +409,14 @@ public class Login extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
 
                             try {
-                                onLogin(uname.getText().toString(), pword.getText().toString());
+
+                                if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
+                                    onLogin(uname.getText().toString(), pword.getText().toString());
+                                }else {
+                                    onLoginApi(uname.getText().toString(), pword.getText().toString());
+                                }
+//                                onLogin(uname.getText().toString(), pword.getText().toString());
+
                             } catch (Exception e) {
                                 Toast.makeText(Login.this, "ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง!", Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
@@ -395,8 +444,6 @@ public class Login extends AppCompatActivity {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
 
-                            final String txt = uname.getText().toString();
-
                             if(!uname.getText().equals("") && pword.getText().equals("")){
                                 pword.requestFocus();
                             }
@@ -417,6 +464,77 @@ public class Login extends AppCompatActivity {
         uname.setText("");
 
         uname.requestFocus();
+    }
+
+    public void getADtoLogin(final String EmpCode) {
+        class onLogin extends AsyncTask<String, Void, String> {
+
+            private ProgressDialog dialog = new ProgressDialog(Login.this);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                dialog.setTitle(Cons.TITLE);
+                dialog.setIcon(R.drawable.pose_favicon_2x);
+                dialog.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+                dialog.setIndeterminate(true);
+
+                dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                boolean t = true;
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            uname.setText(c.getString("AD_Active"));
+                            //เอา c.getString("AD_Active") ไปใช้
+                            t = false;
+                        }
+                    }
+                } catch (JSONException e) {
+//                    Toast.makeText(Login.this, Cons.WARNING_CONNECT_SERVER_FAIL, Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+
+                    if(t){
+                        Toast.makeText(Login.this, "ไม่พบรหัสผู้ใช้งานในระบบ", Toast.LENGTH_SHORT).show();
+                    }else{
+                        pword.requestFocus();
+                    }
+
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("EmpCode", EmpCode);
+
+                Log.d("tog_login","data = "+data);
+                String result = http.sendPostRequest(getUrl + "get_ad_to_login.php", data);
+                Log.d("tog_login","result = "+result);
+                return result;
+            }
+        }
+
+        onLogin ru = new onLogin();
+        ru.execute();
     }
 
     public void onLogin(final String uname, final String pword) {
@@ -498,6 +616,175 @@ public class Login extends AppCompatActivity {
         }
 
         onLogin ru = new onLogin();
+        ru.execute();
+    }
+
+    public void onLogin_by_personid(final String personid) {
+        class onLogin_by_personid extends AsyncTask<String, Void, String> {
+
+            private ProgressDialog dialog = new ProgressDialog(Login.this);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                dialog.setTitle(Cons.TITLE);
+                dialog.setIcon(R.drawable.pose_favicon_2x);
+                dialog.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+                dialog.setIndeterminate(true);
+
+                dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (!c.getString("result").equals("false")) {
+//                            onLogin(c.getString("UserName" ), c.getString("Password" ));
+//                            onLogin(c.getString("UserName" ),"5555");
+                            onLogin("IsUseQrEmCodeLogin",c.getString("UserName" ));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("AD_Active", personid);
+
+                Log.d("tog_loginps","data = "+data);
+                String result = http.sendPostRequest(getUrl + "get_login_by_person_id.php", data);
+//                String result = http.sendPostRequest("http://poseintelligence.dyndns.biz:8088/cssd_2_us_rama_sdmc/testapi.php", data);
+                Log.d("tog_loginps","result = "+result);
+                return result;
+            }
+        }
+
+        onLogin_by_personid ru = new onLogin_by_personid();
+        ru.execute();
+    }
+
+    public void onLoginApi(final String uname, final String pword) {
+        class onLoginApi extends AsyncTask<String, Void, String> {
+            String ipAddress = "";
+            String deviceName = "";
+            private ProgressDialog dialog = new ProgressDialog(Login.this);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                dialog.setTitle(Cons.TITLE);
+                dialog.setIcon(R.drawable.pose_favicon_2x);
+                dialog.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+                dialog.setIndeterminate(true);
+
+                dialog.show();
+
+                WifiManager wifiMgr = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiMgr.getConnectionInfo();
+                int ip = wifiInfo.getIpAddress();
+                ipAddress = Formatter.formatIpAddress(ip);
+
+                deviceName = Settings.Global.getString(getApplicationContext().getContentResolver(), "device_name");
+
+                Log.d("tog_get_ip","IP = "+ipAddress);
+                Log.d("tog_get_ip","Name = "+deviceName);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        JSONObject rs_Detail = new JSONObject(c.getString("resultDetails"));
+
+                        if (c.getString("result").equals("true") || c.getString("result").equals("TRUE")) {
+
+                            onLogin_by_personid(rs_Detail.getString("personId"));
+
+                        }else{
+
+                            JSONObject rs_Err = new JSONObject(c.getString("resultErrs"));
+                            if (rs_Err.getString("errorType").equals("U01")){
+                                Toast.makeText(Login.this, rs_Err.getString("errorText"), Toast.LENGTH_SHORT).show();
+                            }else if (rs_Err.getString("errorType").equals("U02")){
+                                Toast.makeText(Login.this, rs_Err.getString("errorText"), Toast.LENGTH_SHORT).show();
+                            }else if (rs_Err.getString("errorType").equals("U03")){
+                                Toast.makeText(Login.this, rs_Err.getString("errorText"), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    Toast.makeText(Login.this, Cons.WARNING_CONNECT_SERVER_FAIL, Toast.LENGTH_SHORT).show();
+                    api_e.setText(e.toString());
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                JSONObject data = new JSONObject();
+                try {
+
+                    String Json_data = "{\"user\": \"" + uname + "\",\"password\": \"" + pword + "\",\"System\": \"CSSD\",\"IPAddres\": \"" + ipAddress + "\",\"Terminal\": \"" + deviceName + "\"}";
+
+                    HTTPPostRaw post = null;
+
+                    post = new HTTPPostRaw(ST_UrlAuthentication, "utf-8");
+                    post.setPostData(Json_data);
+
+                    String message = post.finish();
+
+                    Log.d("tog_get_ip","message = "+message);
+
+                    return "{" + "result :[" + message + "]" + "}";
+
+                } catch (IOException e) {
+
+                    Log.d("tog_get_ip","e = "+e.toString());
+                    e.printStackTrace();
+                }
+
+
+                return "";
+            }
+
+        }
+
+        onLoginApi ru = new onLoginApi();
         ru.execute();
     }
 
@@ -712,6 +999,18 @@ public class Login extends AppCompatActivity {
                             ((CssdProject) getApplication()).setAP_AddRickReturnToPreviousProcess(c.getInt("AP_AddRickReturnToPreviousProcess"));
                             ((CssdProject) getApplication()).setAP_IsUsedNotification(c.getBoolean("AP_IsUsedNotification"));
                             ((CssdProject) getApplication()).setAP_UsedScanForApprove(c.getBoolean("AP_UsedScanForApprove"));
+
+                            if(!c.isNull("ST_UrlAuthentication")){
+                                ST_UrlAuthentication = c.getString("ST_UrlAuthentication");
+                            }
+
+                            if(!c.isNull("ST_IsUsedEnterPasswordAfterScanLogin")){
+                                ST_IsUsedEnterPasswordAfterScanLogin = Boolean.parseBoolean(c.getString("ST_IsUsedEnterPasswordAfterScanLogin"));
+                            }
+
+                            Log.d("tog_LoadConfigapi","ST_UrlAuthentication = "+ST_UrlAuthentication);
+                            Log.d("tog_LoadConfigapi","ST_IsUsedEnterPasswordAfterScanLogin = "+ST_IsUsedEnterPasswordAfterScanLogin);
+
                             if(!c.isNull("ST_SoundAndroidVersion9")){
                                 ((CssdProject) getApplication()).setST_SoundAndroidVersion9(c.getBoolean("ST_SoundAndroidVersion9"));
                                 Log.d("tog_LoadConfig","ST_SoundAndroidVersion9 = "+c.getBoolean("ST_SoundAndroidVersion9"));
@@ -784,6 +1083,7 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, Cons.WARNING_SEARCH_NOT_FOUND, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -837,7 +1137,13 @@ public class Login extends AppCompatActivity {
 
     public void dep_device(){
         if(getSerialNumber().equals("L203P85U01743")){
-            onLogin("user3", "1112");
+
+            Log.d("serialNumber","ST_UrlAuthentication = "+ST_UrlAuthentication);
+            if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
+                onLogin(uname.getText().toString(), pword.getText().toString());
+            }else {
+                onLoginApi(uname.getText().toString(), pword.getText().toString());
+            }
         }
     }
 

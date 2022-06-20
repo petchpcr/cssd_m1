@@ -424,6 +424,8 @@ public class BasketWashingActivity extends AppCompatActivity {
 
     public void get_basket(String basket_id) {
 
+        Log.d("tog_get_basket","f basket_id = " + basket_id);
+        Log.d("tog_get_basket","f basket_pos_non_approve = " + basket_pos_non_approve);
         class get_basket extends AsyncTask<String, Void, String> {
 
             // variable
@@ -794,6 +796,92 @@ public class BasketWashingActivity extends AppCompatActivity {
         obj.execute();
     }
 
+    public void move_item_basket(String id,String basket_id,String usage_code){
+
+        loading_dialog_dismiss();
+
+        class move_item_basket extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loading_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),usage_code);
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    show_log_error("delete_item_in_basket.php Error = "+e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("ID", id);
+                data.put("basket_id", basket_id);
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(getUrl + "delete_item_in_basket.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_delete_item","data = " + data);
+                Log.d("tog_delete_item","result = " + result);
+                return result;
+            }
+
+            // =========================================================================================
+        }
+
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(BasketWashingActivity.this);
+        builder1.setMessage("รายการนี้อยู่ในตะกร้าอื่น ต้องการย้ายรายการหรือไม่");
+        builder1.setCancelable(true);
+
+        builder1.setPositiveButton(
+                "ย้ายรายการ",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        move_item_basket obj = new move_item_basket();
+                        obj.execute();
+                    }
+                });
+
+        builder1.setNegativeButton(
+                "ยกเลิก",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
     public void item_to_delete(String id,String data){
         class delete_item extends AsyncTask<String, Void, String> {
 
@@ -964,7 +1052,9 @@ public class BasketWashingActivity extends AppCompatActivity {
                             if(c.getString("basket_id").equals(basket_id)){
                                 show_dialog("Warning","รายการซ้ำ","repeat_scan");
                             }else{
-                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
+//                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
+
+                                move_item_basket(c.getString("item_id")+",",c.getString("basket_id"),usage_code);
                             }
                         }else if(c.getString("result").equals("T")){
                             show_dialog("Warning","ไม่สามารถเพิ่มได้","no");
@@ -1057,6 +1147,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                             get_machine("null");
                             get_basket("null");
+                            list_item_basket.setAdapter(null);
                         }
 
                     }
@@ -1215,6 +1306,16 @@ public class BasketWashingActivity extends AppCompatActivity {
                                     get_data =false;
                                 }
 
+                                if(get_data&&(c.getString("WashIsStatus").equals("1")||c.getString("WashIsStatus").equals("2"))){
+                                    show_dialog("Warning","ตะกร้าไม่พร้อมใช้งาน");
+                                    get_data =false;
+
+                                    show_basket("",View.GONE);
+                                    basket_pos_non_approve = -1;
+                                    list_basket_adapter.select_basket_pos=-1;
+                                    reload_basket();
+                                }
+
                                 xlist_basket.get(pos).setTypeProcessID(c.getString("WashProcessID"));
 
                             }else{
@@ -1318,8 +1419,10 @@ public class BasketWashingActivity extends AppCompatActivity {
     }
 
     public void show_dialog(String title,String mass){
+        Log.d("tog_get_basket","basket_pos_non_approve = " + basket_pos_non_approve);
         mac_id_non_approve = list_mac_adapter.select_mac_pos;
         basket_pos_non_approve = list_basket_adapter.select_basket_pos;
+        Log.d("tog_get_basket","basket_pos_non_approve = " + basket_pos_non_approve);
 
         list_basket_adapter.notifyDataSetChanged();
         list_mac_adapter.notifyDataSetChanged();
@@ -1648,7 +1751,7 @@ public class BasketWashingActivity extends AppCompatActivity {
         obj.execute(emp_code);
     }
 
-    public void set_program(String program_id,String ProcessId,String p_WashMachineID){
+    public void set_program(String program_id,String ProcessId,String p_WashMachineID,int isset){
 
         class set_program extends AsyncTask<String, Void, String> {
 
@@ -1670,7 +1773,11 @@ public class BasketWashingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
-                            create_doc(ProcessId,c.getString("value"),p_WashMachineID);
+                            if(isset==1){
+                                create_doc(ProcessId,c.getString("value"),p_WashMachineID);
+                            }else{
+                                change_doc_program(c.getString("value"), list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                            }
                         }else{
                             show_dialog("Warning","ไม่พบโปรแกรมล้าง");
                         }
@@ -1706,6 +1813,61 @@ public class BasketWashingActivity extends AppCompatActivity {
         }
 
         set_program obj = new set_program();
+        obj.execute();
+    }
+
+    public void change_doc_program(String ProgramID, String docno) {
+
+        class change_doc_program extends AsyncTask<String, Void, String> {
+
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loading_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            reload_mac();
+                        }else{
+                            show_dialog("Warning","ไม่เปลี่ยนโปรแกรมได้");
+                        }
+                    }
+                } catch (JSONException e) {
+                    show_dialog("Warning","ไม่เปลี่ยนโปรแกรมได้");
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("p_ProgramID", ProgramID);
+                data.put("docno", docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                String result = httpConnect.sendPostRequest(getUrl+ "change_doc_program.php", data);
+
+                Log.d("tog_change_doc_program","data = "+data);
+                Log.d("tog_change_doc_program","result = "+result);
+                return result;
+            }
+        }
+
+        change_doc_program obj = new change_doc_program();
         obj.execute();
     }
 
@@ -1763,7 +1925,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                         wait_dialog.dismiss();
                         switch (for_scan){
                             case wait_scan_program :
-                                set_program(mass_onkey.substring(1),data[1],data[2]);
+                                set_program(mass_onkey.substring(1),data[1],data[2],1);
                                 break;
                             case wait_scan_employee :
                                 set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
@@ -1800,8 +1962,10 @@ public class BasketWashingActivity extends AppCompatActivity {
         int keyCode = event.getKeyCode();
 
         Log.d("tog_allKey","keyCode = "+keyCode);
+        Log.d("tog_dispatchKey","event = "+event.getAction());
         if (event.getAction() == KeyEvent.ACTION_DOWN)
         {
+
             if(keyCode == KeyEvent.KEYCODE_BACK ){
                 onBackPressed();
             }
@@ -1847,6 +2011,14 @@ public class BasketWashingActivity extends AppCompatActivity {
                             }else{
                                 show_dialog("Warning","กรุณาเลือกเครื่องล้าง");
                             }
+                        }
+
+                        break;
+
+                    case "p":
+
+                        if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-1)){
+                            set_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getTypeID(),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
                         }
 
                         break;

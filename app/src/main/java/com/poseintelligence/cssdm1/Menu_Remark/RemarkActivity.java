@@ -33,6 +33,7 @@ import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.MainMenu;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListDisplayDocRemarkAdapter;
+import com.poseintelligence.cssdm1.core.CustomExceptionHandler;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ModelDisplayDocRemark;
@@ -83,6 +84,11 @@ public class RemarkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remark);
+
+        if(!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) {
+            Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(
+                    this.getApplicationContext()));
+        }
 
         byIntent();
 

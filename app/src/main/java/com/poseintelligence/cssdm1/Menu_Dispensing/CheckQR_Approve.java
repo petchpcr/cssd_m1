@@ -87,8 +87,11 @@ public class CheckQR_Approve extends Activity {
 
                             if (xSel.equals("pay") || xSel.equals("payrow")){
                                 if (remark.equals("closepayout")){
+                                    Log.d("tog_flow","Checkuser");
                                     Checkuser(etxt_qr.getText().toString(),DocNo,xSel);
                                 }else {
+
+                                    Log.d("tog_flow","CheckuserPay");
                                     CheckuserPay(etxt_qr.getText().toString(),xSel,remark,DocNo);
                                 }
                             }else if (xSel.equals("sterile")){
@@ -109,7 +112,8 @@ public class CheckQR_Approve extends Activity {
         etxt_qr.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Checkuser("EM00001", DocNo, xSel);
+//                Checkuser("EM00001", DocNo, xSel);
+                etxt_qr.setText("EM00001");
                 return true;
             }
         });
@@ -235,6 +239,7 @@ public class CheckQR_Approve extends Activity {
                                     intent.putExtra("RETURN_DocNo",DocNo);
                                     intent.putExtra("RETURN_MacNo",MacNo);
                                     intent.putExtra("RETURN_ID",c.getString("ID"));
+                                    intent.putExtra("Printno",c.getString("Printno"));
                                     finish();
                                 }else {
                                     setResult(1050, intent);
@@ -318,12 +323,14 @@ public class CheckQR_Approve extends Activity {
                                     intent.putExtra("RETURN_xsel",xSel);
                                     intent.putExtra("RETURN_DocNo",DocNo);
                                     intent.putExtra("RETURN_MacNo",MacNo);
+                                    intent.putExtra("RETURN_MacNo",MacNo);
                                     finish();
                                 }else if (remark.equals("ExportAll")){
                                     setResult(1061, intent);
                                     intent.putExtra("RETURN_DATA",check);
                                     intent.putExtra("RETURN_xsel",xSel);
                                     intent.putExtra("RETURN_DocNo",DocNo);
+                                    intent.putExtra("RETURN_MacNo",MacNo);
                                     intent.putExtra("RETURN_MacNo",MacNo);
                                     finish();
                                 }else {

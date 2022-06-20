@@ -33,7 +33,7 @@ public class Cons {
     public static final String WAIT_FOR_PROCESS = "กำลังประมวลผล...";
     public static final String WAIT_FOR_PRINTING = "กำลังพิมพ์สติ๊กเกอร์...";
     public static final String WAIT_FOR_LOADING = "กำลังโหลดข้อมูล...";
-    public static final String WAIT_FOR_AUTHENTICATION = "กำลังตรวจสอบผู้เข้าผู้ใช้งาน...";
+    public static final String WAIT_FOR_AUTHENTICATION = "กำลังตรวจสอบผู้เข้าใช้งานระบบ";
     public static final String CHANGE_WASH_TYPE = "ต้องการเปลี่ยนประเภทการล้างหรือไม่ ?";
 
     public static final String CONFIRM_DELETE = "ยืนยันการลบข้อมูล !!";

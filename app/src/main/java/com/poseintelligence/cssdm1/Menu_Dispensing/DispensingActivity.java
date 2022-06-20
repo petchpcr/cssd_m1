@@ -42,6 +42,7 @@ import com.poseintelligence.cssdm1.adapter.ListDepartmentAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailItemAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailSubAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDocumentAdapter;
+import com.poseintelligence.cssdm1.core.CustomExceptionHandler;
 import com.poseintelligence.cssdm1.core.audio.iAudio;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.date.DateTime;
@@ -182,6 +183,8 @@ public class DispensingActivity extends AppCompatActivity {
 
     boolean PA_IsUsedPayOkSound = true;
 
+    String d_id = "";
+
     public void speakText(String textContents) {
         tts.speak(textContents, TextToSpeech.QUEUE_FLUSH, null, null);
     }
@@ -191,6 +194,11 @@ public class DispensingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dispensing);
         getSupportActionBar().hide();
+
+        if(!(Thread.getDefaultUncaughtExceptionHandler() instanceof CustomExceptionHandler)) {
+            Thread.setDefaultUncaughtExceptionHandler(new CustomExceptionHandler(
+                    this.getApplicationContext()));
+        }
 
         byWidget();
 
@@ -211,7 +219,6 @@ public class DispensingActivity extends AppCompatActivity {
         spn_zone.setVisibility(Is_Zone?View.VISIBLE:View.GONE);
         if(Is_Zone==false)
             displayDepartment(txt_search_department.getText().toString(), -1,"");
-
     }
 
     private void speakTextInit() {
@@ -332,6 +339,8 @@ public class DispensingActivity extends AppCompatActivity {
                 imageCreate.setVisibility( View.GONE );
                 txt_search_department.setText("");
                 displayDepartment(null, -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+
+                Log.d("tog_focus","img_back_2");
             }
         });
 
@@ -461,30 +470,31 @@ public class DispensingActivity extends AppCompatActivity {
                     {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
-                            String S_Code = txt_usage_code.getText().toString().toLowerCase();
-                            Log.d("top_dep","S_Code = "+S_Code);
-                            if(S_Code.substring(0,1).equals("d")){
-                                boolean x = true;
-                                for(int i = 0;i<Model_Department.size();i++){
+                            if(txt_usage_code.length()>0){
+                                String S_Code = txt_usage_code.getText().toString().toLowerCase();
+                                Log.d("top_dep","S_Code = "+S_Code);
+                                if(S_Code.substring(0,1).equals("d")){
+                                    boolean x = true;
+                                    for(int i = 0;i<Model_Department.size();i++){
 
-                                    Log.d("top_dep","ID = "+Model_Department.get(i));
-                                    if(Model_Department.get(i).equals(S_Code.substring(1))){
-                                        list_department.setSelection(i);
-                                        select_dept(i);
-                                        x=false;
+                                        Log.d("top_dep","ID = "+Model_Department.get(i));
+                                        if(Model_Department.get(i).getID().equals(S_Code.substring(1))){
+                                            list_department.setSelection(i);
+                                            select_dept(i);
+                                            x=false;
 
+                                        }
                                     }
-                                }
-                                if(x){
-                                    Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
-                                }
+                                    if(x){
+                                        Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+                                    }
 
-                                txt_usage_code.setText("");
-                                return false;
-                            }else{
-                                checkInput();
+                                    txt_usage_code.setText("");
+                                    return false;
+                                }else{
+                                    checkInput();
+                                }
                             }
-
 
 //                            String txt = txt_usage_code.getText().toString();
 //                            if(!B_IsNonSelectDocument) {
@@ -536,26 +546,28 @@ public class DispensingActivity extends AppCompatActivity {
                     {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
-                            String S_Code = txt_search_department.getText().toString().toLowerCase();
-                            Log.d("top_dep","S_Code = "+S_Code);
-                            if(S_Code.substring(0,1).equals("d") || S_Code.substring(0,1).equals("D")){
-                                boolean x = true;
-                                for(int i = 0;i<Model_Department.size();i++){
+                            if(txt_search_department.length()>0) {
+                                String S_Code = txt_search_department.getText().toString().toLowerCase();
+                                Log.d("top_dep", "S_Code = " + S_Code);
+                                if (S_Code.substring(0, 1).equals("d") || S_Code.substring(0, 1).equals("D")) {
+                                    boolean x = true;
+                                    for (int i = 0; i < Model_Department.size(); i++) {
 
-                                    Log.d("top_dep","ID = "+Model_Department.get(i).getID());
-                                    if(Model_Department.get(i).getID().equals(S_Code.substring(1))){
-                                        list_department.setSelection(i);
-                                        select_dept(i);
-                                        x=false;
+                                        Log.d("top_dep", "ID = " + Model_Department.get(i).getID());
+                                        if (Model_Department.get(i).getID().equals(S_Code.substring(1))) {
+                                            list_department.setSelection(i);
+                                            select_dept(i);
+                                            x = false;
 
+                                        }
                                     }
-                                }
-                                if(x){
-                                    Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
-                                }
+                                    if (x) {
+                                        Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+                                    }
 
-                                txt_search_department.setText("");
-                                return false;
+                                    txt_search_department.setText("");
+                                    return false;
+                                }
                             }
                             return true;
                         default:
@@ -778,6 +790,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private void checkInput(){
 
+        Log.d("tog_flow","checkInput");
         String input = txt_usage_code.getText().toString();
 
 //        B_IsNonSelectDocument = true;
@@ -790,6 +803,7 @@ public class DispensingActivity extends AppCompatActivity {
     }
 
     public void checkDuplicate(final String usagecode) {
+        Log.d("tog_flow","checkDuplicate = "+usagecode);
         class checkDuplicate extends AsyncTask<String, Void, String> {
 
             @Override
@@ -811,6 +825,7 @@ public class DispensingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
                         if(c.getInt("Cnt")>0){
 
+                            Log.d("tog_flow","Cnt = 1");
                             if(ST_SoundAndroidVersion9){
                                 speakText("no");
                             }else{
@@ -822,12 +837,14 @@ public class DispensingActivity extends AppCompatActivity {
                             if (SR_ReceiveFromDeposit) {
                                 addItem( usagecode );
                             }else{
+                                Log.d("tog_flow","Cnt = 0");
                                 if (PA_IsUsedFIFO) {
                                     String arr[] = usagecode.split("-");
                                     String itemcode = arr[0];
-                                    Log.d("tog_FIFO","checkFIFO ");
+                                    Log.d("tog_flow","checkFIFO ");
                                     checkFIFO(itemcode, usagecode);
                                 } else {
+                                    Log.d("tog_flow","checkExpiring ");
                                     checkExpiring(usagecode);
                                 }
                             }
@@ -1201,6 +1218,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     public void addItem(final String p_usage_code) {
 
+        Log.d("tog_flow","addItem");
         final boolean B_Is_Borrow = false; // switch_type.isChecked();
 
         class Add extends AsyncTask<String, Void, String> {
@@ -1256,7 +1274,11 @@ public class DispensingActivity extends AppCompatActivity {
                                 }
                             }
 
+                            Log.d("tog_flow","addItem DocNo = "+DocNo);
+
                             if(DocNo == null){
+
+                                Log.d("tog_flow","B_IsNonSelectDocument = "+B_IsNonSelectDocument);
 
                                 DocNo = c.getString("DocNo");
 
@@ -1278,6 +1300,7 @@ public class DispensingActivity extends AppCompatActivity {
                                     // Display Payout
                                     displayPay(DepID, DocNo,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
                                 }
+
                                 switch_opt.setChecked(false);
                                 Block_1.setVisibility( View.GONE );
                                 Block_2.setVisibility( View.GONE );
@@ -1423,8 +1446,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                 Log.d("OOOO",((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage.php?"+ data);
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage.php", data);
-                Log.d("OOOO","data : "+result);
-                Log.d("OOOO","result : "+result);
+                Log.d("tog_add_pay_detail","data : "+data);
+                Log.d("tog_add_pay_detail","result : "+result);
                 return result;
             }
         }
@@ -1522,6 +1545,7 @@ public class DispensingActivity extends AppCompatActivity {
                             }else{
                                 nMidia.getAudio("no");
                             }
+
                         }
                     }
 
@@ -1587,6 +1611,7 @@ public class DispensingActivity extends AppCompatActivity {
 //                updatePayout(DocNo, DepID,"0");
 
                 getQRPay("payrow", "0");
+                Log.d("tog_flow","getQRPay payrow 0");
             }
         });
 
@@ -1618,6 +1643,8 @@ public class DispensingActivity extends AppCompatActivity {
         i.putExtra("DocNo", DocNo);
         i.putExtra("B_ID", "1");
         i.putExtra("type", type);
+
+        Log.d("tog_flow","getQRPay payrow 0 1155");
         startActivityForResult(i, 1155);
     }
 
@@ -1696,7 +1723,6 @@ public class DispensingActivity extends AppCompatActivity {
                             imageCreate.setVisibility( View.GONE );
                             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                             linear_layout_search.setLayoutParams(params);
-                            DocNo="";
                             displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 
 //                            spn_usr_receive.setSelection(0);
@@ -1738,8 +1764,12 @@ public class DispensingActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();
 
-                if( ((CssdProject) getApplication()).getCustomerId() == 201 || ((CssdProject) getApplication()).getCustomerId() == 211){
+//                if( ((CssdProject) getApplication()).getCustomerId() == 201 || ((CssdProject) getApplication()).getCustomerId() == 211){
+
+                if( ((CssdProject) getApplication()).getCustomerId() == 201){
                     data.put("p_is_used_itemstock_department", "1");
+                }else {
+                    data.put("p_is_used_itemstock_department", "0");
                 }
 
                 if(p_dept_id != null) {
@@ -1757,6 +1787,8 @@ public class DispensingActivity extends AppCompatActivity {
                 data.put("p_userid", ((CssdProject) getApplication()).getPm().getUserid()+"");
                 data.put("p_bid", ((CssdProject) getApplication()).getPm().getBdCode()+"");
                 data.put("p_docno", DocNo);
+                data.put("p_id",d_id);
+
                 if (type.equals("1")){
                     data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "0" : "0");
                 }else if(type.equals("3")){
@@ -1764,6 +1796,7 @@ public class DispensingActivity extends AppCompatActivity {
                 }else {
                     data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "0" : "0");
                 }
+
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
@@ -1790,19 +1823,23 @@ public class DispensingActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        Log.d("onActivityResult","onActivityResult = "+resultCode);
         try {
 
-            if (resultCode == 1998) {
+            if (resultCode == 1155) {
 
-                String RETURN_TYPE = data.getStringExtra("RETURN_TYPE");
-                String RETURN_DATA = data.getStringExtra("RETURN_DATA");
-                String d_type = data.getStringExtra("RETURN_TYPE");
-                String d_round = data.getStringExtra("RETURN_DATA");
+                String d_round = data.getStringExtra("Printno");
 
-                getUserPay(DocNo,d_round,d_type);
+                Log.d("onActivityResult","d_round = "+d_round);
+
+                getUserPay(DocNo,d_round,"1");
 
             }else if (resultCode == 1035) {
 
+                d_id = data.getStringExtra("RETURN_ID");
+
+                Log.d("tog_updatePayout","RETURN_Type = "+data.getStringExtra("RETURN_Type"));
+                p_approve_code = data.getStringExtra("RETURN_VALUE");
                 if (data.getStringExtra("RETURN_Type").equals("1")){
                     updatePayout(DocNo, DepID, "3");
                 }else {
@@ -1896,21 +1933,21 @@ public class DispensingActivity extends AppCompatActivity {
 
                         Log.d("BANKTEST",p_Type + "");
 
-                        if (p_Type.equals("1")){
+//                        if (p_Type.equals("1")){
 
 //                            printSlip();
 
-                            SetPrintCountReportAndPrintCountSlip("1","0",DocNo);
+//                            SetPrintCountReportAndPrintCountSlip("1","0",DocNo);
 
-                        }else {
+//                        }else {
 
 //                            String url = ((CssdProject) getApplication()).getUrl() + "report/cssd_report_payout_by_docno.php?p_docno=" + DocNo + "&p_DB=" + ((CssdProject) getApplication()).getD_DATABASE() + "&p_Round=" + d_round;
 
 //                            callAction(url);
 
-                            SetPrintCountReportAndPrintCountSlip("0","2",DocNo);
+//                            SetPrintCountReportAndPrintCountSlip("0","2",DocNo);
 
-                        }
+//                        }
 
                     }
 
@@ -2002,6 +2039,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     public void displayDepartment(final String pDepName, final int depIndex, final String p_zone){
 
+        Log.d("tog_focus","displayDepartment");
         final boolean is_borrow = false; // switch_type.isChecked();
 
         class DisplayDepartment extends AsyncTask<String, Void, String> {
@@ -2081,9 +2119,10 @@ public class DispensingActivity extends AppCompatActivity {
                         }
                     });
 
-                    if(DepIndex > -1){
-                        displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
-                    }
+                    Log.d("tog_focus","DepIndex = "+DepIndex);
+//                    if(DepIndex > -1){
+//                        displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+//                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -2093,9 +2132,9 @@ public class DispensingActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
 
-                    //txt_search_department.requestFocus();
-
-                    txt_usage_code.requestFocus();
+                    txt_search_department.requestFocus();
+                    Log.d("tog_focus","txt_search_department focus");
+//                    txt_usage_code.requestFocus();
                 }
             }
 
@@ -2351,6 +2390,7 @@ public class DispensingActivity extends AppCompatActivity {
     public void focus(){
         txt_usage_code.setText("");
         txt_usage_code.requestFocus();
+        Log.d("tog_focus","focus()");
     }
 
     // ------------------------------------------------------------------
@@ -3333,18 +3373,22 @@ public class DispensingActivity extends AppCompatActivity {
             txt_tmp.requestFocus();
 
             if (!type.equals("1")){
-                runnable_1 = new Runnable() {
 
-                    @Override
-                    public void run() {
-                        dialog.dismiss();
-                        handler_1.removeCallbacks(runnable_1);
-                        handler_1.removeCallbacksAndMessages(null);
-                        focus();
-                    }
-                };
+                if (!Message.equals("ไม่ตรงแผนก !")){
+                    runnable_1 = new Runnable() {
 
-                handler_1.postDelayed(runnable_1, 2000);
+                        @Override
+                        public void run() {
+                            dialog.dismiss();
+                            handler_1.removeCallbacks(runnable_1);
+                            handler_1.removeCallbacksAndMessages(null);
+                            focus();
+                        }
+                    };
+
+                    handler_1.postDelayed(runnable_1, 2000);
+                }
+
             }
 
         }else{

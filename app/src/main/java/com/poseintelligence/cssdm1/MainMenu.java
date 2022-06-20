@@ -4,9 +4,12 @@ import static java.lang.Class.forName;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,12 +27,20 @@ import com.poseintelligence.cssdm1.Menu_RecordTest.ResultsActivity;
 import com.poseintelligence.cssdm1.Menu_Remark.RemarkActivity;
 import com.poseintelligence.cssdm1.Menu_Return.ReturnActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
+import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
+import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainMenu extends AppCompatActivity implements View.OnClickListener {
     private String getUrl="";
+    private HTTPConnect http = new HTTPConnect();
     private TextView tName;
 
     ArrayList<LinearLayout> list_menu = new ArrayList<>();
@@ -71,7 +82,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         getUrl = ((CssdProject) getApplication()).getxUrl();
         tName.setText( ((CssdProject) getApplication()).getPm().getEmName() );
         cM1 = ((CssdProject) getApplication()).getcM1();
-
         tExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,27 +121,75 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         finish();
     }
 
-    private void ShowMenu() {
-        int n=0;
-        for(int i=0;i<cM1.size();i++) {
-            if (cM1.get(i).getShowBtn()) {
-                ImageView IV = new ImageView(this);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 150);
-                params.setMargins(20,55,20,35);
-//                params.weight = 150;
-//                params.height = 150;
-                IV.setLayoutParams(params);
-                String uri = "@drawable/"+cM1.get(i).getBtImg();
-                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                Drawable res = getResources().getDrawable(imageResource);
-                IV.setImageDrawable( res );
+    public void ShowMenu() {
+        class ShowMenu extends AsyncTask<String, Void, String> {
 
-                Log.d("tog_menu","getDrawable : " +cM1.get(i).getBtImg());
+            private ProgressDialog dialog = new ProgressDialog(MainMenu.this);
 
-                menu_addView(i,n,IV);
-                n++;
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                dialog.setTitle(Cons.TITLE);
+                dialog.setIcon(R.drawable.pose_favicon_2x);
+                dialog.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+                dialog.setIndeterminate(true);
+
+                dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try {
+                    JSONObject c = new JSONObject(s);
+
+                    int n=0;
+                    for(int i=0;i<cM1.size();i++) {
+                        if (cM1.get(i).getShowBtn()) {
+                            ImageView IV = new ImageView(MainMenu.this);
+                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 150);
+                            params.setMargins(20,55,20,35);
+                            IV.setLayoutParams(params);
+                            String uri = "@drawable/"+cM1.get(i).getBtImg();
+                            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                            Drawable res = getResources().getDrawable(imageResource);
+                            IV.setImageDrawable( res );
+
+                            Log.d("tog_menu","getDrawable : " +cM1.get(i).getBtImg());
+                            if (c.getString(cM1.get(i).getBtImg()).equals("1")) {
+                                menu_addView(i,n,IV);
+                            }
+                            n++;
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.d("tog_menu","e : " +e);
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("userid", ((CssdProject) getApplication()).getPm().getUserid()+"");
+                String result = http.sendPostRequest(getUrl + "cssd_display_config_M1_user.php", data);
+
+                Log.d("tog_menu","data = "+data);
+                Log.d("tog_menu","result = "+result);
+                return result;
             }
         }
+
+        ShowMenu ru = new ShowMenu();
+        ru.execute();
     }
 
     public void menu_addView(int position,int pos,View v) {
