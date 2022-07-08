@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_atpdocno.xml" value="0.18697916666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_basket_washing.xml" value="0.18125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_check_qrapprove.xml" value="0.18072916666666666" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dialog_check_usage_count.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dialog_delete_pic_remark.xml" value="0.190625" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dialog_load_img.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dialog_load_img_remark.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dialog_pic_remark.xml" value="0.24114583333333334" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dialog_remark_sendsterile.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_dispensing.xml" value="0.430622009569378" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_in_sert_image_spore_doc.xml" value="0.18697916666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_list_1.xml" value="0.18697916666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_list_box_basket_adapter.xml" value="0.18125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_list_box_machine_adapter.xml" value="0.3776041666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_list_display_doc_remark_adapter.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_list_emtry.xml" value="0.19895833333333332" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_login.xml" value="0.5" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_receive.xml" value="0.18125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_record_test_list_doc.xml" value="0.18697916666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_remark.xml" value="0.18697916666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_search_item_send_sterile.xml" value="0.1984375" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_sterile.xml" value="0.3776041666666667" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/activity_wait_connect_dialog.xml" value="0.190625" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/dialog_warning.xml" value="0.20677083333333332" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/image_itemview.xml" value="0.19791666666666666" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/list_payout_document.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/list_search_sendsterile.xml" value="0.1828125" />
+        <entry key="..\:/D/POSE INT/cssd_m1/app/src/main/res/layout/list_send_sterile_detail_adapter.xml" value="0.732484076433121" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="16" project-jdk-type="JavaSDK" />
+</project>
