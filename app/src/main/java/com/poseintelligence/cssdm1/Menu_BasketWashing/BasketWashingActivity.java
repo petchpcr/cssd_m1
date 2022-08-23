@@ -78,7 +78,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
     boolean is_select_all = false;
     boolean is_add_item = false;
-
+    String loader = "";
     public boolean is_have_loader=false;
 
     String typeID="";
@@ -375,7 +375,8 @@ public class BasketWashingActivity extends AppCompatActivity {
                                             }
                                             else{
                                                 if(c.getString("DocNo").equals("null")||c.getString("DocNo")==null){
-                                                    dialog_wait_scan(new String[]{wait_scan_program+"",list.get(j).getTypeID(),list.get(j).getMachineID()});
+//                                                    dialog_wait_scan(new String[]{wait_scan_program+"",list.get(j).getTypeID(),list.get(j).getMachineID()});
+                                                    dialog_wait_scan(new String[]{wait_scan_employee+"",list.get(j).getTypeID(),list.get(j).getMachineID()});
                                                 }else{
                                                     get_doc_in_mac(c.getString("DocNo"));
                                                     mac_id_non_approve = j;
@@ -1508,7 +1509,9 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                     Log.d("BANKTEST","data = "+data.get(1));
 
-                    dialog_wait_scan(new String[]{wait_scan_employee+"","FALSE",p_WashMachineID,data.get(1)});
+//                    dialog_wait_scan(new String[]{wait_scan_employee+"","FALSE",p_WashMachineID,data.get(1)});
+
+                    set_loder(loader, false,p_WashMachineID,data.get(1));
 //                    get_machine(p_WashMachineID);
                 }else{
                     show_dialog("Warning","ไม่สามารถสร้างเอกสารได้");
@@ -1681,6 +1684,68 @@ public class BasketWashingActivity extends AppCompatActivity {
         set_processID obj = new set_processID();
         obj.execute(process_id);
 
+    }
+
+    public void get_loder(String emp_code,String TypeID,String MachineID){
+
+        class get_loder extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getBoolean("check")) {
+                            loader = emp_code;
+                            dialog_wait_scan(new String[]{wait_scan_program+"",TypeID,MachineID});
+                        }else{
+                            show_dialog("Warning","ไม่พบรหัสผู้ใช้งาน");
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    show_log_error("check_qr.php Error = "+e);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("emp_code", params[0]);
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    //wash1
+                    result = httpConnect.sendPostRequest(getUrl + "check_qr.php", data);
+                } catch (Exception e) {
+                    show_log_error("check_qr.php");
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+
+        }
+
+        get_loder obj = new get_loder();
+        obj.execute(emp_code);
     }
 
     public void set_loder(String emp_code,boolean startMachine,String mac_id,String Doc_no){
@@ -1900,11 +1965,12 @@ public class BasketWashingActivity extends AppCompatActivity {
                         show_dialog("w","ยกเลิกการสร้างเอกสาร");
                         break;
                     case wait_scan_employee :
-                        if(Boolean.parseBoolean(data[1])){
-                            show_dialog("w","ยกเลิกการเริ่มการทำงานเครื่อง");
-                        }else{
-                            get_machine(data[2]);
-                        }
+//                        if(Boolean.parseBoolean(data[1])){
+//                            show_dialog("w","ยกเลิกการเริ่มการทำงานเครื่อง");
+//                        }else{
+//                            get_machine(data[2]);
+//                        }
+                        show_dialog("w","ยกเลิกการสร้างเอกสาร");
                         break;
                     case wait_scan_type :
 
@@ -1928,7 +1994,8 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 set_program(mass_onkey.substring(1),data[1],data[2],1);
                                 break;
                             case wait_scan_employee :
-                                set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
+//                                set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
+                                get_loder(mass_onkey,data[1],data[2]);
                                 break;
                             case wait_scan_type :
                                 set_processID(Integer.parseInt(data[1]),mass_onkey);

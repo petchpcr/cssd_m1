@@ -27,6 +27,8 @@ import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.WaitConnectDialog;
 
+import java.util.List;
+
 public class CheckConnectionService extends Service {
 
     public static WaitConnectDialog mActivity;
@@ -50,6 +52,7 @@ public class CheckConnectionService extends Service {
         if (netInfo == null){
             if(mActivity == null){
                 Intent x = new Intent(this, WaitConnectDialog.class);
+                x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(x);
             }
         }else{
@@ -58,6 +61,11 @@ public class CheckConnectionService extends Service {
                 mActivity = null;
             }
         }
+
+//        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+//        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+//        Log.d("topActivity", "CURRENT Activity ::" + taskInfo.get(0).topActivity.getClassName());
+
     }
 
     public void check_connecting(){

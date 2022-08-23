@@ -152,6 +152,7 @@ public class DispensingActivity extends AppCompatActivity {
     private TextView txt_search_department;
     private TextView title_2;
     private TextView title_3;
+    private TextView txt_doc_type;
 
     private ListView list_department;
     private ListView list_pay;
@@ -280,6 +281,7 @@ public class DispensingActivity extends AppCompatActivity {
         switch_opt = (Switch) findViewById(R.id.switch_opt);
         switch_mode = (Switch) findViewById(R.id.switch_mode);
 
+        txt_doc_type = (TextView) findViewById(R.id.txt_doc_type);
         title_2 = (TextView) findViewById(R.id.title_2);
         title_3 = (TextView) findViewById(R.id.title_3);
         list_payout_detail_item = (ListView) findViewById(R.id.list_payout_detail_item);
@@ -2492,6 +2494,12 @@ public class DispensingActivity extends AppCompatActivity {
                             LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                             params2.width = 250;
                             imageCreate.setLayoutParams(params2);
+
+                            if (RefDocNo.equals("")){
+                                txt_doc_type.setVisibility(View.INVISIBLE);
+                            }else {
+                                txt_doc_type.setVisibility(View.VISIBLE);
+                            }
                         }
                     });
 
@@ -2717,8 +2725,18 @@ public class DispensingActivity extends AppCompatActivity {
 
                 Model_Payout_Detail_item = list;
 
+                if (RefDocNo == null){
+                    RefDocNo = "";
+                }
+
+                if (RefDocNo.equals("")){
+                    txt_doc_type.setVisibility(View.INVISIBLE);
+                }else {
+                    txt_doc_type.setVisibility(View.VISIBLE);
+                }
+
                 ArrayAdapter<ModelPayoutDetails> adapter;
-                adapter = new ListPayoutDetailItemAdapter(DispensingActivity.this, Model_Payout_Detail_item,PA_IsWastingPayout);
+                adapter = new ListPayoutDetailItemAdapter(DispensingActivity.this, Model_Payout_Detail_item,PA_IsWastingPayout,RefDocNo);
                 list_payout_detail_item.setAdapter(adapter);
 
                 if (isShowDialog && dialog.isShowing()) {

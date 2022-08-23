@@ -1137,13 +1137,13 @@ public class Login extends AppCompatActivity {
 
     public void dep_device(){
         if(getSerialNumber().equals("L203P85U01743")){
-
-            Log.d("serialNumber","ST_UrlAuthentication = "+ST_UrlAuthentication);
-            if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
-                onLogin(uname.getText().toString(), pword.getText().toString());
-            }else {
-                onLoginApi(uname.getText().toString(), pword.getText().toString());
-            }
+            onLogin("IsUseQrEmCodeLogin", "EM00001");
+//            Log.d("serialNumber","ST_UrlAuthentication = "+ST_UrlAuthentication);
+//            if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
+//                onLogin(uname.getText().toString(), pword.getText().toString());
+//            }else {
+//                onLoginApi(uname.getText().toString(), pword.getText().toString());
+//            }
         }
     }
 

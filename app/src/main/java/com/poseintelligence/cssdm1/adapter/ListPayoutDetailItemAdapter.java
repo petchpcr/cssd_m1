@@ -21,14 +21,16 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
 
     private final List<ModelPayoutDetails> DATA_MODEL;
     private final Activity context;
+    String RefDocNo;
 
     private boolean WA_IsUsedWash;
     private boolean PA_IsWastingPayout = false;
 
-    public ListPayoutDetailItemAdapter(Activity context, List<ModelPayoutDetails> DATA_MODEL, boolean PA_IsWastingPayout) {
+    public ListPayoutDetailItemAdapter(Activity context, List<ModelPayoutDetails> DATA_MODEL, boolean PA_IsWastingPayout,String RefDocNo) {
         super(context, R.layout.list_payout_detail_item, DATA_MODEL);
         this.context = context;
         this.DATA_MODEL = DATA_MODEL;
+        this.RefDocNo = RefDocNo;
         this.PA_IsWastingPayout = PA_IsWastingPayout;
         WA_IsUsedWash = ((DispensingActivity) context).WA_IsUsedWash;
     }
@@ -59,6 +61,12 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
         final int QTY = Integer.valueOf( DATA_MODEL.get(position).getQty() ).intValue();
 
         //txt_stock_qty.setText(Integer.toString(STOCK_QTY));
+
+        if (RefDocNo.equals("") || RefDocNo.equals("null")){
+            txt_request_qty.setVisibility(View.INVISIBLE);
+        }else {
+            txt_request_qty.setVisibility(View.VISIBLE);
+        }
 
         if(DATA_MODEL.get(position).getIsWasting().equals("1")){
 

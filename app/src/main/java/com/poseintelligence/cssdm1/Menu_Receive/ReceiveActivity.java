@@ -773,11 +773,10 @@ public class ReceiveActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
 
                 Log.d("tog_spn_usr_receive","setOnTouchListener:spn_usr_receive");
-                if(DocNo.equals("")){
-                    Toast.makeText(ReceiveActivity.this, "ยังไม่ได้เพิ่มรายการ กรุณาเพิ่มรายการ", Toast.LENGTH_SHORT).show();
-
-                }else{
-
+//                if(DocNo.equals("")){
+//                    Toast.makeText(ReceiveActivity.this, "ยังไม่ได้เพิ่มรายการ กรุณาเพิ่มรายการ", Toast.LENGTH_SHORT).show();
+//
+//                }else{
                     usr_receive_old_id = data_user_receive_id.get(spn_usr_receive.getSelectedItem());
 
                     if(usr_receive_old_id == null){
@@ -785,7 +784,7 @@ public class ReceiveActivity extends AppCompatActivity {
                     }
 
                     spn_usr_receive.onTouch(v, event);
-                }
+//                }
                 return true;
             }
         });
@@ -3691,6 +3690,9 @@ public class ReceiveActivity extends AppCompatActivity {
                 if (DocNo == null || DocNo.equals("")) {
 
                     DocNo = p_docno;
+
+                    String emp_id = data_user_receive_id.get(spn_usr_receive.getSelectedItem());
+                    updateSendSterile(Integer.toString(Master.user_receive), emp_id, DocNo);
 
                     displaySendSterile(true, p_docno, 9);
 

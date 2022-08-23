@@ -78,6 +78,7 @@ public class SterileActivity extends AppCompatActivity{
     boolean is_select_all = false;
     boolean is_add_item = false;
 
+    String loader = "";
     public boolean is_have_loader=false;
 
     String typeID="";
@@ -375,7 +376,9 @@ public class SterileActivity extends AppCompatActivity{
                                             }
                                             else{
                                                 if(c.getString("DocNo").equals("null")){
-                                                    dialog_wait_scan(new String[]{wait_scan_program+"",list.get(j).getMachineID()});
+//                                                    dialog_wait_scan(new String[]{wait_scan_program+"",list.get(j).getMachineID()});
+
+                                                    dialog_wait_scan(new String[]{wait_scan_employee+"",list.get(j).getMachineID()});
                                                 }else{
                                                     get_doc_in_mac(c.getString("DocNo"));
                                                     mac_id_non_approve = j;
@@ -1384,8 +1387,9 @@ public class SterileActivity extends AppCompatActivity{
 
                         if (c.getString("result").equals("A")) {
 //                            get_machine(p_SterileMachineID);
+//                            dialog_wait_scan(new String[]{wait_scan_employee+"","FALSE",p_SterileMachineID,c.getString("DocNo")});
 
-                            dialog_wait_scan(new String[]{wait_scan_employee+"","FALSE",p_SterileMachineID,c.getString("DocNo")});
+                            set_loder(loader, false,p_SterileMachineID,c.getString("DocNo"));
                         }else{
                             show_dialog("Warning","ไม่สามารถสร้างเอกสารได้");
                         }
@@ -1568,6 +1572,70 @@ public class SterileActivity extends AppCompatActivity{
         list_item_basket.invalidateViews();
     }
 
+    public void get_loder(String emp_code,String MachineID){
+
+        class get_doc_in_mac extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getBoolean("check")) {
+                            loader = emp_code;
+                            dialog_wait_scan(new String[]{wait_scan_program+"",MachineID});
+                        }else{
+                            show_dialog("Warning","ไม่พบรหัสผู้ใช้งาน");
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+                    show_log_error("check_qr.php Error = "+e);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("emp_code", params[0]);
+                data.put("p_DB", p_DB);
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(getUrl + "check_qr.php", data);
+                } catch (Exception e) {
+                    show_log_error("check_qr.php");
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_sterile_process","result = "+result);
+
+                return result;
+            }
+
+        }
+
+        get_doc_in_mac obj = new get_doc_in_mac();
+        obj.execute(mass_onkey);
+    }
+
     public void set_loder(String emp_code,boolean startMachine,String mac_id,String Doc_no){
 
         class get_doc_in_mac extends AsyncTask<String, Void, String> {
@@ -1633,7 +1701,7 @@ public class SterileActivity extends AppCompatActivity{
         }
 
         get_doc_in_mac obj = new get_doc_in_mac();
-        obj.execute(mass_onkey);
+        obj.execute(emp_code);
     }
 
     public void set_processID(int pos,String process_id){
@@ -1801,11 +1869,12 @@ public class SterileActivity extends AppCompatActivity{
                         show_dialog("w","ยกเลิกการสร้างเอกสาร");
                         break;
                     case wait_scan_employee :
-                        if(Boolean.parseBoolean(data[1])){
-                            show_dialog("w","ยกเลิกการเริ่มการทำงานเครื่อง");
-                        }else{
-                            get_machine(data[2]);
-                        }
+//                        if(Boolean.parseBoolean(data[1])){
+//                            show_dialog("w","ยกเลิกการเริ่มการทำงานเครื่อง");
+//                        }else{
+//                            get_machine(data[2]);
+//                        }
+                        show_dialog("w","ยกเลิกการสร้างเอกสาร");
                         break;
                     case wait_scan_type :
 
@@ -1829,8 +1898,8 @@ public class SterileActivity extends AppCompatActivity{
                                 set_program(mass_onkey.substring(1),data[1],1);
                                 break;
                             case wait_scan_employee :
-//                                set_loder(mass_onkey);
-                                set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
+                                get_loder(mass_onkey,data[1]);
+//                                set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
                                 break;
                             case wait_scan_type :
                                 set_processID(Integer.parseInt(data[1]),mass_onkey);
