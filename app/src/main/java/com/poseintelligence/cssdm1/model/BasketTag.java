@@ -35,12 +35,13 @@ public class BasketTag {
         this.TypeProcessID = TypeProcessID ;
     }
 
-    public BasketTag(String ID,String name, String BasketCode, String macId,int qty) {
+    public BasketTag(String ID,String name, String BasketCode, String macId,int qty, String TypeProcessID) {
         this.ID = ID;
         Name = name;
         this.qty = qty;
         this.BasketCode =BasketCode ;
         MacId = macId ;
+        this.TypeProcessID = TypeProcessID ;
     }
 
     public String getRefDocNo() {

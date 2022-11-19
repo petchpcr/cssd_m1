@@ -1,5 +1,6 @@
 package com.poseintelligence.cssdm1;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
@@ -82,7 +83,6 @@ public class Login extends AppCompatActivity {
 
     public String ST_UrlAuthentication = "";
     public boolean ST_IsUsedEnterPasswordAfterScanLogin = false;
-
     //Check if internet is present or not
     private boolean isConnectingToInternet() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -133,7 +133,7 @@ public class Login extends AppCompatActivity {
         }
 
         Log.d("tog_ccs_c","ComponentName "+Login.this );
-//        dep_device();
+        dep_device();
 
     }
 
@@ -325,7 +325,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
-                    dep_device();
+
                     if (!pword.getText().toString().equals("")) {
 
                         if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
@@ -1106,6 +1106,7 @@ public class Login extends AppCompatActivity {
         ru.execute();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static String getSerialNumber() {
         String serialNumber;
 
@@ -1122,6 +1123,8 @@ public class Login extends AppCompatActivity {
                 serialNumber = (String) get.invoke(c, "sys.serialnumber");
             if (serialNumber.equals(""))
                 serialNumber = Build.SERIAL;
+            if (serialNumber.equals("unknown"))
+                serialNumber = Build.getSerial();
 
             // If none of the methods above worked
             if (serialNumber.equals(""))
@@ -1136,15 +1139,14 @@ public class Login extends AppCompatActivity {
     }
 
     public void dep_device(){
-        if(getSerialNumber().equals("L203P85U01743")){
-            onLogin("IsUseQrEmCodeLogin", "EM00001");
-//            Log.d("serialNumber","ST_UrlAuthentication = "+ST_UrlAuthentication);
-//            if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
-//                onLogin(uname.getText().toString(), pword.getText().toString());
-//            }else {
-//                onLoginApi(uname.getText().toString(), pword.getText().toString());
-//            }
+        String serialNumber = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            serialNumber = getSerialNumber();
+            if(serialNumber.equals("LB10P14E20479")){
+                onLogin("IsUseQrEmCodeLogin", "EM00001");
+            }
         }
+
     }
 
     public void getConfigurationMenu(String userid) {

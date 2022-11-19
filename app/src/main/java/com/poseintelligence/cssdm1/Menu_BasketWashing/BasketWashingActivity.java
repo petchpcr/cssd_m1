@@ -99,7 +99,7 @@ public class BasketWashingActivity extends AppCompatActivity {
     ProgressDialog wait_dialog;
     ProgressDialog loading_dialog;
 
-    boolean tid = false;
+//    boolean tid = true;
 
     private iAudio nMidia;
 
@@ -450,7 +450,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
-                                xlist_basket.add(new BasketTag(c.getString("xID"),c.getString("BasketName"),c.getString("BasketCode"),c.getString("InMachineID"),0));
+                                xlist_basket.add(new BasketTag(c.getString("xID"),c.getString("BasketName"),c.getString("BasketCode"),c.getString("InMachineID"),0,c.getString("TypeId")));
                             }
                         }
 
@@ -1082,14 +1082,16 @@ public class BasketWashingActivity extends AppCompatActivity {
                 data.put("p_DB", p_DB);
 
                 Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                Log.d("tog_add_item","getTypeProcessID = " + xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
 
                 if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                     data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
                     data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
                 }else{
-                    if(tid){
-                        data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
-                    }
+//                    if(tid){
+//                        data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+//                    }
+                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
                 }
 
                 String result = null;
@@ -1274,7 +1276,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                         ArrayList<ItemInBasket> list_item = new ArrayList<>();
 
-                        xlist_basket.get(pos).setTypeProcessID("");
+//                        xlist_basket.get(pos).setTypeProcessID("");
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
 
@@ -1317,7 +1319,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                                     reload_basket();
                                 }
 
-                                xlist_basket.get(pos).setTypeProcessID(c.getString("WashProcessID"));
+//                                xlist_basket.get(pos).setTypeProcessID(c.getString("WashProcessID"));
 
                             }else{
                                 is_add_item = false;
@@ -1334,20 +1336,22 @@ public class BasketWashingActivity extends AppCompatActivity {
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
 
-                                if(tid){
-                                    if(xlist_basket.get(pos).getTypeProcessID().equals("")){
-                                        if(typeID.equals("")){
-                                            dialog_wait_scan(new String[]{wait_scan_type+"",pos+""});
-                                        }else{
-                                            xlist_basket.get(pos).setTypeProcessID(typeID);
-                                            reload_done(pos);
-                                        }
-                                    }else{
-                                        reload_done(pos);
-                                    }
-                                }else{
-                                    reload_done(pos);
-                                }
+//                                if(tid){
+//                                    if(xlist_basket.get(pos).getTypeProcessID().equals("")){
+//                                        if(typeID.equals("")){
+//                                            dialog_wait_scan(new String[]{wait_scan_type+"",pos+""});
+//                                        }else{
+//                                            xlist_basket.get(pos).setTypeProcessID(typeID);
+//                                            reload_done(pos);
+//                                        }
+//                                    }else{
+//                                        reload_done(pos);
+//                                    }
+//                                }else{
+//                                    reload_done(pos);
+//                                }
+
+                                reload_done(pos);
 
                                 loading_dialog_dismiss();
                             }
@@ -1862,6 +1866,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                 d.put("p_data", "wash_type");
                 d.put("p_filter", ProcessId);
                 d.put("p_qr", program_id);
+                d.put("p_mac_id", p_WashMachineID);
                 d.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 try {
@@ -2039,6 +2044,7 @@ public class BasketWashingActivity extends AppCompatActivity {
             else if (keyCode == KeyEvent.KEYCODE_ENTER) {
                 Log.d("tog_dispatchKey","enter = "+mass_onkey);
                 mass_onkey= mass_onkey.toLowerCase();
+
                 String key = mass_onkey.substring(0,1);
                 switch (key)
                 {
@@ -2056,16 +2062,6 @@ public class BasketWashingActivity extends AppCompatActivity {
                         }
                         show_dialog("Warning","ไม่พบตะกร้า");
                         break;
-                    case "i":
-
-                        Log.d("tog_dispatchcase","I = ");
-                        if(list_basket_adapter.select_basket_pos>=0){
-                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
-                        }else{
-                            show_dialog("Warning","กรุณาเลือกตะกร้าที่จะเพิ่มรายการ");
-                        }
-
-                        break;
                     case "s":
 
                         if(mass_onkey.equals("sc012")){
@@ -2082,7 +2078,7 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                         break;
 
-                    case "p":
+                    case "w":
 
                         if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-1)){
                             set_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getTypeID(),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
@@ -2099,6 +2095,13 @@ public class BasketWashingActivity extends AppCompatActivity {
 
                         break;
                     default:
+                        Log.d("tog_dispatchcase","I = ");
+                        if(list_basket_adapter.select_basket_pos>=0){
+                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
+                        }else{
+                            show_dialog("Warning","กรุณาเลือกตะกร้าที่จะเพิ่มรายการ");
+                        }
+                        break;
                 }
                 mass_onkey = "";
                 return false;

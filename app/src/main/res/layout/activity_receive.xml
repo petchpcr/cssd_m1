@@ -443,6 +443,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:orientation="horizontal">
+                <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                    android:id="@+id/spn_usr_send"
+                    style="@style/spinner_style_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/black"
+                    android:textSize="14dp" />
+
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="wrap_content" />
 
                 <com.toptoche.searchablespinnerlibrary.SearchableSpinner
                     android:id="@+id/spn_usr_receive"

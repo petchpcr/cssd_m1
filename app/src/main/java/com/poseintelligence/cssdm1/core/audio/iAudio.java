@@ -205,6 +205,7 @@ public class iAudio extends AppCompatActivity{
         try {
             Thread.sleep(gId[1]);
         } catch (InterruptedException e) {
+            Log.d("tog_audio", "e : "+e);
             e.printStackTrace();
         }
         soundPool.stop(streamId);

@@ -304,7 +304,19 @@ public class ReceiveActivity extends AppCompatActivity {
             switch_status.setText("ยังไม่ปิด/ทั้งหมด  ");
         }
 
-        edt_usage_code.requestFocus();
+        if(SS_IsShowSender){
+            spn_usr_send.setVisibility(View.VISIBLE);
+        }else{
+            spn_usr_send.setVisibility(View.GONE);
+        }
+
+        if(SS_IsUsedBasket){
+            spin_basket.setVisibility(View.VISIBLE);
+        }else{
+            spin_basket.setVisibility(View.GONE);
+        }
+
+        focus();
 
         runnable_1 = new Runnable() {
 
@@ -441,6 +453,7 @@ public class ReceiveActivity extends AppCompatActivity {
         btn_new = ( ImageView ) findViewById(R.id.btn_new);
         btn_complete = ( ImageView ) findViewById(R.id.btn_complete);
         spn_usr_receive = ( SearchableSpinner ) findViewById(R.id.spn_usr_receive);
+        spn_usr_send = ( SearchableSpinner ) findViewById(R.id.spn_usr_send);
         list_doc_detail = ( ListView ) findViewById(R.id.list_doc_detail);
         switch_non_select_department = ( Switch ) findViewById(R.id.switch_non_select_department);
 
@@ -682,7 +695,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 spn_department_form.setSelection(0);
                 spn_department_form.setEnabled(true);
 
-//                spn_usr_send.setSelection(0);
+                spn_usr_send.setSelection(0);
                 spn_usr_receive.setSelection(0);
 //
                 list_doc_detail.setAdapter(null);
@@ -799,6 +812,8 @@ public class ReceiveActivity extends AppCompatActivity {
                     try {
                         String emp_id = data_user_receive_id.get(spn_usr_receive.getSelectedItem());
 
+                        Log.d("tog_spn_usr_receive",emp_id);
+                        Log.d("tog_spn_usr_receive",spn_usr_receive.getSelectedItem().toString());
                         updateSendSterile(Integer.toString(Master.user_receive), emp_id, DocNo);
 
 //                        if(!switch_non_select_department.isChecked() && model_send_sterile.size() > 0 && index > -1) {
@@ -835,10 +850,14 @@ public class ReceiveActivity extends AppCompatActivity {
 
         edt_usage_code.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.d("edt_usage_code","keyCode = "+keyCode);
+                Log.d("edt_usage_code","edt_usage_code = "+edt_usage_code.getText().toString());
                 if (event.getAction() == KeyEvent.ACTION_DOWN) {
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
+
+                            Log.d("edt_usage_code","===================== KEYCODE_ENTER =====================");
 
                             String S_Code = edt_usage_code.getText().toString().toLowerCase();
                             Log.d("OOOO","S_Code:"+S_Code);
@@ -857,9 +876,10 @@ public class ReceiveActivity extends AppCompatActivity {
                                     Toast.makeText(ReceiveActivity.this, "ไม่ตะกร้า !!", Toast.LENGTH_SHORT).show();
                                 }
 
-                                edt_usage_code.setText("");
+                                focus();
                                 return false;
-                            }else if (S_Code.substring(0,1).equals("d")|| S_Code.substring(0,1).equals("D") ) {
+                            }
+                            else if (S_Code.substring(0,1).equals("d")|| S_Code.substring(0,1).equals("D") ) {
                                 boolean x = true;
                                 for(int i = 0;i<ar_list_dept_id.size();i++){
 
@@ -874,12 +894,14 @@ public class ReceiveActivity extends AppCompatActivity {
                                     Toast.makeText(ReceiveActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
                                 }
 
-                                edt_usage_code.setText("");
+                                focus();
                                 return false;
-                            }else if(IsSU){
+                            }
+                            else if(IsSU){
 //                                Log.d("OOOO","IsSU1:"+IsSU);
                                 addUsageForRemoveByQR(S_Code);
-                            } else {
+                            }
+                            else {
                                 Log.d("OOOO","dept_id:"+dept_id);
 //                                addSterileDetailByQR(S_Code, dept_id);
 
@@ -890,8 +912,7 @@ public class ReceiveActivity extends AppCompatActivity {
                                 }
                                 else if (S_Code.equals("save")) {
                                     Log.d("OOOO","Mode:2");
-                                    edt_usage_code.setText("");
-                                    edt_usage_code.requestFocus();
+                                    focus();
 
                                     int cnt = 0;
                                     for (String key : Usage_Nowash.keySet()) {
@@ -1068,9 +1089,8 @@ public class ReceiveActivity extends AppCompatActivity {
                                     }else {
                                         addSterileDetailByQR(S_Code, dept_id);
                                     }
-
-
-                                } else if ( !dept_id.equals("") && !dept_id.equals("0") ) {
+                                }
+                                else if ( !dept_id.equals("") && !dept_id.equals("0") ) {
                                     Log.d("OOOO","Mode:5");
                                     String S_em = edt_usage_code.getText().toString().substring(0, 2);
                                     if (S_em.toUpperCase().equals("EM")){
@@ -1085,18 +1105,31 @@ public class ReceiveActivity extends AppCompatActivity {
 
                                 } else {
                                     Log.d("OOOO","Mode:6");
-                                    String S_Code2 = edt_usage_code.getText().toString();
-                                    GetDapusage_code(S_Code2);
+                                    String S_em = edt_usage_code.getText().toString().substring(0, 2);
+                                    Log.d("OOOO",S_em.toUpperCase().equals("EM")+"");
+                                    if (S_em.toUpperCase().equals("EM")){
+                                        get_user_send_employee(edt_usage_code.getText().toString());
+                                    }else{
+                                        String S_Code2 = edt_usage_code.getText().toString();
+                                        GetDapusage_code(S_Code2);
 //                                    findDepartmentByQR(S_Code);
+                                    }
                                 }
                             }
 
-                            return true;
+                            focus();
+                            return false;
                         default:
                             break;
                     }
                 }
-                return false;
+
+                if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                    return true;
+                }else{
+                    return false;
+                }
+//                return false;
             }
         });
 
@@ -1669,14 +1702,12 @@ public class ReceiveActivity extends AppCompatActivity {
 
                         if (spn_usr_receive.getSelectedItemPosition() == 0 || !SS_IsShowSender){
                             spn_usr_receive.setSelection(Integer.parseInt(c.getString("ID")));
-                            edt_usage_code.setText("");
-                            edt_usage_code.requestFocus();
+
                         }else {
                             spn_usr_send.setSelection(Integer.parseInt(c.getString("ID")));
-                            edt_usage_code.setText("");
-                            edt_usage_code.requestFocus();
-                        }
 
+                        }
+                        focus();
                     }
 
                 } catch (JSONException e) {
@@ -2370,9 +2401,12 @@ public class ReceiveActivity extends AppCompatActivity {
                 data_user_receive_id.clear();
 
                 ArrayList<String> listUSend = new ArrayList<String>();
-
                 listUSend.clear();
-                listUSend.add("เลือกผู้รับ");
+                listUSend.add("เลือกผู้ส่ง");
+
+                ArrayList<String> listURe = new ArrayList<String>();
+                listURe.clear();
+                listURe.add("เลือกผู้รับ");
 
                 try {
                     JSONObject jsonObj = new JSONObject(s);
@@ -2387,20 +2421,25 @@ public class ReceiveActivity extends AppCompatActivity {
                         Log.d("tog_select_user","isNull = "+c.isNull("LastName"));
                         if(!c.isNull("LastName")){
                             listUSend.add(c.getString("xName")+" "+c.getString("LastName"));
+                            listURe.add(c.getString("xName")+" "+c.getString("LastName"));
                             data_user_send_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
                             data_user_receive_id.put(c.getString("xName")+" "+c.getString("LastName"),c.getString("xID"));
                         }else{
                             listUSend.add(c.getString("xName"));
+                            listURe.add(c.getString("xName"));
                             data_user_send_id.put(c.getString("xName"),c.getString("xID"));
                             data_user_receive_id.put(c.getString("xName"),c.getString("xID"));
                         }
                     }
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(ReceiveActivity.this,android.R.layout.simple_spinner_dropdown_item,listUSend);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(ReceiveActivity.this,android.R.layout.simple_spinner_dropdown_item,listUSend);
+                    adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-//                    spn_usr_send.setAdapter(adapter);
-                    spn_usr_receive.setAdapter(adapter);
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(ReceiveActivity.this,android.R.layout.simple_spinner_dropdown_item,listURe);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    spn_usr_send.setAdapter(adapter1);
+                    spn_usr_receive.setAdapter(adapter2);
                 } catch (JSONException e) {
                     Log.d("tog_select_user","e = "+e);
                     e.printStackTrace();
@@ -2704,6 +2743,8 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_remark.php", data);
 
+                Log.d("tog_remark","data = "+data);
+                Log.d("tog_remark","result = "+result);
                 return result;
             }
         }
@@ -2848,9 +2889,10 @@ public class ReceiveActivity extends AppCompatActivity {
             }
 //        }
 
-//        if(SendId != null) {
-//            spn_usr_send.setSelection(ar_list_user_send_id.indexOf(SendId) + 1);
-//        }
+        if(SendId != null) {
+            spn_usr_send.setSelection(ar_list_user_send_id.indexOf(SendId) + 1);
+        }
+
         dept_id = DeptId;
 
         Block_1.setVisibility( View.GONE );
@@ -2999,6 +3041,10 @@ public class ReceiveActivity extends AppCompatActivity {
         ru.execute();
     }
 
+    public void adep_displaySendSterileDetail() {
+        displaySendSterileDetail(DocNo);
+    }
+
     public void displaySendSterileDetail(final String docno) {
 
         class DisplaySendSterileDetail extends AsyncTask<String, Void, String> {
@@ -3073,6 +3119,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                     list_doc_detail.setAdapter(new ListSendSterileDetailAdapter(ReceiveActivity.this, model_send_sterile_detail, IsSU, mode, B_ID, WA_IsUsedWash, Switch_Mode));
 
+                    Log.d("tog_remark","displaySendSterileDetail setAdapter");
                     txt_count_list.setText("จำนวน " + count + " รายการ");
 
                 } catch (JSONException e) {
@@ -4151,8 +4198,7 @@ public class ReceiveActivity extends AppCompatActivity {
 //
 //                }
 
-                edt_usage_code.setText("");
-                edt_usage_code.requestFocus();
+                focus();
 
 //                list_doc_detail_set.setAdapter(new Adapter_Washtag_SS(CssdSendSterile.this,item_in_basket,true));
             }
@@ -4272,4 +4318,65 @@ public class ReceiveActivity extends AppCompatActivity {
 
     }
 
+    public void get_user_send_employee(final String p_data){
+
+        class get_user_send_employee extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try{
+                    JSONObject jsonObj = new JSONObject(s);
+                    JSONArray setRs = jsonObj.getJSONArray(TAG_RESULTS);
+                    for(int i=0;i<setRs.length();i++) {
+                        JSONObject c = setRs.getJSONObject(i);
+
+                        Log.d("get_user_send_employee","ID ="+c.getString("xID"));
+                        Log.d("get_user_send_employee","xFname ="+c.getString("xFname"));
+
+                        String obj_name = c.getString("xFname");
+                        if(data_user_receive_id.get(obj_name)==null){
+                            Toast.makeText(ReceiveActivity.this, "ไม่พบผู้รับ", Toast.LENGTH_SHORT).show();
+                        }else{
+
+                            Log.d("get_user_send_employee","data_user_receive_id ="+data_user_receive_id.get(obj_name));
+
+                            spn_usr_receive.setSelection(ar_list_user_receive_id.indexOf(data_user_receive_id.get(obj_name)) + 1);
+//                            for(int j=0;j<data_user_receive_id.size();j++){
+//                                if(data_user_receive_id.get(obj_name).equals(c.getString("xID"))){
+//                                    spn_usr_receive.setSelection(j);
+//                                }
+//                            }
+                        }
+
+                    }
+                }catch (JSONException e){
+                }
+
+                focus();
+            }
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("Search",params[0]);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl()+"get_employee.php",data);
+
+                Log.d("get_user_send_employee","data ="+data);
+                Log.d("get_user_send_employee","result ="+result);
+                return result;
+            }
+        }
+
+
+        get_user_send_employee ru = new get_user_send_employee();
+        ru.execute(p_data);
+
+    }
 }

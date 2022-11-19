@@ -238,6 +238,7 @@ public class CheckQR_Approve extends Activity {
                                     intent.putExtra("RETURN_xsel",xSel);
                                     intent.putExtra("RETURN_DocNo",DocNo);
                                     intent.putExtra("RETURN_MacNo",MacNo);
+                                    intent.putExtra("RETURN_NAME",c.getString("FirstName")+" "+c.getString("LastName"));
                                     intent.putExtra("RETURN_ID",c.getString("ID"));
                                     intent.putExtra("Printno",c.getString("Printno"));
                                     finish();
@@ -282,7 +283,7 @@ public class CheckQR_Approve extends Activity {
                 data.put("qr_code",params[0]);
                 data.put("xsel",params[1]);
                 data.put("remark",params[2]);
-                data.put("DocNo",params[3]);
+//                data.put("DocNo",params[3]);
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() +"chk_qr/check_qr.php",data);

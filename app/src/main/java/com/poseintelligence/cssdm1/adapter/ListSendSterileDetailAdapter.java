@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,12 +164,16 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
 //        });
 
         if (listData.get(position).getXremark().equals("")){
+
+            Log.d("tog_remark","getXremark = "+position+"---"+listData.get(position).getRemarkSend());
             if(listData.get(position).getRemarkSend().equals("1")){
                 bt_note.setBackgroundResource(R.drawable.ic_list_blue);
             }else {
                 bt_note.setBackgroundResource(R.drawable.ic_list_grey);
             }
         }else {
+
+            Log.d("tog_remark","getXremark ic_list_blue = "+position);
             bt_note.setBackgroundResource(R.drawable.ic_list_blue);
         }
 
@@ -575,11 +580,11 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
                 button1.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         listData.get(position).setXremark(note1.getText().toString());
-                        
+
                         updateRemark(listData.get(position).getSs_rowid(),listData.get(position).getXremark(),"2");
 
                         txtxremark_detail.setText(listData.get(position).getXremark());
-                        
+
                         dialog.dismiss();
                     }
                 });
@@ -682,7 +687,7 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                
+                ((ReceiveActivity) atv).adep_displaySendSterileDetail();
             }
             
             @Override
@@ -695,7 +700,10 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
 //                data.put("p_DB", ((CssdProject) context).getD_DATABASE());
                 
                 String result = httpConnect.sendPostRequest(((CssdProject) atv.getApplication()).getxUrl() + "cssd_update_send_sterile_remark.php",data);
-                
+
+                Log.d("tog_remark","data = "+data);
+                Log.d("tog_remark","result = "+result);
+
                 return result;
             }
         }

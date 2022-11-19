@@ -1,8 +1,38 @@
+
+28/09/2022
+BasketWashingActivity ปรับอักษรปรกตอนสแกนโปรแกนมล้างจาก p -> w
+
+23/09/2022
+sterile_basket/add_item_to_basket.php Batch ไม่ขึ้น และไม่แสดงในประวัติการฆ่าเชื้อ
+wash_basket/add_item_to_basket.php เพิ่มเงื่อนไข washdetail.PrintCount > 0
+
+16/09/2022
+get_sterile_process.php -- SR_IsUsedMachinePairProcess เพิ่มเงื่อนไขผูกตะกร้ากับเครื่อง
+WA_IsUsedMachinePairProcess เพิ่มเงื่อนไขผูกตะกร้ากับเครื่อง
+สแกนคนจ่ายตอนเลือกแผนกครั้งแรกแล้วจำไว้ กดเปลี่ยนได้
+
+15/09/2022
+ปรับแจ้งเตือนรายการอยู่ในเครื่องให้แสดงว่าอยู่เครื่องใหนด้วย
+
+29/08/2022
+สแกนคนจ่ายตอนเลือกแผนกทุกครั้ง
+
+(23 - 25)/08/2022
+ปรับมาใช้ typeID ของ ตะกร้าลบ tid ออก รับค่า typeID ตารางและส่งไปเวลาเพิ่มรายการเสมอ
+หลังสแกนจ่ายระบบจะเปลี่ยนสถานะ itemstock.isstatus จะเป็น 4 และ itemstock.ispay เป็น 1 จากเดิมที่ จะเปลี่ยนสถานะ itemstock.isstatus จะเป็น 3 และ itemstock.ispay เป็น 1
+
 17/08/2022
-ReceiveActivity เปลี่ยนจาก เลือกแผนก -> เพิ่มรายการ -> เลือกผู้รับ < เป็น > เปลี่ยนจากเลือกแผนก -> เลือกผู้รับ -> เพิ่มรายการ
+ReceiveActivity เปลี่ยนจาก เลือกแผนก -> เพิ่มรายการ -> เลือกผู้รับ < เป็น > เลือกแผนก -> เลือกผู้รับ -> เพิ่มรายการ
 BasketWashingActivity เปลี่ยนจาก กดเลือกเครื่อง -> แสกนโปรแกรม -> สแกนคนหรือไม่ก็ได้ < เป็น > กดเลือกเครื่อง -> สแกนคน -> แสกนโปรแกรม
 SterileActivity เปลี่ยนจาก กดเลือกเครื่อง -> แสกนโปรแกรม -> สแกนคนหรือไม่ก็ได้ < เป็น > กดเลือกเครื่อง -> สแกนคน -> แสกนโปรแกรม
 sterile_basket/add_item_to_basket.php เพิ่มเงื่อนไข SS_IsMatchBasketAndType
 wash_basket/add_item_to_basket.php เพิ่มเงื่อนไข SS_IsMatchBasketAndType
 
-23/08/2022
+19/09/2022
+แก้ยิงโปรแกรมล้าง P -> W
+
+19/10/2022
+แก้ UserCode ของ payout_department จากคน login เป็น คนที่จ่าย(Payout.RecipientCode)
+
+29/10/2022 **1
+DispensingActivity แก้ไขสแกน checkFIFO -> checkExpiring เป็น checkExpiring(หมดอายุ) -> checkFIFO -> checkCloseExpiring(ใกล้หมดอายุ)

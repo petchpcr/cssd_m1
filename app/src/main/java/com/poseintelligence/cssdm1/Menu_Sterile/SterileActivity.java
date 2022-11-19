@@ -82,7 +82,6 @@ public class SterileActivity extends AppCompatActivity{
     public boolean is_have_loader=false;
 
     String typeID="";
-    boolean tid = false;
 
     private iAudio nMidia;
 
@@ -455,7 +454,7 @@ public class SterileActivity extends AppCompatActivity{
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
-                                xlist_basket.add(new BasketTag(c.getString("xID"),c.getString("BasketName"),c.getString("BasketCode"),c.getString("InMachineID"),0));
+                                xlist_basket.add(new BasketTag(c.getString("xID"),c.getString("BasketName"),c.getString("BasketCode"),c.getString("InMachineID"),0,c.getString("TypeId")));
                             }
                         }
 
@@ -997,12 +996,14 @@ public class SterileActivity extends AppCompatActivity{
                 if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                     data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
                     data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
-                }else if(xlist_item_basket.size()>0){
-                    if(tid){
-                        data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
-                    }
+                }else{
+                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
                 }
-
+//                else if(xlist_item_basket.size()>0){
+//                    if(tid){
+//                        data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+//                    }
+//                }
                 String result = null;
 
                 try {
@@ -1187,7 +1188,7 @@ public class SterileActivity extends AppCompatActivity{
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
 
-                            xlist_basket.get(pos).setTypeProcessID("");
+//                            xlist_basket.get(pos).setTypeProcessID("");
                             if (c.getString("result").equals("A")) {
 
                                 list_item.add(new ItemInBasket(
@@ -1214,7 +1215,7 @@ public class SterileActivity extends AppCompatActivity{
                                     get_data =false;
                                 }
 
-                                xlist_basket.get(pos).setTypeProcessID(c.getString("SterileProgramID"));
+//                                xlist_basket.get(pos).setTypeProcessID(c.getString("SterileProgramID"));
                             }else{
                                 is_add_item = false;
                             }
@@ -1230,20 +1231,22 @@ public class SterileActivity extends AppCompatActivity{
                                 Log.d("tog_getAudio","addSterileDetailById = 2" );
                                 addSterileDetailById( doc, w_id,basket_id);
                             }else{
-                                if(tid){
-                                    if(xlist_basket.get(pos).getTypeProcessID().equals("")){
-                                        if(typeID.equals("")){
-                                            dialog_wait_scan(new String[]{wait_scan_type+"",pos+""});
-                                        }else{
-                                            xlist_basket.get(pos).setTypeProcessID(typeID);
-                                            reload_done(pos);
-                                        }
-                                    }else{
-                                        reload_done(pos);
-                                    }
-                                }else{
-                                    reload_done(pos);
-                                }
+//                                if(tid){
+//                                    if(xlist_basket.get(pos).getTypeProcessID().equals("")){
+//                                        if(typeID.equals("")){
+//                                            dialog_wait_scan(new String[]{wait_scan_type+"",pos+""});
+//                                        }else{
+//                                            xlist_basket.get(pos).setTypeProcessID(typeID);
+//                                            reload_done(pos);
+//                                        }
+//                                    }else{
+//                                        reload_done(pos);
+//                                    }
+//                                }else{
+//                                    reload_done(pos);
+//                                }
+
+                                reload_done(pos);
 
                                 loadind_dialog_dismis();
                             }
@@ -1958,16 +1961,6 @@ public class SterileActivity extends AppCompatActivity{
                         }
                         show_dialog("Warning","ไม่พบตะกร้า");
                         break;
-                    case "i":
-
-                        Log.d("tog_dispatchcase","I = ");
-                        if(list_basket_adapter.select_basket_pos>=0){
-                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
-                        }else{
-                            show_dialog("Warning","กรุณาเลือกตะกร้าที่จะเพิ่มรายการ");
-                        }
-
-                        break;
                     case "s":
 
                         if(mass_onkey.equals("sc013")){
@@ -2007,6 +2000,14 @@ public class SterileActivity extends AppCompatActivity{
 
                         break;
                     default:
+                        Log.d("tog_dispatchcase","I = ");
+                        if(list_basket_adapter.select_basket_pos>=0){
+                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
+                        }else{
+                            show_dialog("Warning","กรุณาเลือกตะกร้าที่จะเพิ่มรายการ");
+                        }
+
+                        break;
                 }
                 mass_onkey = "";
                 return false;

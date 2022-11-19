@@ -153,6 +153,7 @@ public class DispensingActivity extends AppCompatActivity {
     private TextView title_2;
     private TextView title_3;
     private TextView txt_doc_type;
+    TextView txt_p_approve_code;
 
     private ListView list_department;
     private ListView list_pay;
@@ -285,6 +286,15 @@ public class DispensingActivity extends AppCompatActivity {
         title_2 = (TextView) findViewById(R.id.title_2);
         title_3 = (TextView) findViewById(R.id.title_3);
         list_payout_detail_item = (ListView) findViewById(R.id.list_payout_detail_item);
+
+        txt_p_approve_code = (TextView) findViewById(R.id.p_approve_code);
+        txt_p_approve_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                _getQRPay("payrow", "0");
+            }
+        });
+
     }
 
     private void byEvent() {
@@ -481,10 +491,9 @@ public class DispensingActivity extends AppCompatActivity {
 
                                         Log.d("top_dep","ID = "+Model_Department.get(i));
                                         if(Model_Department.get(i).getID().equals(S_Code.substring(1))){
-                                            list_department.setSelection(i);
-                                            select_dept(i);
+                                            DepIndex = i;
+                                            getQRPay("payrow", "0");
                                             x=false;
-
                                         }
                                     }
                                     if(x){
@@ -557,8 +566,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                                         Log.d("top_dep", "ID = " + Model_Department.get(i).getID());
                                         if (Model_Department.get(i).getID().equals(S_Code.substring(1))) {
-                                            list_department.setSelection(i);
-                                            select_dept(i);
+                                            DepIndex = i;
+                                            getQRPay("payrow", "0");
                                             x = false;
 
                                         }
@@ -745,6 +754,7 @@ public class DispensingActivity extends AppCompatActivity {
         // Get Config
         // -----------------------------------------------------------------------------------------
         PA_IsNotificationPopupExpiringScan = ((CssdProject) getApplication()).isPA_IsNotificationPopupExpiringScan();
+//        ST_SoundAndroidVersion9 = false;
         ST_SoundAndroidVersion9 = ((CssdProject) getApplication()).isST_SoundAndroidVersion9();
         Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+PA_IsNotificationPopupExpiringScan);
         SS_IsGroupPayout = ((CssdProject) getApplication()).isSS_IsGroupPayout();
@@ -773,6 +783,8 @@ public class DispensingActivity extends AppCompatActivity {
 
         PA_IsUsedZonePayout = ((CssdProject) getApplication()).isPA_IsUsedZonePayout();
         PA_IsCreateReceiveDepartment = ((CssdProject) getApplication()).isPA_IsCreateReceiveDepartment();
+
+        Log.d("tog_LoadConfig","PA_IsCreateReceiveDepartment = "+PA_IsCreateReceiveDepartment);
         PA_IsEditManualPayoutQty = ((CssdProject) getApplication()).isPA_IsEditManualPayoutQty();
         PA_IsUsedApprover = ((CssdProject) getApplication()).isPA_IsUsedApprover();
         PA_IsUsedRecipienter = ((CssdProject) getApplication()).isPA_IsUsedRecipienter();
@@ -836,19 +848,23 @@ public class DispensingActivity extends AppCompatActivity {
 
                         }else{
 
+                            Log.d("tog_flow","SR_ReceiveFromDeposit = "+SR_ReceiveFromDeposit);
                             if (SR_ReceiveFromDeposit) {
                                 addItem( usagecode );
                             }else{
                                 Log.d("tog_flow","Cnt = 0");
-                                if (PA_IsUsedFIFO) {
-                                    String arr[] = usagecode.split("-");
-                                    String itemcode = arr[0];
-                                    Log.d("tog_flow","checkFIFO ");
-                                    checkFIFO(itemcode, usagecode);
-                                } else {
-                                    Log.d("tog_flow","checkExpiring ");
-                                    checkExpiring(usagecode);
-                                }
+
+//                                    if (PA_IsUsedFIFO) {
+//                                        String arr[] = usagecode.split("-");
+//                                        String itemcode = arr[0];
+//                                        Log.d("tog_flow","checkFIFO ");
+//                                        checkFIFO(itemcode, usagecode);
+//                                    } else {
+//                                        Log.d("tog_flow","checkExpiring ");
+//                                        checkExpiring(usagecode);
+//                                    }
+
+                                f_checkExpiring(usagecode);
                             }
                         }
                     }
@@ -892,6 +908,7 @@ public class DispensingActivity extends AppCompatActivity {
         ru.execute();
     }
 
+    // **1
     public void checkFIFO(final String itemcode,final String usagecode) {
         class checkFIFO extends AsyncTask<String, Void, String> {
 
@@ -935,7 +952,6 @@ public class DispensingActivity extends AppCompatActivity {
 
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-//                                                addItem( xUsageCode );
                                                 checkExpiring( xUsageCode );
                                                 dialog.dismiss();
                                                 // Do stuff if user accepts
@@ -957,7 +973,9 @@ public class DispensingActivity extends AppCompatActivity {
                                         }).create();
                                 dialog.show();
                             }
-                        }if(c.getString("result").equals("R")) {
+                        }
+
+                        if(c.getString("result").equals("R")) {
 
                             if(ST_SoundAndroidVersion9){
                                 speakText("no");
@@ -1031,10 +1049,13 @@ public class DispensingActivity extends AppCompatActivity {
                         if(c.getString("result").equals("A")) {
                             Log.d("xxx", "result : " + c.getString("DateDiff"));
 
+                            Log.d("tog_flow", "ST_SoundAndroidVersion9 : " + ST_SoundAndroidVersion9);
                             if(c.getInt("DateDiff")<0) {
                                 if(ST_SoundAndroidVersion9){
+                                    Log.d("tog_flow", "speakText : ");
                                     speakText("expire");
                                 }else{
+                                    Log.d("tog_flow", "nMidia : ");
                                     nMidia.getAudio("expire");
                                 }
                             }else if(c.getInt("DateDiff") < 4) {
@@ -1099,16 +1120,340 @@ public class DispensingActivity extends AppCompatActivity {
                             }else{
                                 addItem( xUsageCode );
                             }
-                        }if(c.getString("result").equals("E")) {
+                        }
+
+                        if(c.getString("result").equals("E")) {
                             if( (xUsageCode.length() == 6) || (xUsageCode.length() == 11) ) {
                                 addItem( xUsageCode );
                             }else {
-
                                 if(ST_SoundAndroidVersion9){
                                     speakText("no");
                                 }else{
                                     nMidia.getAudio("no_item_found");
                                 }
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    focus();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_usedcode", usagecode);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = null;
+
+                try {
+                    Log.d("tog_exp","URL = "+((CssdProject) getApplication()).getxUrl() + "cssd_check_expiring.php");
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_expiring.php", data);
+                    Log.d("tog_exp","data = "+data);
+                    Log.d("tog_exp","result = "+result);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+        }
+
+        checkExpiring ru = new checkExpiring();
+
+        ru.execute();
+    }
+
+    // **2
+
+    public void f_checkExpiring(final String usagecode) {
+        class checkExpiring extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    List<ModelDepartment> list = new ArrayList<>();
+
+                    for(int i=0;i<rs.length();i++){
+                        JSONObject c = rs.getJSONObject(i);
+                        Log.d("xxx","result : "+c.getString("result"));
+                        final String xUsageCode = c.getString("usedcode");
+                        if(c.getString("result").equals("A")) {
+                            Log.d("xxx", "result : " + c.getString("DateDiff"));
+
+                            Log.d("tog_flow", "DateDiff : " + c.getString("DateDiff"));
+                            if(c.getInt("DateDiff")<=0) {
+                                if(ST_SoundAndroidVersion9){
+                                    Log.d("tog_flow", "speakText : ");
+                                    speakText("expire");
+                                }else{
+                                    Log.d("tog_flow", "nMidia : ");
+                                    nMidia.getAudio("expire");
+                                }
+                            }else{
+
+                                if (PA_IsUsedFIFO) {
+                                    String arr[] = usagecode.split("-");
+                                    String itemcode = arr[0];
+                                    Log.d("tog_flow","checkFIFO ");
+                                    f_checkFIFO(itemcode, usagecode);
+                                } else {
+                                    Log.d("tog_flow","checkExpiring ");
+                                    f_checkCloseExpiring(usagecode);
+                                }
+                            }
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    focus();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_usedcode", usagecode);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = null;
+
+                try {
+                    Log.d("tog_exp","URL = "+((CssdProject) getApplication()).getxUrl() + "cssd_check_expiring.php");
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_expiring.php", data);
+                    Log.d("tog_exp","data = "+data);
+                    Log.d("tog_exp","result = "+result);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+        }
+
+        checkExpiring ru = new checkExpiring();
+
+        ru.execute();
+    }
+
+    public void f_checkFIFO(final String itemcode,final String usagecode) {
+        class checkFIFO extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    List<ModelDepartment> list = new ArrayList<>();
+
+                    for(int i=0;i<rs.length();i++){
+                        JSONObject c = rs.getJSONObject(i);
+                        if(c.getString("result").equals("A")) {
+//                            Log.d("xxx",c.getString("Cnt"));
+                            final String xUsageCode = c.getString("usedcode");
+
+                            Log.d("tog_FIFO","checkFIFO Cnt = "+c.getString("Cnt"));
+                            if(c.getString("Cnt").equals("0")) {
+
+                                f_checkCloseExpiring( xUsageCode );
+
+                            }else{
+//                                Log.d("xxx","fifo...");
+
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("fifo");
+                                }else{
+                                    nMidia.getAudio("fifo");
+                                }
+
+                                AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("คุณต้องการเพิ่มรายการนี้หรือไม่")
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                addItem( xUsageCode );
+                                                dialog.dismiss();
+                                                // Do stuff if user accepts
+                                            }
+                                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                // Do stuff when user neglects.
+                                            }
+                                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                            @Override
+                                            public void onCancel(DialogInterface dialog) {
+                                                dialog.dismiss();
+                                                // Do stuff when cancelled
+                                            }
+                                        }).create();
+                                dialog.show();
+                            }
+                        }
+
+                        if(c.getString("result").equals("R")) {
+
+                            if(ST_SoundAndroidVersion9){
+                                speakText("no");
+                            }else{
+                                nMidia.getAudio("repeat_scan");
+                            }
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    focus();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_itemcode", itemcode);
+                data.put("p_usedcode", usagecode);
+                data.put("p_docno", ( DocNo==null?"":DocNo ));
+
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+//                Log.d("xxx","p_itemcode : "+itemcode);
+//                Log.d("xxx","p_usedcode : "+usagecode);
+//                Log.d("xxx","p_docno : "+(DocNo==null?"":DocNo ));
+
+                String result = null;
+
+                try {
+                    Log.d("xxx","result : "+((CssdProject) getApplication()).getxUrl() + "cssd_check_fifo.php");
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_fifo.php", data);
+                    Log.d("xxx","result : "+result);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+        }
+
+        checkFIFO ru = new checkFIFO();
+
+        ru.execute();
+    }
+
+    public void f_checkCloseExpiring(final String usagecode) {
+        class checkExpiring extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    List<ModelDepartment> list = new ArrayList<>();
+
+                    for(int i=0;i<rs.length();i++){
+                        JSONObject c = rs.getJSONObject(i);
+                        Log.d("xxx","result : "+c.getString("result"));
+                        final String xUsageCode = c.getString("usedcode");
+                        if(c.getString("result").equals("A")) {
+                            Log.d("xxx", "result : " + c.getString("DateDiff"));
+
+                            Log.d("tog_flow", "ST_SoundAndroidVersion9 : " + ST_SoundAndroidVersion9);
+                            if(c.getInt("DateDiff") < 4) {
+
+                                if(ST_SoundAndroidVersion9){
+                                    speakText("close expiring ");
+                                }else{
+                                    nMidia.getAudio("expiring");
+                                    nMidia.getAudio("within");
+                                }
+
+                                if(c.getInt("DateDiff")==0){
+
+                                    if(ST_SoundAndroidVersion9){
+                                        speakText("today");
+                                    }else{
+                                        nMidia.getAudio("today");
+                                    }
+
+                                }else{
+
+                                    if(ST_SoundAndroidVersion9){
+                                        speakText("in "+c.getString("DateDiff")+" day");
+                                    }else{
+                                        nMidia.getAudio(c.getString("DateDiff"));
+                                        nMidia.getAudio("day");
+                                    }
+
+                                }
+                                AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("คุณต้องการเพิ่มรายการนี้หรือไม่")
+                                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                addItem( xUsageCode );
+                                                dialog.dismiss();
+                                                // Do stuff if user accepts
+                                            }
+                                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                // Do stuff when user neglects.
+                                            }
+                                        }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                                            @Override
+                                            public void onCancel(DialogInterface dialog) {
+                                                dialog.dismiss();
+                                                // Do stuff when cancelled
+                                            }
+                                        }).create();
+
+                                if(PA_IsNotificationPopupExpiringScan){
+                                    dialog.show();
+                                }else{
+                                    s_expiring = true;
+                                    addItem( xUsageCode );
+                                }
+
+                            }else{
+                                addItem( xUsageCode );
                             }
                         }
                     }
@@ -1604,16 +1949,13 @@ public class DispensingActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-//                if(PA_IsUsedApprover){
-//                    callQR("user_approve", "สแกนรหัสผู้อนุมัติจ่าย เพื่อปิดเอกสาร.");
-//                }else{
+                if(PA_IsUsedApprover){
+                    callQR("user_approve", "สแกนรหัสผู้อนุมัติจ่าย เพื่อปิดเอกสาร.");
+                }else{
 //                    updatePayout(DocNo, DepID);
-//                }
+                    updatePayout(DocNo, DepID,"0");
+                }
 
-//                updatePayout(DocNo, DepID,"0");
-
-                getQRPay("payrow", "0");
-                Log.d("tog_flow","getQRPay payrow 0");
             }
         });
 
@@ -1639,6 +1981,15 @@ public class DispensingActivity extends AppCompatActivity {
     }
 
     private void getQRPay(final String msg, final String type){
+        Log.d("tog_getQRPay","d_id = "+txt_p_approve_code);
+        if(d_id==""){
+            _getQRPay(msg, type);
+        }else{
+            select_dept(DepIndex);
+        }
+    }
+
+    private void _getQRPay(final String msg, final String type){
         Intent i = new Intent(DispensingActivity.this, CheckQR_Approve.class);
         i.putExtra("xSel", "payrow");
         i.putExtra("remark", msg);
@@ -1830,11 +2181,16 @@ public class DispensingActivity extends AppCompatActivity {
 
             if (resultCode == 1155) {
 
-                String d_round = data.getStringExtra("Printno");
+//                String d_round = data.getStringExtra("Printno");
+//
+//                Log.d("onActivityResult","d_round = "+d_round);
+//
+//                getUserPay(DocNo,d_round,"1");
 
-                Log.d("onActivityResult","d_round = "+d_round);
-
-                getUserPay(DocNo,d_round,"1");
+                d_id = data.getStringExtra("RETURN_ID");
+                Log.d("tog_getQRPay","1155 d_id = "+d_id);
+                txt_p_approve_code.setText("ชื่อผู้จ่าย : "+data.getStringExtra("RETURN_NAME"));
+                select_dept(DepIndex);
 
             }else if (resultCode == 1035) {
 
@@ -2041,6 +2397,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     public void displayDepartment(final String pDepName, final int depIndex, final String p_zone){
 
+        Log.d("tog_RemovePayout","displayDepartment");
         Log.d("tog_focus","displayDepartment");
         final boolean is_borrow = false; // switch_type.isChecked();
 
@@ -2115,9 +2472,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                     list_department.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                            ((ListDepartmentAdapter) list_department_adapter).setSelection(position);
-                            select_dept(position);
+                            DepIndex = position;
+                            getQRPay("payrow", "0");
                         }
                     });
 
@@ -2169,6 +2525,8 @@ public class DispensingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+
+                Log.d("tog_focus","result = "+result);
                 return result;
             }
 
@@ -2183,6 +2541,7 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
 
     public void select_dept(int position) {
+        list_department.setSelection(position);
         DepIndex = position;
         DepID = Model_Department.get(position).getID();
         DepName =  Model_Department.get(position).getDepName2();
@@ -3310,6 +3669,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private void callDialog(final String Message, final String type) {
 
+
         if (PA_IsShowToastDialog) {
 
             final Dialog dialog = new Dialog(DispensingActivity.this, R.style.DialogCustomTheme);
@@ -3605,7 +3965,9 @@ public class DispensingActivity extends AppCompatActivity {
 
                         if(c.getString("result").equals("A")){
 
-                            displayDepartment(txt_search_department.getText().toString(), -1,"");
+                            Log.d("tog_RemovePayout","displayDepartment");
+//                            displayDepartment(txt_search_department.getText().toString(), -1,"");
+                            displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 
                         }else{
                             Toast.makeText(DispensingActivity.this, c.getString("Message"), Toast.LENGTH_SHORT).show();
@@ -3636,6 +3998,7 @@ public class DispensingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                Log.d("tog_RemovePayout","result = "+result);
                 return result;
             }
         }
