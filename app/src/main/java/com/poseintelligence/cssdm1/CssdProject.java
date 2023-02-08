@@ -14,9 +14,17 @@ import java.util.ArrayList;
 public class CssdProject extends Application {
     private AppCompatActivity xActivity;
 
-    private String D_DATABASE="1";
+    public static  String D_DATABASE="1";
+    public static  String Project = "RAMA";
+
+//    public static  String D_DATABASE="0";
+//    public static  String Project = "VCH";
+
+//    public static  String D_DATABASE="0";
+//    public static  String Project = "BGH";
+
     private String xUrl;
-    private Parameter pm;
+    public static Parameter pm;
     private ArrayList<ConfigM1> cM1;
 
     public int I_CustomerId = 201;
@@ -119,7 +127,7 @@ public class CssdProject extends Application {
         this.xUrl = xUrl;
     }
 
-    public Parameter getPm(){ return pm; }
+    static public Parameter getPm(){ return pm; }
     public void setPm(Parameter pm) {
         this.pm = pm;
     }
@@ -668,4 +676,6 @@ public class CssdProject extends Application {
     public void setPA_IsUsedPayOkSound(boolean PA_IsUsedPayOkSound) {
         this.PA_IsUsedPayOkSound = PA_IsUsedPayOkSound;
     }
+
+    public String Project() { return Project; }
 }

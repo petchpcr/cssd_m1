@@ -449,12 +449,12 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             }
         });
 
-        if(listData.get(position).getNoWash().equals("1")){
-            bt_add_to_basket.setVisibility(View.INVISIBLE);
-        }
-        else{
-            bt_add_to_basket.setVisibility(View.VISIBLE);
-        }
+//        if(listData.get(position).getNoWash().equals("1")){
+//            bt_add_to_basket.setVisibility(View.INVISIBLE);
+//        }
+//        else{
+//            bt_add_to_basket.setVisibility(View.VISIBLE);
+//        }
 
         if(!listData.get(position).getBasketname().equals("")){
             bt_add_to_basket.setBackgroundResource(R.drawable.bi_basket_b);
@@ -601,6 +601,11 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
             }
         });
 
+
+//        w_bt_express.setVisibility(View.INVISIBLE);
+//        bt_risk.setVisibility(View.INVISIBLE);
+//        bt_add_to_basket.setVisibility(View.INVISIBLE);
+
         return v;
     }
 
@@ -665,7 +670,9 @@ public class ListSendSterileDetailAdapter extends ArrayAdapter {
 //                data.put("p_DB", ((CssdProject) context).getD_DATABASE());
 
                 String result = httpConnect.sendPostRequest(((CssdProject) atv.getApplication()).getxUrl() + "cssd_update_send_sterile_detail_re_sterile_type_.php",data);
-                
+
+                Log.d("tog_ReSterile","data = "+data);
+                Log.d("tog_ReSterile","result = "+result);
                 return result;
             }
         }

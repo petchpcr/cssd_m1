@@ -165,6 +165,8 @@ public class DispensingActivity extends AppCompatActivity {
     private Switch switch_opt;
 
     private EditText txt_usage_code;
+
+    private LinearLayout spn_usr_receive_box;
     // ---------------------------------------------------------------------------------------------
     // Obj
     // ---------------------------------------------------------------------------------------------
@@ -187,6 +189,10 @@ public class DispensingActivity extends AppCompatActivity {
 
     String d_id = "";
 
+    SearchableSpinner spn_usr_receive;
+
+    ArrayList<String> xDataUserCode = new ArrayList<String>();
+
     public void speakText(String textContents) {
         tts.speak(textContents, TextToSpeech.QUEUE_FLUSH, null, null);
     }
@@ -207,6 +213,11 @@ public class DispensingActivity extends AppCompatActivity {
         byEvent();
 
         byConfig();
+
+        if (((CssdProject) getApplication()).Project().equals("VCH")){
+            getuserCode();
+        }
+
 
         // -----------------------------------------------------------------------
         // Sound
@@ -295,6 +306,10 @@ public class DispensingActivity extends AppCompatActivity {
             }
         });
 
+        spn_usr_receive = ( SearchableSpinner ) findViewById(R.id.spn_usr_receive);
+        spn_usr_receive.setTitle("เลือกผู้รับ");//lang
+        spn_usr_receive.setPositiveButton("");//lang
+        spn_usr_receive_box = (LinearLayout) findViewById(R.id.spn_usr_receive_box);
     }
 
     private void byEvent() {
@@ -420,6 +435,15 @@ public class DispensingActivity extends AppCompatActivity {
                     return;
                 }
 
+                if(spn_usr_receive.getVisibility()==View.VISIBLE){
+                    if(spn_usr_receive.getSelectedItemPosition() == 0) {
+                        Log.d("tog_spn_usr_receive","spn_usr_receive = "+spn_usr_receive.getSelectedItemPosition());
+                        Toast.makeText(DispensingActivity.this, "กรุณาเลือกผู้รับ!!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+
                 //Check Scan Qty
                 boolean B_HasPay = false;
 
@@ -484,8 +508,7 @@ public class DispensingActivity extends AppCompatActivity {
                         case KeyEvent.KEYCODE_ENTER:
                             if(txt_usage_code.length()>0){
                                 String S_Code = txt_usage_code.getText().toString().toLowerCase();
-                                Log.d("top_dep","S_Code = "+S_Code);
-                                if(S_Code.substring(0,1).equals("d")){
+                                if(S_Code.length()<6){
                                     boolean x = true;
                                     for(int i = 0;i<Model_Department.size();i++){
 
@@ -1824,7 +1847,7 @@ public class DispensingActivity extends AppCompatActivity {
         list_pay.setAdapter(null);
         list_department.setAdapter(null);
 
-//        spn_usr_receive.setSelection(0);
+        spn_usr_receive.setSelection(0);
 //
 //        // Display Department
 //        if(switch_department.isChecked()) {
@@ -1953,7 +1976,12 @@ public class DispensingActivity extends AppCompatActivity {
                     callQR("user_approve", "สแกนรหัสผู้อนุมัติจ่าย เพื่อปิดเอกสาร.");
                 }else{
 //                    updatePayout(DocNo, DepID);
-                    updatePayout(DocNo, DepID,"0");
+                    if(((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
+                        updatePayout(DocNo, DepID,"0");
+                    }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                        updatePayout(DocNo, DepID,"3");
+                    }
+
                 }
 
             }
@@ -2011,7 +2039,7 @@ public class DispensingActivity extends AppCompatActivity {
 
         list_payout_detail_item.setAdapter(null);
 
-//        spn_usr_receive.setSelection(0);
+        spn_usr_receive.setSelection(0);
 
         if(B_IsNonSelectDocument) {
 //            label_division.setText("เลือก : NA");
@@ -2078,7 +2106,7 @@ public class DispensingActivity extends AppCompatActivity {
                             linear_layout_search.setLayoutParams(params);
                             displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 
-//                            spn_usr_receive.setSelection(0);
+                            spn_usr_receive.setSelection(0);
 //
 //                            if(B_IsNonSelectDocument) {
 //                                label_division.setText("เลือก : NA");
@@ -2096,7 +2124,6 @@ public class DispensingActivity extends AppCompatActivity {
 //                            }
 
                             hideKeyboard(DispensingActivity.this);
-
                         }
                     }
 
@@ -2141,6 +2168,7 @@ public class DispensingActivity extends AppCompatActivity {
                 data.put("p_bid", ((CssdProject) getApplication()).getPm().getBdCode()+"");
                 data.put("p_docno", DocNo);
                 data.put("p_id",d_id);
+                data.put("p_type",type);
 
                 if (type.equals("1")){
                     data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "0" : "0");
@@ -2151,6 +2179,7 @@ public class DispensingActivity extends AppCompatActivity {
                 }
 
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("p_Recipient", String.valueOf(spn_usr_receive.getSelectedItemPosition() - 1));
 
                 String result = null;
 
@@ -2170,6 +2199,59 @@ public class DispensingActivity extends AppCompatActivity {
 
         Update obj = new Update();
         obj.execute();
+    }
+
+    public void getuserCode() {
+        class getuserCode extends AsyncTask<String, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+            @Override
+            protected void onPostExecute(String s) {
+
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    xDataUserCode.clear();
+
+                    for(int i=0;i<rs.length();i++){
+
+                        JSONObject c = rs.getJSONObject(i);
+
+                        xDataUserCode.add(c.getString("xName"));
+
+                    }
+
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(DispensingActivity.this,android.R.layout.simple_spinner_dropdown_item,xDataUserCode);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    spn_usr_receive.setAdapter(adapter);
+
+                    spn_usr_receive.setSelection(0);
+
+                    spn_usr_receive_box.setVisibility(View.VISIBLE);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "Itemstock/get_usageCode_spinner_itemstock_pay.php", data);
+                Log.d("tog_getuserCode",result);
+                return  result;
+            }
+        }
+        getuserCode ru = new getuserCode();
+        ru.execute();
     }
 
     @Override
@@ -2519,7 +2601,12 @@ public class DispensingActivity extends AppCompatActivity {
                 String result = null;
 
                 try {
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department.php", data);
+
+                    if(((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department.php", data);
+                    }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department_new.php", data);
+                    }
 
                 }catch(Exception e){
                     e.printStackTrace();

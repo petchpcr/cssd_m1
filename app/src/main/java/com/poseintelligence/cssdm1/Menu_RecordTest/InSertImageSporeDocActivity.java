@@ -132,6 +132,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     private HTTPConnect httpConnect = new HTTPConnect();
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
+    URL imageUrl1;
+    URL imageUrl2;
     Uri image_uri1;
     Uri image_uri2;
     String NetWorkApp = "0";
@@ -898,6 +900,11 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         flip_camera1 = (ImageView) findViewById(R.id.flip_camera1);
         flip_camera2 = (ImageView) findViewById(R.id.flip_camera2);
 
+        if(((CssdProject) getApplication()).Project().equals("VCH")){
+            flip_camera1.setVisibility(View.GONE);
+            flip_camera2.setVisibility(View.GONE);
+        }
+
         flip_camera1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1422,8 +1429,11 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     for(int i=0;i<rs.length();i++) {
                         JSONObject c = rs.getJSONObject(i);
 
-                        URL imageUrl = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/uploads/"+c.getString("Pic1"));
-                        URL imageUrl1 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/uploads/"+c.getString("Pic2"));
+                        imageUrl1 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/uploads/"+c.getString("Pic1"));
+                        imageUrl2 = new URL(((CssdProject) getApplication()).getxUrl() + "cssd_image/uploads/"+c.getString("Pic2"));
+
+                        PicText1 = c.getString("img_pic1");
+                        PicText2 = c.getString("img_pic2");
 
 //                        Picasso.get().load(String.valueOf(imageUrl)).networkPolicy(NetworkPolicy.NO_CACHE)
 //                                .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -1433,39 +1443,29 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 //                                .memoryPolicy(MemoryPolicy.NO_CACHE)
 //                                .into(images2);
 //
-//                        try {
-//                            URL url = new URL(Url.URL + imageUrl);
-//                            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//                            images1.setImageBitmap(bmp);
-//                        }catch(Exception e){
-//                            images1.setImageResource(R.drawable.image4);
-//                        }
-//
-//                        try {
-//                            URL url1 = new URL(Url.URL+ imageUrl1);
-//                            Bitmap bmp1 = BitmapFactory.decodeStream(url1.openConnection().getInputStream());
-//                            images2.setImageBitmap(bmp1);
-//                        }catch(Exception e){
-//                            images2.setImageResource(R.drawable.image4);
-//                        }
+                        try {
+                            URL url = new URL(imageUrl1.toString());
+                            Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            images1.setImageBitmap(bmp);
+                        }catch(Exception e){
+                            codeData_pic1 = "data:image/jpeg;base64,"+PicText1;
+                            codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
+                            byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
+                            Bitmap bitmap_pic1 = BitmapFactory.decodeByteArray(code_pic1,0,code_pic1.length);
+                            images1.setImageBitmap(bitmap_pic1);
+                        }
 
-                        Log.d("DLLCLD",imageUrl+"");
-                        Log.d("DLLCLD",imageUrl1+"");
-
-                        PicText1 = c.getString("img_pic1");
-                        PicText2 = c.getString("img_pic2");
-
-                        codeData_pic1 = "data:image/jpeg;base64,"+c.getString("img_pic1");
-                        codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
-                        byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
-                        Bitmap bitmap_pic1 = BitmapFactory.decodeByteArray(code_pic1,0,code_pic1.length);
-                        images1.setImageBitmap(bitmap_pic1);
-
-                        codeData_pic2 = "data:image/jpeg;base64,"+c.getString("img_pic2");
-                        codeData_pic2 = codeData_pic2.replace("data:image/jpeg;base64,","");
-                        byte[] code_pic2 = Base64.decode(codeData_pic2,Base64.DEFAULT);
-                        Bitmap bitmap_pic2 = BitmapFactory.decodeByteArray(code_pic2,0,code_pic2.length);
-                        images2.setImageBitmap(bitmap_pic2);
+                        try {
+                            URL url1 = new URL(imageUrl2.toString());
+                            Bitmap bmp1 = BitmapFactory.decodeStream(url1.openConnection().getInputStream());
+                            images2.setImageBitmap(bmp1);
+                        }catch(Exception e){
+                            codeData_pic2 = "data:image/jpeg;base64,"+PicText2;
+                            codeData_pic2 = codeData_pic2.replace("data:image/jpeg;base64,","");
+                            byte[] code_pic2 = Base64.decode(codeData_pic2,Base64.DEFAULT);
+                            Bitmap bitmap_pic2 = BitmapFactory.decodeByteArray(code_pic2,0,code_pic2.length);
+                            images2.setImageBitmap(bitmap_pic2);
+                        }
 
 
                         remark.setText(c.getString("Remark"));
@@ -1858,17 +1858,31 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     }
 
     public void open_pic(String numpic){
-        codeData_pic1 = "data:image/jpeg;base64,"+PicText1;
-        codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
-        byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
-        Bitmap bitmap_pic1_1 = BitmapFactory.decodeByteArray(code_pic1,0,code_pic1.length);
-        images1.setImageBitmap(bitmap_pic1_1);
+        Bitmap bitmap_pic1;
+        try {
+            URL url = new URL(imageUrl1.toString());
+            bitmap_pic1 = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            images1.setImageBitmap(bitmap_pic1);
+        }catch(Exception e){
+            codeData_pic1 = "data:image/jpeg;base64,"+PicText1;
+            codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
+            byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
+            bitmap_pic1 = BitmapFactory.decodeByteArray(code_pic1,0,code_pic1.length);
+            images1.setImageBitmap(bitmap_pic1);
+        }
+        Bitmap bitmap_pic2;
+        try {
+            URL url1 = new URL(imageUrl2.toString());
+            bitmap_pic2 = BitmapFactory.decodeStream(url1.openConnection().getInputStream());
+            images2.setImageBitmap(bitmap_pic2);
+        }catch(Exception e){
+            codeData_pic2 = "data:image/jpeg;base64,"+PicText2;
+            codeData_pic2 = codeData_pic2.replace("data:image/jpeg;base64,","");
+            byte[] code_pic2 = Base64.decode(codeData_pic2,Base64.DEFAULT);
+            bitmap_pic2 = BitmapFactory.decodeByteArray(code_pic2,0,code_pic2.length);
+            images2.setImageBitmap(bitmap_pic2);
+        }
 
-        codeData_pic2 = "data:image/jpeg;base64,"+PicText2;
-        codeData_pic2 = codeData_pic2.replace("data:image/jpeg;base64,","");
-        byte[] code_pic2 = Base64.decode(codeData_pic2,Base64.DEFAULT);
-        Bitmap bitmap_pic2_2 = BitmapFactory.decodeByteArray(code_pic2,0,code_pic2.length);
-        images2.setImageBitmap(bitmap_pic2_2);
 
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(InSertImageSporeDocActivity.this);
         final View customLayout = InSertImageSporeDocActivity.this.getLayoutInflater().inflate( R.layout.activity_dialog_pic_remark, null);
@@ -1881,10 +1895,10 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         text_remark.setVisibility(View.GONE);
 
         if(numpic.equals("1")){
-            al_images.setImageBitmap(bitmap_pic1_1);
+            al_images.setImageBitmap(bitmap_pic1);
             al_imageslide.setVisibility(View.GONE);
         }else {
-            al_images.setImageBitmap(bitmap_pic2_2);
+            al_images.setImageBitmap(bitmap_pic2);
             al_imageslide.setVisibility(View.GONE);
         }
 

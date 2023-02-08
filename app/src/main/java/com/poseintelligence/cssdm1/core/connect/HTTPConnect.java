@@ -2,6 +2,9 @@ package com.poseintelligence.cssdm1.core.connect;
 
 import android.util.Log;
 
+import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.model.Parameter;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -24,6 +27,15 @@ public class HTTPConnect  {
         String response = "";
         try {
             url = new URL(requestURL);
+
+            Parameter pm = CssdProject.getPm();
+
+            if(pm!=null){
+                int B_ID = CssdProject.getPm().getBdCode();
+                postDataParams.put("B_ID", B_ID+"");
+            }
+
+            postDataParams.put("p_DB", CssdProject.D_DATABASE);
 
             //System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
 

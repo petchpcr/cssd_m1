@@ -133,7 +133,6 @@ public class Login extends AppCompatActivity {
         }
 
         Log.d("tog_ccs_c","ComponentName "+Login.this );
-        dep_device();
 
     }
 
@@ -325,6 +324,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
+                    dep_device();
 
                     if (!pword.getText().toString().equals("")) {
 
@@ -575,7 +575,12 @@ public class Login extends AppCompatActivity {
                             pm.setIsAdmin( c.getString("IsAdmin" ).equals("0")?false:true );
                             pm.setEmCode( c.getString("EmpCode" ) );
                             pm.setEmName( c.getString("EmpName" ) );
-                            pm.setBdCode( 1 );
+                            if(!c.isNull("B_ID")){
+                                pm.setBdCode( c.getInt("B_ID" ) );
+                            }else{
+                                pm.setBdCode(1);
+                            }
+
                             pm.setBdName( "-" );
                             pm.setIsSU( c.getBoolean("IsSU" ) );
 
@@ -1008,25 +1013,23 @@ public class Login extends AppCompatActivity {
                                 ST_IsUsedEnterPasswordAfterScanLogin = Boolean.parseBoolean(c.getString("ST_IsUsedEnterPasswordAfterScanLogin"));
                             }
 
-                            Log.d("tog_LoadConfigapi","ST_UrlAuthentication = "+ST_UrlAuthentication);
-                            Log.d("tog_LoadConfigapi","ST_IsUsedEnterPasswordAfterScanLogin = "+ST_IsUsedEnterPasswordAfterScanLogin);
-
                             if(!c.isNull("ST_SoundAndroidVersion9")){
                                 ((CssdProject) getApplication()).setST_SoundAndroidVersion9(c.getBoolean("ST_SoundAndroidVersion9"));
-                                Log.d("tog_LoadConfig","ST_SoundAndroidVersion9 = "+c.getBoolean("ST_SoundAndroidVersion9"));
 
                             }
                             Log.d("tog_LoadConfig","isNull = "+c.isNull("PA_IsNotificationPopupExpiringScan"));
                             if(!c.isNull("PA_IsNotificationPopupExpiringScan")){
                                 ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
-                                Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+c.getBoolean("PA_IsNotificationPopupExpiringScan"));
                             }
 
                             if(!c.isNull("PA_IsNotificationPopupExpiringScan")){
                                 ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
-                                Log.d("tog_LoadConfig","PA_IsNotificationPopupExpiringScan = "+c.getBoolean("PA_IsNotificationPopupExpiringScan"));
                             }
-                            ((CssdProject) getApplication()).setPA_IsUsedPayOkSound(c.getBoolean("PA_IsUsedPayOkSound"));
+
+                            if(!c.isNull("PA_IsUsedPayOkSound")){
+                                ((CssdProject) getApplication()).setPA_IsUsedPayOkSound(c.getBoolean("PA_IsUsedPayOkSound"));
+                            }
+
                             get_config_m1();
 
                         }else{
@@ -1080,7 +1083,7 @@ public class Login extends AppCompatActivity {
                     }
 
                 } catch (JSONException e) {
-                    Toast.makeText(Login.this, Cons.WARNING_SEARCH_NOT_FOUND, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(Login.this, Cons.WARNING_SEARCH_NOT_FOUND, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
 
@@ -1106,7 +1109,6 @@ public class Login extends AppCompatActivity {
         ru.execute();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public static String getSerialNumber() {
         String serialNumber;
 
@@ -1118,13 +1120,14 @@ public class Login extends AppCompatActivity {
             if (serialNumber.equals(""))
                 serialNumber = (String) get.invoke(c, "ril.serialnumber");
             if (serialNumber.equals(""))
-                serialNumber = (String) get.invoke(c, "ro.serialno");
-            if (serialNumber.equals(""))
                 serialNumber = (String) get.invoke(c, "sys.serialnumber");
             if (serialNumber.equals(""))
                 serialNumber = Build.SERIAL;
-            if (serialNumber.equals("unknown"))
-                serialNumber = Build.getSerial();
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (serialNumber.equals("unknown"))
+                    serialNumber = Build.getSerial();
+            }
 
             // If none of the methods above worked
             if (serialNumber.equals(""))
@@ -1139,14 +1142,10 @@ public class Login extends AppCompatActivity {
     }
 
     public void dep_device(){
-        String serialNumber = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            serialNumber = getSerialNumber();
-            if(serialNumber.equals("LB10P14E20479")){
-                onLogin("IsUseQrEmCodeLogin", "EM00001");
-            }
+        String serialNumber = getSerialNumber();
+        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
+            onLogin("IsUseQrEmCodeLogin", "EM00001");
         }
-
     }
 
     public void getConfigurationMenu(String userid) {

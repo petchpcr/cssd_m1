@@ -667,6 +667,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 // TODO Auto-generated method
                 Block_1.setVisibility( View.GONE );
                 Block_2.setVisibility( View.VISIBLE );
+
                 SelectBasket();
 
                 IsStatus = "0";
@@ -2038,7 +2039,6 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_is_approve", SS_IsApprove ? "1" : "0");
                 data.put("p_is_usedwash", WA_IsUsedWash ? "1" : "0");
                 data.put("p_is_usedself_washdepartment", SS_IsUsedSelfWashDepartment ? "1" : "0");
-
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("B_ID", B_ID);
 
@@ -3547,12 +3547,18 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 data.put("p_field", field);
                 data.put("p_value", value);
+
                 data.put("p_doc_no", doc_no);
                 data.put("B_ID",B_ID);
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
-                String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile.php", data);
-
+                String result = null;
+//                String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile.php", data);
+                if(((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile.php", data);
+                }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile_new.php", data);
+                }
                 return result;
             }
 
@@ -3703,7 +3709,12 @@ public class ReceiveActivity extends AppCompatActivity {
                 String result = null;
                 try {
 
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
+                    if(((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
+                    }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count_new.php", data);
+                    }
+//                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
 
                 }catch(Exception e){
                     e.printStackTrace();
@@ -3862,6 +3873,10 @@ public class ReceiveActivity extends AppCompatActivity {
     }
 
     public void SelectBasket() {
+        if(!SS_IsUsedBasket){
+            return;
+        }
+
         class Add extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(ReceiveActivity.this);
@@ -3970,7 +3985,9 @@ public class ReceiveActivity extends AppCompatActivity {
             }
         }
         Add ru = new Add();
+
         ru.execute();
+
     }
 
     public void insert_item_to_basket_and_re(String ItemStockID,String SSDetailID){

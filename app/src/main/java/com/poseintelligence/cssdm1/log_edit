@@ -36,3 +36,12 @@ wash_basket/add_item_to_basket.php เพิ่มเงื่อนไข SS_Is
 
 29/10/2022 **1
 DispensingActivity แก้ไขสแกน checkFIFO -> checkExpiring เป็น checkExpiring(หมดอายุ) -> checkFIFO -> checkCloseExpiring(ใกล้หมดอายุ)
+
+20/11/2022
+ทำคอนฟิค รามา - วิชัยยุทธ
+
+16/12/2022
+DispensingActivity แก้ไขถ้าสะแกนตัวที่มากกว่า 6 เป็นแผนก
+
+10/01/2023
+HTTPConnect เพิ่ม B_ID

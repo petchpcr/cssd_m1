@@ -30,6 +30,7 @@ import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
+import com.poseintelligence.cssdm1.model.ModelDisplayDoc0_1;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +50,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
     LinearLayout LX;
     private ArrayList<ConfigM1> cM1;
     private View.OnClickListener clickInLinearLayout;
+
+    HashMap<String, String> user_menu = new HashMap<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 }
             }
         };
-        ShowMenu();
+
+        get_ShowMenu_user();
     }
 
     private void getoPage(Class gx){
@@ -121,7 +125,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         finish();
     }
 
-    public void ShowMenu() {
+    public void get_ShowMenu_user() {
         class ShowMenu extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(MainMenu.this);
@@ -145,26 +149,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 super.onPostExecute(s);
                 try {
                     JSONObject c = new JSONObject(s);
-
-                    int n=0;
                     for(int i=0;i<cM1.size();i++) {
-                        if (cM1.get(i).getShowBtn()) {
-                            ImageView IV = new ImageView(MainMenu.this);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 150);
-                            params.setMargins(20,55,20,35);
-                            IV.setLayoutParams(params);
-                            String uri = "@drawable/"+cM1.get(i).getBtImg();
-                            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                            Drawable res = getResources().getDrawable(imageResource);
-                            IV.setImageDrawable( res );
-
-                            Log.d("tog_menu","getDrawable : " +cM1.get(i).getBtImg());
-                            if (c.getString(cM1.get(i).getBtImg()).equals("1")) {
-                                menu_addView(i,n,IV);
-                            }
-                            n++;
-                        }
+                        user_menu.put(cM1.get(i).getBtImg(),c.getString(cM1.get(i).getBtImg()));
                     }
+
+
                 } catch (JSONException e) {
                     Log.d("tog_menu","e : " +e);
                     e.printStackTrace();
@@ -172,6 +161,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
+
+                    ShowMenu();
                 }
             }
 
@@ -190,6 +181,35 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
         ShowMenu ru = new ShowMenu();
         ru.execute();
+    }
+
+    public void ShowMenu() {
+
+        int n=0;
+        for(int i=0;i<cM1.size();i++) {
+            if (cM1.get(i).getShowBtn()) {
+                ImageView IV = new ImageView(MainMenu.this);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(150, 150);
+                params.setMargins(20,55,20,35);
+                IV.setLayoutParams(params);
+                String uri = "@drawable/"+cM1.get(i).getBtImg();
+                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Drawable res = getResources().getDrawable(imageResource);
+                IV.setImageDrawable( res );
+
+                Log.d("tog_menu","getDrawable : " +cM1.get(i).getBtImg());
+
+                if(user_menu.isEmpty()){
+                    menu_addView(i,n,IV);
+                }else{
+                    if (user_menu.get(cM1.get(i).getBtImg()).equals("1")) {
+                        menu_addView(i,n,IV);
+                    }
+                }
+
+                n++;
+            }
+        }
     }
 
     public void menu_addView(int position,int pos,View v) {
