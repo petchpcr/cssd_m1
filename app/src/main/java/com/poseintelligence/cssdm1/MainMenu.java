@@ -153,7 +153,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                         user_menu.put(cM1.get(i).getBtImg(),c.getString(cM1.get(i).getBtImg()));
                     }
 
-
                 } catch (JSONException e) {
                     Log.d("tog_menu","e : " +e);
                     e.printStackTrace();

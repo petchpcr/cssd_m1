@@ -1144,7 +1144,7 @@ public class Login extends AppCompatActivity {
     public void dep_device(){
         String serialNumber = getSerialNumber();
         if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
-            onLogin("IsUseQrEmCodeLogin", "EM00001");
+            onLogin("IsUseQrEmCodeLogin", "EM00011");
         }
     }
 
