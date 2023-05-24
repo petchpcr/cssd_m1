@@ -15,15 +15,19 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.MainMenu;
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
+import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListBoxBasketAdapter;
 import com.poseintelligence.cssdm1.adapter.ListBoxMachineAdapter;
@@ -65,6 +69,9 @@ public class SterileActivity extends AppCompatActivity{
     TextView bt_select_all;
     LinearLayoutManager lm;
     public TextView title_2;
+    public Spinner mac_round;
+    public boolean mac_round_on_change = false;
+    public boolean SR_IsEditRound = false;
 
     LinearLayout ll_mac;
     LinearLayout rl_basket;
@@ -156,6 +163,8 @@ public class SterileActivity extends AppCompatActivity{
         SR_IsUsedDBUserOperation = ((CssdProject) getApplication()).isSR_IsUsedDBUserOperation() ;
         SR_IsRememberUserOperation = ((CssdProject) getApplication()).isSR_IsRememberUserOperation() ;
         SS_IsUsedBasket = ((CssdProject) getApplication()).isSS_IsUsedBasket();
+        SR_IsEditRound = ((CssdProject) getApplication()).isSR_IsEditRound();
+
     }
 
     @Override
@@ -171,6 +180,39 @@ public class SterileActivity extends AppCompatActivity{
         list_mac = (RecyclerView) findViewById(R.id.list_mac);
         list_basket = (RecyclerView) findViewById(R.id.list_basket);
         list_item_basket = (ListView) findViewById(R.id.list_item_basket);
+
+        mac_round = (Spinner) findViewById(R.id.mac_round);
+        ArrayList<String> data_mac_round = new ArrayList<String>();
+        data_mac_round.add("");
+        for(int i=1;i<=100;i++){
+            data_mac_round.add(i+"");
+        }
+        ArrayAdapter<String> adp_mac_round = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,data_mac_round);
+        adp_mac_round.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mac_round.setAdapter(adp_mac_round);
+        mac_round.setEnabled(false);
+        mac_round.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("tog_change_doc_round","change_doc_round = "+i);
+
+                if(mac_round_on_change && i>0) {
+                    if (list_mac_adapter.select_mac_pos >= 0) {
+                        if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
+                            change_doc_round(i+"",list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                        } else {
+                            Log.d("tog_change_doc_round", "mac_empty_id");
+                        }
+                    }
+                }
+                mac_round_on_change = true;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         TextView textViewBasketH = (TextView) findViewById(R.id.textViewBasketH);
         if(SS_IsUsedBasket){
@@ -1526,6 +1568,61 @@ public class SterileActivity extends AppCompatActivity{
         }
 
         change_doc_program obj = new change_doc_program();
+        obj.execute();
+    }
+
+    public void change_doc_round(String SterileRoundNumber, String docno) {
+
+        class change_doc_round extends AsyncTask<String, Void, String> {
+
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            reload_mac();
+                        }else{
+                            show_dialog("Warning","ไม่สามารถเปลี่ยนรอบได้");
+                        }
+                    }
+                } catch (JSONException e) {
+                    show_dialog("Warning","ไม่สามารถเปลี่ยนรอบได้");
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("SterileRoundNumber", SterileRoundNumber);
+                data.put("docno", docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                String result = httpConnect.sendPostRequest(getUrl+ "change_doc_round.php", data);
+
+                Log.d("tog_change_doc_round","data = "+data);
+                Log.d("tog_change_doc_round","result = "+result);
+                return result;
+            }
+        }
+
+        change_doc_round obj = new change_doc_round();
         obj.execute();
     }
 

@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.R;
@@ -50,6 +51,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         this.wiget_list = wiget_list;
 
         ((SterileActivity)context).title_2.setText(" ");
+        ((SterileActivity)context).mac_round.setSelection(0);
+        ((SterileActivity)context).mac_round.setEnabled(false);
         ((SterileActivity)context).is_have_loader = false;
     }
 
@@ -155,6 +158,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
             setProgramAndRound();
         }else{
             ((SterileActivity)context).title_2.setText(" ");
+            ((SterileActivity)context).mac_round.setSelection(0);
+            ((SterileActivity)context).mac_round.setEnabled(false);
         }
     }
 
@@ -177,6 +182,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
 
         if(select_mac_pos==mData.size()-1){
             ((SterileActivity)context).title_2.setText(" ");
+            ((SterileActivity)context).mac_round.setSelection(0);
+            ((SterileActivity)context).mac_round.setEnabled(false);
             ((SterileActivity)context).is_have_loader = false;
         }else{
             String loader = mData.get(select_mac_pos).getUserLoader();
@@ -188,7 +195,15 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                 ((SterileActivity)context).is_have_loader = true;
             }
 
-            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber()+"\nผู้ทำรายการ : "+loader);
+//            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber()+"\nผู้ทำรายการ : "+loader);
+            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\nผู้ทำรายการ : "+loader);
+            ((SterileActivity)context).mac_round_on_change = false;
+            ((SterileActivity)context).mac_round.setSelection(mData.get(select_mac_pos).getIntRoundNumber());
+            if(((SterileActivity)context).SR_IsEditRound){
+                ((SterileActivity)context).mac_round.setEnabled(true);
+            }else{
+                ((SterileActivity)context).mac_round.setEnabled(false);
+            }
         }
     }
 

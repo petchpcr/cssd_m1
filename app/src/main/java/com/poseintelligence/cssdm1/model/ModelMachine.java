@@ -67,6 +67,10 @@ public class ModelMachine {
         return RoundNumber;
     }
 
+    public int getIntRoundNumber() {
+        return Integer.parseInt(RoundNumber);
+    }
+
     public void setRoundNumber(String roundNumber) {
         RoundNumber = roundNumber;
     }
