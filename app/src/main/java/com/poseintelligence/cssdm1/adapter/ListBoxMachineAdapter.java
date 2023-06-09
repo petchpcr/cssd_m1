@@ -155,7 +155,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         if(select_mac_pos>=0){
             select_mac.setItemSelect(macname,mac,mac_image,ll);
             setMacSelect();
-            setProgramAndRound();
+
+            ((SterileActivity)context).setProgramAndRound(select_mac_pos,mData.size(),mData.get(select_mac_pos));
         }else{
             ((SterileActivity)context).title_2.setText(" ");
             ((SterileActivity)context).mac_round.setSelection(0);
@@ -169,43 +170,11 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
 //            wiget_list.scrollToPosition(select_mac_pos);
             ((SterileActivity)context).show_mac(mData.get(pos).getMachineName(),View.VISIBLE);
 
-            setProgramAndRound();
+            ((SterileActivity)context).setProgramAndRound(select_mac_pos,mData.size(),mData.get(select_mac_pos));
         }
     }
 
-    public void setProgramAndRound() {
-//        if(select_mac_pos==mData.size()-1){
-//            ((SterileActivity)context).title_2.setText(" ");
-//        }else{
-//            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber());
-//        }
 
-        if(select_mac_pos==mData.size()-1){
-            ((SterileActivity)context).title_2.setText(" ");
-            ((SterileActivity)context).mac_round.setSelection(0);
-            ((SterileActivity)context).mac_round.setEnabled(false);
-            ((SterileActivity)context).is_have_loader = false;
-        }else{
-            String loader = mData.get(select_mac_pos).getUserLoader();
-
-            if(loader.equals(" ")){
-                loader = "-";
-                ((SterileActivity)context).is_have_loader = false;
-            }else{
-                ((SterileActivity)context).is_have_loader = true;
-            }
-
-//            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\tรอบ : "+mData.get(select_mac_pos).getRoundNumber()+"\nผู้ทำรายการ : "+loader);
-            ((SterileActivity)context).title_2.setText("โปรแกรม : "+mData.get(select_mac_pos).getProgramName()+"\nผู้ทำรายการ : "+loader);
-            ((SterileActivity)context).mac_round_on_change = false;
-            ((SterileActivity)context).mac_round.setSelection(mData.get(select_mac_pos).getIntRoundNumber());
-            if(((SterileActivity)context).SR_IsEditRound){
-                ((SterileActivity)context).mac_round.setEnabled(true);
-            }else{
-                ((SterileActivity)context).mac_round.setEnabled(false);
-            }
-        }
-    }
 
     public class onItemSelect {
         TextView macname;

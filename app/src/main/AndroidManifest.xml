@@ -76,7 +76,8 @@
             android:theme="@style/Theme.CssdM1.NoActionBar" />
         <activity
             android:name=".Menu_Sterile.SterileActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:hardwareAccelerated="true"/>
         <activity
             android:name=".Menu_MachineTest.MachineTestDetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -111,6 +112,21 @@
         <activity
             android:name=".Menu_RecordTest.ResultsActivity"
             android:exported="true"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".Menu_Signature_Department.SignatureDepartmentActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".Menu_Signature_Department.SignatureDepartmentDetailActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name=".Menu_Signature_Department.SignaturePadAtivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
         <activity
             android:name=".Menu_Remark.RemarkActivity"

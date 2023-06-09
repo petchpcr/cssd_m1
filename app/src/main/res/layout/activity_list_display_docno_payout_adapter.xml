@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingBottom="4dp"
+    android:layout_marginLeft="4dp"
+    android:layout_marginRight="4dp"
+    android:paddingTop="4dp">
+
+    <LinearLayout
+        android:id="@+id/ln_1"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:background="@drawable/txt_edit_graywhite">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txt_no"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:text="1"
+                android:textAlignment="center"
+                android:layout_marginTop="4dp"
+                android:textColor="@android:color/black"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/txt_docdate"
+                android:layout_width="110dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="30dp"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:text="02/12/2023"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"></TextView>
+
+            <TextView
+                android:id="@+id/txt_docno"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_toEndOf="@+id/txt_docdate"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_weight="0.25"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:layout_marginLeft="5dp"
+                android:text="PA2212-00064"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"></TextView>
+
+            <TextView
+                android:id="@+id/txt_dep"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="38dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:text="แผนก   :"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"></TextView>
+
+            <TextView
+                android:id="@+id/txt_depname"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_toEndOf="@+id/txt_dep"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="38dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="GI"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"></TextView>
+
+            <TextView
+                android:id="@+id/txt_round"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_toEndOf="@+id/txt_depname"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="38dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:text="รอบ   :"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"></TextView>
+
+            <TextView
+                android:id="@+id/txt_roundpay"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_toEndOf="@+id/txt_round"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="38dp"
+                android:gravity="left|center"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="2"
+                android:textColor="@android:color/black"
+                android:textSize="14dp"></TextView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

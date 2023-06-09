@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Menu_Signature_Department.SignatureDepartmentDetailActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:background="@color/colorTitleBlue"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/backpage"
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/ic_keyboard_arrow_left_black">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="รายการจ่ายเครื่องมือแพทย์ปลอดเชื้อ"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="50dp"
+            android:textColor="@color/white"
+            android:textSize="18dp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/txt_depname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="แผนก : BJ"
+            android:layout_marginTop="34dp"
+            android:layout_marginLeft="50dp"
+            android:textColor="@color/white"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/txt_docno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No : PA2302-00001"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="60dp"
+            android:textColor="@color/white"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/txt_docdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="วันที่ : 12/01/2023"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="87dp"
+            android:textColor="@color/white"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <Button
+            android:id="@+id/btn_signature"
+            android:layout_width="90dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="265dp"
+            android:layout_marginTop="65dp"
+            android:background="@drawable/button_search"
+            android:text="ตรวจรับ"
+            android:fontFamily="@font/kanit"
+            android:textColor="@color/black"
+            android:textSize="18dp">
+
+        </Button>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="113dp"
+        android:layout_marginRight="3dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/rectangle"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="ลำดับ"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/black"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="รายการเครื่องมือ"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="110dp"
+            android:textColor="@color/black"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="จำนวน"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="270dp"
+            android:textColor="@color/black"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="รูป"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="350dp"
+            android:textColor="@color/black"
+            android:textSize="16dp">
+
+        </TextView>
+
+        <ListView
+            android:id="@+id/list_payput_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="40dp"
+            android:listSelector="#02fff6"
+            android:background="@drawable/rectangle"
+            android:numColumns="1" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageItemShow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="80dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/no_image_found"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

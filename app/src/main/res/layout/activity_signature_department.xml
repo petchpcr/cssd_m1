@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/bg_tran">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:background="@color/colorTitleBlue">
+
+            <ImageView
+                android:id="@+id/backpage"
+                android:layout_width="30dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="13dp"
+                android:background="@drawable/ic_keyboard_arrow_left_black">
+
+            </ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="วันที่"
+                android:textColor="@color/white"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="70dp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="ถึง"
+                android:textColor="@color/white"
+                android:layout_marginLeft="190dp"
+                android:layout_marginTop="70dp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:text="แผนก"
+                android:textColor="@color/white"
+                android:layout_marginLeft="45dp"
+                android:layout_marginTop="15dp">
+
+            </TextView>
+
+            <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+                android:id="@+id/spn_department_form"
+                style="@style/spinner_style_register"
+                android:layout_width="160dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="85dp"
+                android:textColor="@android:color/black"
+                android:textSize="14dp" />
+
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="100dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="8dp"
+                android:text="ค้นหา"
+                android:layout_marginLeft="250dp"
+                android:fontFamily="@font/kanit"
+                android:textColor="@color/black"
+                android:textSize="18dp"
+                android:background="@drawable/button_search" />
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="60dp"
+                android:layout_marginTop="65dp"
+                android:background="@drawable/calendar_64" />
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="220dp"
+                android:layout_marginTop="65dp"
+                android:background="@drawable/calendar_64" />
+
+            <TextView
+                android:id="@+id/txt_sdate"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="55dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="10dp"
+                android:paddingStart="25dp"
+                android:background="@drawable/rectangle"
+                android:gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/txt_edate"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_toEndOf="@+id/txt_sdate"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="10dp"
+                android:paddingStart="25dp"
+                android:background="@drawable/rectangle"
+                android:gravity="center_horizontal|center_vertical"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/rq_listdoc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/images1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    </LinearLayout>
+
+</RelativeLayout>
+

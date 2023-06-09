@@ -73,9 +73,16 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
             setItemUnSelect(holder.name,holder.qty,holder.image,holder.ll);
 
 //            Log.d("tog_getbasket_mac","get_mac_select_id = "+((SterileActivity)context).get_mac_select_id());
-            if(!((SterileActivity)context).get_mac_select_id().equals("Empty")&&!((SterileActivity)context).get_mac_select_id().equals(mData.get(position).getMacId())){
-                holder.ll.setVisibility(View.GONE);
-                holder.qty.setVisibility(View.GONE);
+            if(!((SterileActivity)context).get_mac_select_id().equals("Empty")){
+//                if(((SterileActivity)context).get_mac_select_id().equals(mData.get(position).getMacId())){
+
+                    Log.d("tog_getbasket_mac", "get_mac_select_doc = " + ((SterileActivity) context).get_mac_select_doc());
+                    Log.d("tog_getbasket_mac", "getRefDocNo = " + (mData.get(position).getRefDocNo()));
+                    if (!((SterileActivity) context).get_mac_select_doc().equals(mData.get(position).getRefDocNo())) {
+                        holder.ll.setVisibility(View.GONE);
+                        holder.qty.setVisibility(View.GONE);
+                    }
+//                }
             }
         }
 

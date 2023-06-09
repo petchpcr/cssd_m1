@@ -450,7 +450,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                             JSONObject c = rs.getJSONObject(i);
 
                             if (c.getString("result").equals("A")) {
-                                xlist_basket.add(new BasketTag(c.getString("xID"),c.getString("BasketName"),c.getString("BasketCode"),c.getString("InMachineID"),0,c.getString("TypeId")));
+                                xlist_basket.add(new BasketTag(c.getString("xID"),c.getString("BasketName"),c.getString("BasketCode"),c.getString("InMachineID"),0,c.getString("TypeId"),""));
                             }
                         }
 

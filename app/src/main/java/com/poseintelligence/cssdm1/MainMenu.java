@@ -26,6 +26,7 @@ import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.Menu_RecordTest.ResultsActivity;
 import com.poseintelligence.cssdm1.Menu_Remark.RemarkActivity;
 import com.poseintelligence.cssdm1.Menu_Return.ReturnActivity;
+import com.poseintelligence.cssdm1.Menu_Signature_Department.SignatureDepartmentActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
@@ -112,6 +113,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     case "bt_sterile": getoPage(SterileActivity.class); break;
                     case "bt_basket_washing": getoPage(BasketWashingActivity.class); break;
                     case "bt_nonusage": getoPage(ReceivePayNonUsageActivity.class); break;
+                    case "bt_signature_dept": getoPage(SignatureDepartmentActivity.class); break;
                 }
             }
         };
@@ -225,6 +227,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_sterile": t.setText("นำเข้าตะกร้า-เครื่องฆ่าเชื้อ"); break;
             case "bt_basket_washing": t.setText("นำเข้าตะกร้า-เครื่องล้าง"); break;
             case "bt_nonusage": t.setText("รับ-จ่าย รายการ non-usage"); break;
+            case "bt_signature_dept": t.setText("ลงชื่อผู้รับแผนก"); break;
         }
 
         t.setGravity(Gravity.CENTER);
