@@ -2250,7 +2250,7 @@ public class DispensingActivity extends AppCompatActivity {
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     JSONObject c = rs.getJSONObject(rs.length()-1);
-                    getUserPay(d_docno,(c.getInt("Printno")-1)+"","1");
+                    getUserPay(d_docno,(c.getInt("Printno"))+"","1");
 
 
                 } catch (JSONException e) {
@@ -4036,20 +4036,11 @@ public class DispensingActivity extends AppCompatActivity {
     private void printSlip(String DocDate, String RefDocno, String d_round){
 
         try {
-
+            String showDepName = Model_Department.get(DepIndex).getDepName();
             SunmiPrintHelper.getInstance().setAlign(1);
-
-//            try {
-//                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo_pose1);
-//                //bitmap = scaleImage(bitmap);
-//                SunmiPrintHelper.getInstance().printBitmap(bitmap, 0);
-//            }catch(Exception e){
-//                SunmiPrintHelper.getInstance().printText("\n\n\n", 28, false, false);
-//            }
-
             SunmiPrintHelper.getInstance().setAlign(1);
             SunmiPrintHelper.getInstance().printText("ใบจ่ายอุปกรณ์\n", 32, true, false);
-            SunmiPrintHelper.getInstance().printText("แผนก:" + DepName + "       รอบ:" + d_round + "\n", 28, false, false);
+            SunmiPrintHelper.getInstance().printText("แผนก:" + showDepName + "       รอบ:" + d_round + "\n", 28, false, false);
             SunmiPrintHelper.getInstance().printText("วันที่:" + DocDate + " น. " + "\n", 28, false, false);
             SunmiPrintHelper.getInstance().setAlign(0);
             SunmiPrintHelper.getInstance().printText("ใบจ่าย:" + DocNo + "\n", 28, false, false);
@@ -4097,6 +4088,12 @@ public class DispensingActivity extends AppCompatActivity {
 
             SunmiPrintHelper.getInstance().setAlign(0);
 
+            SunmiPrintHelper.getInstance().printText("************************************************\n", 24, false, false);
+
+            SunmiPrintHelper.getInstance().setAlign(1);
+
+            SunmiPrintHelper.getInstance().printQr(DocNo,5,0);
+
             if(WA_IsUsedWash){
                 SunmiPrintHelper.getInstance().printText("\nผู้จ่าย (CSSD) : " + user_name_pay + "\n", 28, false, false);
             }else{
@@ -4108,20 +4105,16 @@ public class DispensingActivity extends AppCompatActivity {
             SunmiPrintHelper.getInstance().setAlign(1);
 
             if(!WA_IsUsedWash){
-                SunmiPrintHelper.getInstance().printText("*** งานจ่ายกลาง " + ((CssdProject) getApplication()).getOrgName() + " *** \n\n", 22, false, false);
+               // SunmiPrintHelper.getInstance().printText("*** งานจ่ายกลาง " + OrgName + " *** \n\n", 22, false, false);
             }
 
             SunmiPrintHelper.getInstance().setAlign(2);
-
-//            SunmiPrintHelper.getInstance().printText("POSE INTELLIGENCE © 2023\n", 22, false, false);
 
             SunmiPrintHelper.getInstance().feedPaper();
 
             SunmiPrintHelper.getInstance().cutpaper();
 
         }catch (Exception e){
-
-            Toast.makeText(DispensingActivity.this, "printSlip = "+e, Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -4382,4 +4375,5 @@ public class DispensingActivity extends AppCompatActivity {
 
         ru.execute();
     }
+
 }
