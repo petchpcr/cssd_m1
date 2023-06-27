@@ -57,4 +57,7 @@ dependencies {
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
     implementation 'com.github.IslamKhSh:CardSlider:1.0.1'
     implementation 'com.kyanogen.signatureview:signature-view:1.2'
+
+    implementation 'com.sunmi:printerlibrary:1.0.21'
+    implementation 'com.google.zxing:core:3.5.0'
 }

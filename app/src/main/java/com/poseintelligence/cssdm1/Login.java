@@ -594,7 +594,7 @@ public class Login extends AppCompatActivity {
                         }
                     }
                 } catch (JSONException e) {
-//                    Toast.makeText(Login.this, Cons.WARNING_CONNECT_SERVER_FAIL, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Login.this, Cons.WARNING_CONNECT_SERVER_FAIL, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }finally {
                     if (dialog.isShowing()) {
@@ -1079,6 +1079,9 @@ public class Login extends AppCompatActivity {
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
+
+                        ((CssdProject) getApplication()).setOrgName(c.getString("building_name"));
+
                         building_name.setText(c.getString("building_name"));
                     }
 
@@ -1143,6 +1146,8 @@ public class Login extends AppCompatActivity {
 
     public void dep_device(){
         String serialNumber = getSerialNumber();
+        onLogin("IsUseQrEmCodeLogin", "EM00011");
+
         if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
             onLogin("IsUseQrEmCodeLogin", "EM00011");
         }

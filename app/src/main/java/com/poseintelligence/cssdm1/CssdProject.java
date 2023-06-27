@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.poseintelligence.cssdm1.model.ConfigM1;
 import com.poseintelligence.cssdm1.model.Parameter;
+import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
 
 import java.util.ArrayList;
 
@@ -23,6 +24,7 @@ public class CssdProject extends Application {
 //    public static  String D_DATABASE="0";
 //    public static  String Project = "BGH";
 
+    private String OrgName;
     private String xUrl;
     public static Parameter pm;
     private ArrayList<ConfigM1> cM1;
@@ -105,6 +107,14 @@ public class CssdProject extends Application {
     boolean ST_SoundAndroidVersion9 = false;
     boolean PA_IsNotificationPopupExpiringScan = false;
     boolean PA_IsUsedPayOkSound = false;
+
+    public String getOrgName() {
+        return OrgName;
+    }
+
+    public void setOrgName(String orgName) {
+        OrgName = orgName;
+    }
 
     public boolean isPA_IsWastingPayout() {
         return PA_IsWastingPayout;
@@ -678,4 +688,14 @@ public class CssdProject extends Application {
     }
 
     public String Project() { return Project; }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        init();
+    }
+
+    private void init(){
+        SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
+    }
 }

@@ -8,6 +8,8 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -52,6 +54,7 @@ import com.poseintelligence.cssdm1.model.ModelPayout;
 import com.poseintelligence.cssdm1.model.ModelPayoutDetailSub;
 import com.poseintelligence.cssdm1.model.ModelPayoutDetails;
 import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +92,7 @@ public class DispensingActivity extends AppCompatActivity {
     // ---------------------------------------------------------------------------------------------
     // Config
     // ---------------------------------------------------------------------------------------------
-
+    boolean have_printer = false;
     public boolean ST_SoundAndroidVersion9 = false;
     public boolean SS_IsCopyPayout = false;
     public boolean SS_IsShowSender = false;
@@ -172,12 +175,16 @@ public class DispensingActivity extends AppCompatActivity {
     // ---------------------------------------------------------------------------------------------
     private String DocNo = null;
     private String RefDocNo = null;
+
+    private String RefDocNoSend = null;
     private String DepID = null;
     private int DepIndex = -1;
     private String DepName = "-";
     private String DocDateTime = "";
     private String p_receive_code = null;
     private String p_approve_code = null;
+
+    String user_name_pay;
 
     public static String text_search_department = "";
 
@@ -214,6 +221,8 @@ public class DispensingActivity extends AppCompatActivity {
 
         byConfig();
 
+        initPrinterStyle();
+
         if (((CssdProject) getApplication()).Project().equals("VCH")){
             getuserCode();
         }
@@ -232,6 +241,8 @@ public class DispensingActivity extends AppCompatActivity {
         spn_zone.setVisibility(Is_Zone?View.VISIBLE:View.GONE);
         if(Is_Zone==false)
             displayDepartment(txt_search_department.getText().toString(), -1,"");
+
+        //tprintSlip();
     }
 
     private void speakTextInit() {
@@ -269,6 +280,16 @@ public class DispensingActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void initPrinterStyle() {
+        try {
+            SunmiPrintHelper.getInstance().initPrinter();
+            have_printer=true;
+        }catch (Exception e){
+            have_printer = false;
+        }
+
     }
 
     private void byWidget() {
@@ -435,7 +456,7 @@ public class DispensingActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(spn_usr_receive.getVisibility()==View.VISIBLE){
+                if(spn_usr_receive_box.getVisibility()==View.VISIBLE){
                     if(spn_usr_receive.getSelectedItemPosition() == 0) {
                         Log.d("tog_spn_usr_receive","spn_usr_receive = "+spn_usr_receive.getSelectedItemPosition());
                         Toast.makeText(DispensingActivity.this, "กรุณาเลือกผู้รับ!!", Toast.LENGTH_SHORT).show();
@@ -2055,7 +2076,19 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
     // Update Payout
     // ------------------------------------------------------------------
+    String udpo_p_dept_id = "";
+    String udpo_type= "";
     public void updatePayout(final String p_docno, final String p_dept_id, final String type){
+        udpo_p_dept_id = p_dept_id;
+        udpo_type= type;
+        if(have_printer){
+            print_round(p_docno);
+        }else{
+            to_updatePayout(p_docno,p_dept_id,type);
+        }
+    }
+
+    public void to_updatePayout(final String p_docno, final String p_dept_id, final String type){
 
         if(!B_IsNonSelectDocument){
             if(p_dept_id == null || p_dept_id.equals("") || p_dept_id.equals("0") || p_dept_id.equals("-1")){
@@ -2199,6 +2232,54 @@ public class DispensingActivity extends AppCompatActivity {
 
         Update obj = new Update();
         obj.execute();
+    }
+    public void print_round(String d_docno) {
+        class print_round extends AsyncTask<String, Void, String> {
+
+            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
+            protected void onPreExecute() {
+                super.onPreExecute();
+                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
+                this.dialog.show();
+            }
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    JSONObject c = rs.getJSONObject(rs.length()-1);
+                    getUserPay(d_docno,(c.getInt("Printno")-1)+"","1");
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+
+                data.put("p_DocNo", d_docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_print_round_paydocno.php",data);
+
+                return  result;
+            }
+        }
+
+        print_round ru = new print_round();
+
+        ru.execute();
     }
 
     public void getuserCode() {
@@ -2357,7 +2438,6 @@ public class DispensingActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-
                 try {
                     JSONObject jsonObj = new JSONObject(result);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
@@ -2365,35 +2445,39 @@ public class DispensingActivity extends AppCompatActivity {
                     for(int i = 0 ;i < rs.length(); i++){
                         JSONObject c = rs.getJSONObject(i);
 
-//                        user_name_pay = "คุณ " + c.getString("FirstName") + " " + c.getString("LastName");
+                        user_name_pay = "คุณ " + c.getString("FirstName") + " " + c.getString("LastName");
 
-//                        displayPayoutDetailSlip(DocNo, false, d_round);
+//                        displayPayoutDetailSlip(DocNo, false, d_round, "0");
 
-                        updatePayout(DocNo, DepID, "3");
+//                        updatePayout(DocNo, DepID, "3");
 
-                        Log.d("BANKTEST",p_Type + "");
+                        if (p_Type.equals("1")){
 
-//                        if (p_Type.equals("1")){
+                            to_updatePayout(p_Docno,udpo_p_dept_id,udpo_type);
+                            printSlip(c.getString("PayDate"), c.getString("RefDocNo"),p_Round);
 
-//                            printSlip();
+                            SetPrintCountReportAndPrintCountSlip("1","0",p_Docno);
 
-//                            SetPrintCountReportAndPrintCountSlip("1","0",DocNo);
-
-//                        }else {
-
+                        }
+//                        else {
+//
+//
 //                            String url = ((CssdProject) getApplication()).getUrl() + "report/cssd_report_payout_by_docno.php?p_docno=" + DocNo + "&p_DB=" + ((CssdProject) getApplication()).getD_DATABASE() + "&p_Round=" + d_round;
-
+//
 //                            callAction(url);
-
+//
 //                            SetPrintCountReportAndPrintCountSlip("0","2",DocNo);
-
+//
 //                        }
 
                     }
 
                 } catch (JSONException e) {
+
+                    //Toast.makeText(DispensingActivity.this, "getUserPay = "+e, Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
+
 
             }
 
@@ -2403,7 +2487,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                 data.put("p_Docno", p_Docno);
                 data.put("p_Round", p_Round);
-
+                data.put("p_id",d_id);
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_user_pay_round.php", data);
 
                 Log.d("BANKTEST",data+"");
@@ -2724,6 +2808,7 @@ public class DispensingActivity extends AppCompatActivity {
                                             c.getString("IsSpecial"),
                                             c.getString("IsWeb"),
                                             c.getString("DocDateTime"),
+                                            c.getString("DocDateSend"),
                                             i
                                     )
                             );
@@ -2897,6 +2982,7 @@ public class DispensingActivity extends AppCompatActivity {
                                             c.getString("IsSpecial"),
                                             c.getString("IsWeb"),
                                             c.getString("DocDateTime"),
+                                            c.getString("DocDateSend"),
                                             i
                                     )
                             );
@@ -2922,6 +3008,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                             DocNo = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(2)).getText().toString();
                             RefDocNo = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(4)).getText().toString();
+                            RefDocNoSend = ((TextView)((RelativeLayout)((LinearLayout) view).getChildAt(0)).getChildAt(6)).getText().toString();
                             switch_opt.setChecked(false);
 
                             title_3.setText(DocNo+" / "+Model_Pay.get(position).getDepNameByPayItem());
@@ -3912,7 +3999,132 @@ public class DispensingActivity extends AppCompatActivity {
         Delete_Pay_Detail ru = new Delete_Pay_Detail();
         ru.execute(DocNo,Usagecode);
     }
+    private void tprintSlip(){
+        try {
 
+            SunmiPrintHelper.getInstance().setAlign(1);
+
+//            try {
+//                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo_pose1);
+//                //bitmap = scaleImage(bitmap);
+//                SunmiPrintHelper.getInstance().printBitmap(bitmap, 0);
+//            }catch(Exception e){
+//                SunmiPrintHelper.getInstance().printText("\n\n\n", 28, false, false);
+//            }
+
+            SunmiPrintHelper.getInstance().setAlign(1);
+            SunmiPrintHelper.getInstance().printText("ใบจ่ายอุปกรณ์", 32, true, false);
+            SunmiPrintHelper.getInstance().setAlign(0);
+
+
+            SunmiPrintHelper.getInstance().printText("*** งานจ่ายกลาง " + ((CssdProject) getApplication()).getOrgName() + " *** \n\n", 22, false, false);
+
+            SunmiPrintHelper.getInstance().setAlign(2);
+
+//            SunmiPrintHelper.getInstance().printText("POSE INTELLIGENCE © 2023\n", 22, false, false);
+
+            SunmiPrintHelper.getInstance().feedPaper();
+
+            SunmiPrintHelper.getInstance().cutpaper();
+
+        }catch (Exception e){
+
+            Toast.makeText(DispensingActivity.this, "printSlip = "+e, Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+    private void printSlip(String DocDate, String RefDocno, String d_round){
+
+        try {
+
+            SunmiPrintHelper.getInstance().setAlign(1);
+
+//            try {
+//                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo_pose1);
+//                //bitmap = scaleImage(bitmap);
+//                SunmiPrintHelper.getInstance().printBitmap(bitmap, 0);
+//            }catch(Exception e){
+//                SunmiPrintHelper.getInstance().printText("\n\n\n", 28, false, false);
+//            }
+
+            SunmiPrintHelper.getInstance().setAlign(1);
+            SunmiPrintHelper.getInstance().printText("ใบจ่ายอุปกรณ์\n", 32, true, false);
+            SunmiPrintHelper.getInstance().printText("แผนก:" + DepName + "       รอบ:" + d_round + "\n", 28, false, false);
+            SunmiPrintHelper.getInstance().printText("วันที่:" + DocDate + " น. " + "\n", 28, false, false);
+            SunmiPrintHelper.getInstance().setAlign(0);
+            SunmiPrintHelper.getInstance().printText("ใบจ่าย:" + DocNo + "\n", 28, false, false);
+
+            if (!RefDocno.equals("")){
+                SunmiPrintHelper.getInstance().printText("ใบส่งล้าง:" + RefDocNo + " " + RefDocNoSend + "น." + "\n", 28, false, false);
+            }
+
+            SunmiPrintHelper.getInstance().printText("************************************************\n", 24, false, false);
+
+            String[] text_col = new String[]{"รายการ", "จำนวน"};
+
+            int[] width = new int[]{5, 1};
+
+            int[] align_col = new int[]{1, 1};
+
+            SunmiPrintHelper.getInstance().printTable(text_col, width, align_col);
+
+            int I_Sum = 0;
+            int I_PayQty = 0;
+            int I_No = 1;
+
+
+            for(int i = 0 ; i < Model_Payout_Detail_item.size() ; i++) {
+
+                I_PayQty = Model_Payout_Detail_item.get(i).getPay_Qty_();
+
+                String[] text = new String[]{ I_No + ". " + Model_Payout_Detail_item.get(i).getItemname(), Model_Payout_Detail_item.get(i).getPay_Qty()};
+                int[] align = new int[]{0, 1};
+
+                SunmiPrintHelper.getInstance().printTable(text, width, align);
+
+                I_Sum += I_PayQty;
+
+                I_No++;
+
+            }
+
+            SunmiPrintHelper.getInstance().printText("\n", 28, false, false);
+
+            String[] text_sum = new String[]{ "รวม  ", Integer.toString(I_Sum)};
+            int[] align_sum = new int[]{2, 1};
+
+            SunmiPrintHelper.getInstance().printTable(text_sum, width, align_sum);
+
+            SunmiPrintHelper.getInstance().setAlign(0);
+
+            if(WA_IsUsedWash){
+                SunmiPrintHelper.getInstance().printText("\nผู้จ่าย (CSSD) : " + user_name_pay + "\n", 28, false, false);
+            }else{
+                SunmiPrintHelper.getInstance().printText("\nผู้จ่าย (CSSD) : " + user_name_pay + "\n", 28, false, false);
+            }
+
+            SunmiPrintHelper.getInstance().printText("ผู้รับ (แผนก)  :  ____________________\n\n", 28, false, false);
+
+            SunmiPrintHelper.getInstance().setAlign(1);
+
+            if(!WA_IsUsedWash){
+                SunmiPrintHelper.getInstance().printText("*** งานจ่ายกลาง " + ((CssdProject) getApplication()).getOrgName() + " *** \n\n", 22, false, false);
+            }
+
+            SunmiPrintHelper.getInstance().setAlign(2);
+
+//            SunmiPrintHelper.getInstance().printText("POSE INTELLIGENCE © 2023\n", 22, false, false);
+
+            SunmiPrintHelper.getInstance().feedPaper();
+
+            SunmiPrintHelper.getInstance().cutpaper();
+
+        }catch (Exception e){
+
+            Toast.makeText(DispensingActivity.this, "printSlip = "+e, Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
 
     String mass_onkey = "";
 //    public void dialog_wait_scan(String data,String type){

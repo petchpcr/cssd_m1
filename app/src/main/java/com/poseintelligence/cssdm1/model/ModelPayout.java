@@ -41,7 +41,7 @@ public class ModelPayout {
         this.index = index;
     }
 
-    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb, String DocDateTime, int index) {
+    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb, String DocDateTime, String DocDateSend, int index) {
         Department_ID = department_ID;
         DepName = depName;
         DocNo = docNo;
@@ -57,6 +57,7 @@ public class ModelPayout {
         this.IsWeb = IsWeb;
         this.DocDateTime = DocDateTime;
         this.index = index;
+        this.DocDateSend = DocDateSend;
     }
 
     public String getDocDateTime() {
