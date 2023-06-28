@@ -3961,12 +3961,12 @@ public class DispensingActivity extends AppCompatActivity {
     private void printSlip(String DocDate, String RefDocno, String d_round) {
 
         try {
-            //String showDepName = Model_Department.get(DepIndex).getDepName();
+            String showDepName = Model_Department.get(DepIndex).getDepName();
 
             SunmiPrintHelper.getInstance().setAlign(1);
             SunmiPrintHelper.getInstance().setAlign(1);
             SunmiPrintHelper.getInstance().printText("ใบจ่ายอุปกรณ์\n", 32, true, false);
-            SunmiPrintHelper.getInstance().printText("แผนก:" + "showDepName" + "       รอบ:" + d_round + "\n", 28, false, false);
+            SunmiPrintHelper.getInstance().printText("แผนก:" + showDepName + "       รอบ:" + d_round + "\n", 28, false, false);
             SunmiPrintHelper.getInstance().printText("วันที่:" + DocDate + " น. " + "\n", 28, false, false);
             SunmiPrintHelper.getInstance().setAlign(0);
             SunmiPrintHelper.getInstance().printText("ใบจ่าย:" + DocNo + "\n", 28, false, false);
