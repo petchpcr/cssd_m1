@@ -2110,7 +2110,7 @@ public class DispensingActivity extends AppCompatActivity {
                         if (c.getString("result").equals("A")) {
                             DocNo = null;
                             RefDocNo = null;
-                            DepIndex = -1;
+//                            DepIndex = -1;
 
                             list_payout_detail_item.setAdapter(null);
                             list_pay.setAdapter(null);
@@ -3961,7 +3961,7 @@ public class DispensingActivity extends AppCompatActivity {
     private void printSlip(String DocDate, String RefDocno, String d_round) {
 
         try {
-            String showDepName = Model_Department.get(DepIndex).getDepName();
+            String showDepName = DepIndex == -1 || Model_Department.size() == 0 ? "" : Model_Department.get(DepIndex).getDepName();
 
             SunmiPrintHelper.getInstance().setAlign(1);
             SunmiPrintHelper.getInstance().setAlign(1);
