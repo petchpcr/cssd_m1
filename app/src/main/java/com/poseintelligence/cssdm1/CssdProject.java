@@ -52,6 +52,8 @@ public class CssdProject extends Application {
     boolean SS_IsSortByUsedCount = false;
     boolean SS_IsUsedZoneSterile = false;
     boolean SS_IsUsedBasket = false;
+
+    boolean SR_IsUsedBasket_M1 = false;
     boolean SS_IsUsedNotification = false;
     boolean SS_IsUsedRemarks = false;
     boolean SS_IsUsedSelfWashDepartment = false;
@@ -107,6 +109,10 @@ public class CssdProject extends Application {
     boolean ST_SoundAndroidVersion9 = false;
     boolean PA_IsNotificationPopupExpiringScan = false;
     boolean PA_IsUsedPayOkSound = false;
+
+    boolean SR_IsUsedLot = false;
+
+    String MD_URL = "";
 
     public String getOrgName() {
         return OrgName;
@@ -277,6 +283,14 @@ public class CssdProject extends Application {
 
     public void setSS_IsUsedBasket(boolean SS_IsUsedBasket) {
         this.SS_IsUsedBasket = SS_IsUsedBasket;
+    }
+
+    public boolean isSR_IsUsedBasket_M1() {
+        return SR_IsUsedBasket_M1;
+    }
+
+    public void setSR_IsUsedBasket_M1(boolean SR_IsUsedBasket_M1) {
+        this.SR_IsUsedBasket_M1 = SR_IsUsedBasket_M1;
     }
 
     public boolean isWA_IsUsedWash() {
@@ -685,6 +699,22 @@ public class CssdProject extends Application {
 
     public void setPA_IsUsedPayOkSound(boolean PA_IsUsedPayOkSound) {
         this.PA_IsUsedPayOkSound = PA_IsUsedPayOkSound;
+    }
+
+    public boolean isSR_IsUsedLot() {
+        return SR_IsUsedLot;
+    }
+
+    public void setSR_IsUsedLot(boolean SR_IsUsedLot) {
+        this.SR_IsUsedLot = SR_IsUsedLot;
+    }
+
+    public String getMD_URL() {
+        return MD_URL;
+    }
+
+    public void setMD_URL(String MD_URL) {
+        this.MD_URL = MD_URL;
     }
 
     public String Project() { return Project; }

@@ -32,26 +32,101 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:gravity="top"
-                android:text="รอบ : " />
-
-            <Spinner
-                android:id="@+id/mac_round"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:gravity="top" />
-
-            <TextView
                 android:id="@+id/title_2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1" />
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:gravity="bottom"
+                    android:text="รอบ"
+                    android:textAlignment="gravity" />
+
+                <Spinner
+                    android:id="@+id/mac_round"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:dropDownWidth="match_parent"
+                    android:gravity="top"
+                    android:theme="@android:style/Theme.Holo.Light.Dialog" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewTest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:gravity="top"
+                    android:text="การทดสอบ" />
+
+
+                <Spinner
+                    android:id="@+id/mac_pro_test"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:dropDownWidth="match_parent"
+                    android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+                    android:gravity="top" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linear_mac_test_point"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textViewTestPoint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:gravity="top"
+                    android:text="ตัวบ่งชี้คุณภาพ" />
+
+                <Spinner
+                    android:id="@+id/mac_test_point"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:dropDownWidth="match_parent"
+                    android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
+                    android:gravity="top" />
+
+            </LinearLayout>
+        </LinearLayout>
+
 
     </LinearLayout>
 

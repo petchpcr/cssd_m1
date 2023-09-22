@@ -27,6 +27,8 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
         this.context = context;
         this.list = list;
         this.color = color;
+
+        Log.d("tog_ld","text_search_department = "+((DispensingActivity) context).text_search_department);
     }
 
     private static final int NOT_SELECTED = -1;
@@ -73,11 +75,9 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
             String x = list.get(position).getDepName().toLowerCase();
             String y = ((DispensingActivity) context).text_search_department.toLowerCase();
 
-            if(x.length()>=y.length()){
-                if(!x.substring(0,y.length()).equals(y)){
-                    view = inflater.inflate(R.layout.activity_list_emtry, parent, false);
-                }
-            }else{
+            int s = x.indexOf(y);
+
+            if(s<0){
                 view = inflater.inflate(R.layout.activity_list_emtry, parent, false);
             }
 

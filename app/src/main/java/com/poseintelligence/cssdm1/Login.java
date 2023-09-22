@@ -94,6 +94,8 @@ public class Login extends AppCompatActivity {
             return false;
     }
 
+    int dev = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -324,7 +326,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
-                    dep_device();
+//                    dep_device();
 
                     if (!pword.getText().toString().equals("")) {
 
@@ -342,6 +344,14 @@ public class Login extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+            }
+        });
+
+        submit.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                dev++;
+                return false;
             }
         });
 
@@ -1004,6 +1014,13 @@ public class Login extends AppCompatActivity {
                             ((CssdProject) getApplication()).setAP_AddRickReturnToPreviousProcess(c.getInt("AP_AddRickReturnToPreviousProcess"));
                             ((CssdProject) getApplication()).setAP_IsUsedNotification(c.getBoolean("AP_IsUsedNotification"));
                             ((CssdProject) getApplication()).setAP_UsedScanForApprove(c.getBoolean("AP_UsedScanForApprove"));
+                            ((CssdProject) getApplication()).setMD_URL(c.getString("MD_URL"));
+
+                            Log.d("tog_LoadConfig","SR_IsUsedLot isNull = "+c.isNull("SR_IsUsedLot"));
+                            Log.d("tog_LoadConfig","SR_IsUsedLot getBoolean = "+c.getBoolean("SR_IsUsedLot"));
+                            if(!c.isNull("SR_IsUsedLot")){
+                                ((CssdProject) getApplication()).setSR_IsUsedLot(c.getBoolean("SR_IsUsedLot"));
+                            }
 
                             if(!c.isNull("ST_UrlAuthentication")){
                                 ST_UrlAuthentication = c.getString("ST_UrlAuthentication");
@@ -1028,6 +1045,14 @@ public class Login extends AppCompatActivity {
 
                             if(!c.isNull("PA_IsUsedPayOkSound")){
                                 ((CssdProject) getApplication()).setPA_IsUsedPayOkSound(c.getBoolean("PA_IsUsedPayOkSound"));
+                            }
+
+                            if(!c.isNull("SR_IsUsedBasket_M1")){
+                                Log.d("tlog_SRB","SR_IsUsedBasket_M1 = "+c.getBoolean("SR_IsUsedBasket_M1"));
+                                ((CssdProject) getApplication()).setSR_IsUsedBasket_M1(c.getBoolean("SR_IsUsedBasket_M1"));
+                            }else{
+                                Log.d("tlog_SRB","SR_IsUsedBasket_M1 = isNull");
+                                ((CssdProject) getApplication()).setSR_IsUsedBasket_M1(false);
                             }
 
                             get_config_m1();
@@ -1145,10 +1170,13 @@ public class Login extends AppCompatActivity {
     }
 
     public void dep_device(){
-        String serialNumber = getSerialNumber();
-        onLogin("IsUseQrEmCodeLogin", "EM00011");
+//        String serialNumber = getSerialNumber();
 
-        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
+//        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
+//            onLogin("IsUseQrEmCodeLogin", "EM00011");
+//        }
+
+        if(dev==2){
             onLogin("IsUseQrEmCodeLogin", "EM00011");
         }
     }

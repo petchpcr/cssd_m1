@@ -84,4 +84,12 @@ public class ItemInBasket {
     public void setSSDetailID(String SSDetailID) {
         this.SSDetailID = SSDetailID;
     }
+
+    public String getUsagecode() {
+        return usagecode;
+    }
+
+    public void setUsagecode(String usagecode) {
+        this.usagecode = usagecode;
+    }
 }

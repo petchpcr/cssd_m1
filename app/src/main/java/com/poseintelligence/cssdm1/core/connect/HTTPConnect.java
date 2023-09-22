@@ -132,6 +132,58 @@ public class HTTPConnect  {
         return response;
     }
 
+
+    public String sendPostRequestJson_data(String requestURL, String postDataParams) {
+        int responseCode = 0;
+        URL url;
+        String response = "";
+        try {
+            url = new URL(requestURL);
+
+            //System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Connection","close");
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(postDataParams);
+
+            writer.flush();
+            writer.close();
+            os.close();
+
+            try {
+                responseCode =
+                        conn.getResponseCode();
+            }catch (Exception e){
+
+            }
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                response = br.readLine();
+            } else {
+                response = "Error Registering";
+            }
+
+            conn.disconnect();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.d("tog_","Data = "+postDataParams);
+        Log.d("tog_","result = "+response);
+        return response;
+    }
+
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;

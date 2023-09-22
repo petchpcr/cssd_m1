@@ -561,7 +561,7 @@ public class RemarkActivity extends AppCompatActivity {
 //                data.put("ID",ID);
 //                data.put("picnum",pinnum);
 //                String result = null;
-//                result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_image/UploadImage_remark.php",data);
+//                result = httpConnect.sendPostRequest(((CssdProject) getApplication()).  () + "cssd_image/UploadImage_remark.php",data);
 //                Log.d("tog_upload","data = "+data);
 //                Log.d("tog_upload","result = "+result);
 //                return  result;

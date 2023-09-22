@@ -34,13 +34,16 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
         this.context = context;
         this.mData = data;
         this.wiget_list = wiget_list;
-        Log.d("tog_getbasket","ccccccccccccccccccccc");
+
+        Log.d("tog_getbasket","ListBoxBasketAdapter = "+select_basket_pos);
     }
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.activity_list_box_basket_adapter, parent, false);
+
+        Log.d("tog_getbasket","onCreateViewHolder = "+select_basket_pos);
         return new ViewHolder(view);
     }
 
@@ -76,16 +79,16 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
             if(!((SterileActivity)context).get_mac_select_id().equals("Empty")){
 //                if(((SterileActivity)context).get_mac_select_id().equals(mData.get(position).getMacId())){
 
-                    Log.d("tog_getbasket_mac", "get_mac_select_doc = " + ((SterileActivity) context).get_mac_select_doc());
-                    Log.d("tog_getbasket_mac", "getRefDocNo = " + (mData.get(position).getRefDocNo()));
                     if (!((SterileActivity) context).get_mac_select_doc().equals(mData.get(position).getRefDocNo())) {
                         holder.ll.setVisibility(View.GONE);
                         holder.qty.setVisibility(View.GONE);
+                    }else{
+                        Log.d("tog_getbasket_mac", "Basket  = " + (mData.get(position).getName()));
+                        Log.d("tog_getbasket_mac", "getRefDocNo = " + (mData.get(position).getRefDocNo()));
                     }
 //                }
             }
         }
-
     }
 
     // total number of rows

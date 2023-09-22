@@ -77,6 +77,7 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                     ListBoxMachineAdapter.this.notifyDataSetChanged();
                 }else{
                     ((SterileActivity)context).mac_id_non_approve  = position;
+                    Log.d("tog_tag_get_machine","1");
                     ((SterileActivity)context).get_machine(mData.get(position).getMachineID());
                 }
             }
