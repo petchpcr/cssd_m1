@@ -1,8 +1,5 @@
 package com.poseintelligence.cssdm1;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ComponentName;
@@ -13,29 +10,32 @@ import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.text.format.Formatter;
-import android.util.EventLogTags;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.poseintelligence.cssdm1.core.connect.CheckConnectionService;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
@@ -56,6 +56,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class Login extends AppCompatActivity {
     CheckConnectionService checkConnectionService;;
@@ -95,6 +96,10 @@ public class Login extends AppCompatActivity {
     }
 
     int dev = 0;
+
+    boolean siri_api_login = true;
+    int siri_api_login_checj_param = 0;
+    String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=8e1ef250-a884-4095-8de0-19ba84bcfb26&prompt=login&redirect_uri=http://172.29.38.151:9015/cssd_siriraj/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,7 +284,7 @@ public class Login extends AppCompatActivity {
         stopService(intentService);
         finish();
     }
-
+    WebView wb;
     private void byWidget() {
 //        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
@@ -294,6 +299,67 @@ public class Login extends AppCompatActivity {
 //        if (!ST_IsUsedEnterPasswordAfterScanLogin){
 //            button_qr_login.setVisibility(View.GONE);
 //        }
+
+        RelativeLayout r = (RelativeLayout) findViewById(R.id.r);
+        wb = (WebView) findViewById(R.id.web_login);
+        if(siri_api_login){
+            r.setVisibility(View.GONE);
+            wb.setVisibility(View.VISIBLE);
+            wb.getSettings().setJavaScriptEnabled(true);
+            wb.getSettings().setLoadWithOverviewMode(true);
+            wb.getSettings().setUseWideViewPort(true);
+            wb.getSettings().setBuiltInZoomControls(true);
+            wb.loadUrl(S_ReDirect);
+
+            wb.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+                    siri_api_login_checj_param = 0;
+                    String id = "";
+                    String ad_name = "";
+
+                    Uri xurl = Uri.parse(wb.getUrl());
+                    Set<String> paramNames = xurl.getQueryParameterNames();
+                    for (String key: paramNames) {
+                        String value = xurl.getQueryParameter(key);
+
+                        Log.d("paramNames",key+" --- "+value);
+
+                        switch(key) {
+                            case "id":
+                                siri_api_login_checj_param++;
+                                id = xurl.getQueryParameter(key);
+                                break;
+                            case "name":
+                                siri_api_login_checj_param++;
+                                ad_name = xurl.getQueryParameter(key);
+                                break;
+                            case "Department":
+                                siri_api_login_checj_param++;
+                                break;
+                            case "Position":
+                                siri_api_login_checj_param++;
+                                break;
+                            case "code":
+                                if(siri_api_login_checj_param==0){
+                                    wb.loadUrl("javascript:getLinkLogin('http://10.11.9.27:8080/cssd_web/index.zul',"+xurl.getQueryParameter(key)+")");
+                                }
+                                break;
+
+                        }
+                    }
+
+                    if(siri_api_login_checj_param==4){
+                        String[] ad = ad_name.split(" ");
+                        onLogin(ad[0],ad[1]);
+                    }
+
+                    // return true; //Indicates WebView to NOT load the url;
+                    return false; //Allow WebView to load url
+                }
+            });
+        }
     }
 
     private void byEvent(){
@@ -317,6 +383,7 @@ public class Login extends AppCompatActivity {
         iSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                wb.loadUrl("http://10.11.9.27:8080/cssd_web/index.zul?id=10004754&name=บัณฑิต พาสิงห์สี&Department=CSSD&Position=นักวิชาการสารสนเทศ&code=AAA");
                 pDialog();
             }
         });
@@ -619,6 +686,9 @@ public class Login extends AppCompatActivity {
 
                 if(uname.equals("IsUseQrEmCodeLogin")){
                     data.put("EmpCode", pword);
+                }else if(siri_api_login){
+                    data.put("fname", uname);
+                    data.put("lname", pword);
                 }else{
                     data.put("uname", uname);
                     data.put("pword", pword);
