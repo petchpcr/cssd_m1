@@ -101,6 +101,7 @@ public class Login extends AppCompatActivity {
     int siri_api_login_checj_param = 0;
     String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=8e1ef250-a884-4095-8de0-19ba84bcfb26&prompt=login&redirect_uri=http://172.29.38.151:9015/cssd_siriraj/";
 
+//    String S_ReDirect = "http://10.11.9.27:8080/Cssd_Siriraj2/?code=123";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -320,6 +321,9 @@ public class Login extends AppCompatActivity {
                     String ad_name = "";
 
                     Uri xurl = Uri.parse(wb.getUrl());
+
+                    Log.d("paramNames","xurl --- "+xurl);
+
                     Set<String> paramNames = xurl.getQueryParameterNames();
                     for (String key: paramNames) {
                         String value = xurl.getQueryParameter(key);
@@ -343,13 +347,14 @@ public class Login extends AppCompatActivity {
                                 break;
                             case "code":
                                 if(siri_api_login_checj_param==0){
-                                    wb.loadUrl("javascript:getLinkLogin('http://10.11.9.27:8080/cssd_web/index.zul',"+xurl.getQueryParameter(key)+")");
+                                    siri_api_login_checj_param++;
                                 }
                                 break;
 
                         }
                     }
 
+                    Log.d("paramNames"," siri_api_login_checj_param--- "+siri_api_login_checj_param);
                     if(siri_api_login_checj_param==4){
                         String[] ad = ad_name.split(" ");
                         onLogin(ad[0],ad[1]);
@@ -358,7 +363,17 @@ public class Login extends AppCompatActivity {
                     // return true; //Indicates WebView to NOT load the url;
                     return false; //Allow WebView to load url
                 }
+
+                public void onPageFinished(WebView view, String url){
+
+                    Uri xurl = Uri.parse(wb.getUrl());
+                    if(siri_api_login_checj_param==1){
+                        wb.loadUrl("javascript:getLinkLogin('http://10.11.9.27:8080/cssd_web/index.zul','"+xurl.getQueryParameter("code")+"')");
+                    }
+                }
             });
+
+
         }
     }
 
