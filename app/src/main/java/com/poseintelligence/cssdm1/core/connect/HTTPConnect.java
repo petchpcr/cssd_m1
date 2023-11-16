@@ -20,8 +20,9 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 public class HTTPConnect  {
-
     public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams) {
+
+        CssdProject.isNonActiveTime = 0;
         int responseCode = 0;
         URL url;
         String response = "";
@@ -78,12 +79,13 @@ public class HTTPConnect  {
             e.printStackTrace();
         }
 
-        Log.d("tog_","Data = "+postDataParams);
-        Log.d("tog_","result = "+response);
+        Log.d("tog_http_F","Data = "+postDataParams);
+        Log.d("tog_http_F","result = "+response);
         return response;
     }
 
     public String sendPostRequest(String requestURL, HashMap<String, String> postDataParams, int time) {
+        CssdProject.isNonActiveTime = 0;
         int responseCode = 0;
         URL url;
         String response = "";
@@ -132,8 +134,74 @@ public class HTTPConnect  {
         return response;
     }
 
+    public String sendPostRequestBackground(String requestURL, HashMap<String, String> postDataParams) {
+
+        Log.d("tog_http_B","1isNonActiveTime = "+CssdProject.isNonActiveTime);
+        int responseCode = 0;
+        URL url;
+        String response = "";
+        try {
+            url = new URL(requestURL);
+
+            Parameter pm = CssdProject.getPm();
+
+            if(pm!=null){
+                int B_ID = CssdProject.getPm().getBdCode();
+                postDataParams.put("B_ID", B_ID+"");
+            }
+
+            postDataParams.put("p_DB", CssdProject.D_DATABASE);
+
+            //System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Connection","close");
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+
+            try {
+                responseCode =
+                        conn.getResponseCode();
+            }catch (Exception e){
+
+            }
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                response = br.readLine();
+            } else {
+                response = "Error Registering";
+            }
+
+            conn.disconnect();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.d("tog_http_B","Data = "+postDataParams);
+        Log.d("tog_http_B","result = "+response);
+
+        Log.d("tog_http_B","2isNonActiveTime = "+CssdProject.isNonActiveTime);
+        return response;
+    }
 
     public String sendPostRequestJson_data(String requestURL, String postDataParams) {
+        CssdProject.isNonActiveTime = 0;
         int responseCode = 0;
         URL url;
         String response = "";

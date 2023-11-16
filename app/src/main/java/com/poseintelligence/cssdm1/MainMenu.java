@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
@@ -152,7 +153,13 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 try {
                     JSONObject c = new JSONObject(s);
                     for(int i=0;i<cM1.size();i++) {
-                        user_menu.put(cM1.get(i).getBtImg(),c.getString(cM1.get(i).getBtImg()));
+                        if (((CssdProject) getApplication()).Project().equals("VCH")){
+                            user_menu.put(cM1.get(i).getBtImg(),c.getString(cM1.get(i).getBtImg()));
+                        }else{
+                            if(!c.isNull(cM1.get(i).getBtImg())){
+                                user_menu.put(cM1.get(i).getBtImg(),c.getString(cM1.get(i).getBtImg()));
+                            }
+                        }
                     }
 
                 } catch (JSONException e) {
@@ -162,7 +169,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
-
                     ShowMenu();
                 }
             }
@@ -176,6 +182,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
 
                 Log.d("tog_menu","data = "+data);
                 Log.d("tog_menu","result = "+result);
+
+//                Toast.makeText(MainMenu.this, "data = "+data, Toast.LENGTH_LONG).show();
                 return result;
             }
         }
@@ -208,6 +216,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                     }
                 }
 
+//                Toast.makeText(MainMenu.this, "data = "+data, Toast.LENGTH_LONG).show();
                 n++;
             }
         }

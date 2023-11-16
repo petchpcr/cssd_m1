@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -67,6 +70,9 @@ public class SterileActivity extends AppCompatActivity{
     RecyclerView list_mac;
     RecyclerView list_basket;
     ListView list_item_basket;
+
+    ImageView mac_image;
+    TextView mac_text;
     TextView bt_delete;
     TextView bt_select_all;
     LinearLayoutManager lm;
@@ -89,7 +95,6 @@ public class SterileActivity extends AppCompatActivity{
     public boolean ST_SoundAndroidVersion9 = false;
     LinearLayout ll_mac;
     LinearLayout rl_basket;
-
     TextView macname;
     TextView basketname;
     TextView text_qty;
@@ -128,6 +133,8 @@ public class SterileActivity extends AppCompatActivity{
     final int wait_scan_program = 1;
     final int wait_scan_employee = 2;
     final int wait_scan_type = 3;
+
+    public boolean mac_is_working = false;
 
     Boolean SR_IsUsedDBUserOperation;
     Boolean SR_IsRememberUserOperation;
@@ -250,6 +257,8 @@ public class SterileActivity extends AppCompatActivity{
         list_mac = (RecyclerView) findViewById(R.id.list_mac);
         list_basket = (RecyclerView) findViewById(R.id.list_basket);
         list_item_basket = (ListView) findViewById(R.id.list_item_basket);
+
+        mac_image = (ImageView) findViewById(R.id.mac_image);
 
         mac_round = (Spinner) findViewById(R.id.mac_round);
         ArrayList<String> data_mac_round = new ArrayList<String>();
@@ -462,6 +471,7 @@ public class SterileActivity extends AppCompatActivity{
             }
         });
 
+        mac_text = (TextView) findViewById(R.id.mac);
         macname = (TextView) findViewById(R.id.macname);
         basketname = (TextView) findViewById(R.id.basketname);
         text_qty = (TextView) findViewById(R.id.text_qty);
@@ -497,6 +507,14 @@ public class SterileActivity extends AppCompatActivity{
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+
+                mac_is_working = false;
+                bt_select_all.setVisibility(View.VISIBLE);
+                mac_image.setBackgroundResource(R.drawable.ic_sterile_blue);
+                ll_mac.setBackgroundResource(R.drawable.rectangle_blue);
+                mac_text.setTextColor(getResources().getColor(R.color.colorTitleGray));
+                macname.setTextColor(getResources().getColor(R.color.colorTitleGray));
+
                 loadind_dialog_show();
             }
 
@@ -559,9 +577,19 @@ public class SterileActivity extends AppCompatActivity{
                                         list.get(j).setDocNo(c.getString("DocNo"));
 
                                         if(c.getString("xID").equals(mac_id)){
-                                            if(c.getString("IsActive").equals("1")){
-                                                show_dialog("Warning","เครื่องกำลังทำงาน");
 
+                                            if(c.getString("IsActive").equals("1")){
+//                                                show_dialog("Warning","เครื่องกำลังทำงาน");
+                                                mac_is_working = true;
+
+                                                bt_select_all.setVisibility(View.GONE);
+                                                mac_image.setBackgroundResource(R.drawable.ic_sterile_red);
+                                                ll_mac.setBackgroundResource(R.drawable.rectangle_red);
+                                                mac_text.setTextColor(Color.WHITE);
+                                                macname.setTextColor(Color.WHITE);
+
+                                                get_doc_in_mac(c.getString("DocNo"));
+                                                mac_id_non_approve = j;
                                             }
                                             else if(c.getString("IsBrokenMachine").equals("1")){
                                                 show_dialog("Warning","เครื่องไม่พร้อมใช้งาน");
@@ -814,7 +842,7 @@ public class SterileActivity extends AppCompatActivity{
 
                 try {
                     //wash1
-                    result = httpConnect.sendPostRequest(getUrl + "get_sterilemachine.php", data);
+                    result = httpConnect.sendPostRequestBackground(getUrl + "get_sterilemachine.php", data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1558,8 +1586,8 @@ public class SterileActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
-                Log.d("tog_get_item","data = " + data);
-                Log.d("tog_get_item","result = " + result);
+                Log.d("tog_get_item","get_item_in_basket data = " + data);
+                Log.d("tog_get_item","get_item_in_basket result = " + result);
                 return result;
             }
 
@@ -2458,6 +2486,10 @@ public class SterileActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
+
+                Log.d("tog_sterile_process","data = "+d);
+                Log.d("tog_sterile_process","result = "+result);
+
                 return result;
             }
 
@@ -2571,84 +2603,91 @@ public class SterileActivity extends AppCompatActivity{
                 Log.d("tog_dispatchKey","enter = "+mass_onkey);
                 mass_onkey= mass_onkey.toLowerCase();
                 String key = mass_onkey.substring(0,1);
-                switch (key)
-                {
-                    
-                    case "m":
-                        get_machine(mass_onkey.substring(1));
-                        break;
-                    case "b":
-                        if(SR_IsUsedBasket_M1){
-                            for(int i=0;i<xlist_basket.size();i++){
-                                if(xlist_basket.get(i).getBasketCode().equals(mass_onkey)){
-                                    basket_pos_non_approve=i;
-                                    reload_mac();
-                                    mass_onkey = "";
-                                    return false;
+
+
+                Log.d("tog_dispatchKey","equals m = "+key.equals("m"));
+                if(key.equals("m")){
+                    get_machine(mass_onkey.substring(1));
+                }else if(mac_is_working){
+                    show_dialog("Warning","เครื่องกำลังทำงาน");
+                }else{
+                    switch (key)
+                    {
+                        case "b":
+                            if(SR_IsUsedBasket_M1){
+                                for(int i=0;i<xlist_basket.size();i++){
+                                    if(xlist_basket.get(i).getBasketCode().equals(mass_onkey)){
+                                        basket_pos_non_approve=i;
+                                        reload_mac();
+                                        mass_onkey = "";
+                                        return false;
+                                    }
                                 }
+                                show_dialog("Warning","ไม่พบตะกร้า");
                             }
-                            show_dialog("Warning","ไม่พบตะกร้า");
-                        }
 
-                        break;
-                    case "s":
+                            break;
+                        case "s":
 
-                        if(mass_onkey.equals("sc013")){
+                            if(mass_onkey.equals("sc013")){
 //                            if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
 //                                dialog_wait_scan(new String[]{wait_scan_employee+""});
 //                            }else{
 //                                show_dialog("Warning","กรุณาเลือกเครื่องฆ่าเชื้อ");
 //                            }
 
-                            if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
-                                if(is_have_loader){
+                                if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
+                                    if(is_have_loader){
 
-                                    startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                                        startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID());
 //                                    startMachine(list.get(list_mac_adapter.select_mac_pos).getDocNo(),list.get(list_mac_adapter.select_mac_pos).getMachineID(),list.get(list_mac_adapter.select_mac_pos).getTypeID());
+                                    }else{
+//                                        dialog_wait_scan(new String[]{wait_scan_employee+"","TRUE","",list.get(list_mac_adapter.select_mac_pos).getDocNo()});
+                                        show_dialog("Warning","กรุณาสแกนรหัสผู้ใช้งาน");
+                                    }
                                 }else{
-                                    dialog_wait_scan(new String[]{wait_scan_employee+"","TRUE","",list.get(list_mac_adapter.select_mac_pos).getDocNo()});
+                                    show_dialog("Warning","กรุณาเลือกเครื่องฆ่าเชื้อ");
                                 }
                             }else{
-                                show_dialog("Warning","กรุณาเลือกเครื่องฆ่าเชื้อ");
+                                if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
+                                    set_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
+                                }
                             }
-                        }else{
+
+                            break;
+                        case "e":
+
                             if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
-                                set_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
-                            }
-                        }
-
-                        break;
-                    case "e":
-
-                        if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
 //                            if(!is_have_loader){
                                 set_loder(mass_onkey, false,list.get(list_mac_adapter.select_mac_pos).getMachineID(),list.get(list_mac_adapter.select_mac_pos).getDocNo());
 //                            }
-                        }else{
-                            show_dialog("Warning","กรุณาเลือกเครื่องฆ่าเชื้อ");
-                        }
-
-                        break;
-                    default:
-                        Log.d("tog_dispatchcase","I = ");
-                        if(list_basket_adapter.select_basket_pos>=0){
-                            add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
-                        }else{
-
-                            if(list_mac_adapter.select_mac_pos>=0){
-                                Log.d("tog_getMachineID",list.get(list_mac_adapter.select_mac_pos).getMachineID());
-                                if(!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)){
-                                    add_item_to_basket("-",mass_onkey);
-                                }else{
-                                    show_dialog("Warning","กรุณาเลือกตะกร้าหรือเครื่องที่จะเพิ่มรายการ");
-                                }
                             }else{
-                                show_dialog("Warning","กรุณาเลือกเครื่องที่จะเพิ่มรายการ");
+                                show_dialog("Warning","กรุณาเลือกเครื่องฆ่าเชื้อ");
                             }
-                        }
 
-                        break;
+                            break;
+                        default:
+                            Log.d("tog_dispatchcase","I = ");
+                            if(list_basket_adapter.select_basket_pos>=0){
+                                add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
+                            }else{
+
+                                if(list_mac_adapter.select_mac_pos>=0){
+                                    Log.d("tog_getMachineID",list.get(list_mac_adapter.select_mac_pos).getMachineID());
+                                    if(!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)){
+                                        add_item_to_basket("-",mass_onkey);
+                                    }else{
+                                        show_dialog("Warning","กรุณาเลือกตะกร้าหรือเครื่องที่จะเพิ่มรายการ");
+                                    }
+                                }else{
+                                    show_dialog("Warning","กรุณาเลือกเครื่องที่จะเพิ่มรายการ");
+                                }
+                            }
+
+                            break;
+                    }
                 }
+
                 mass_onkey = "";
                 return false;
             }
@@ -2827,6 +2866,12 @@ public class SterileActivity extends AppCompatActivity{
 
             mac_pro_test.setEnabled(true);
             mac_test_point.setEnabled(true);
+
+            if(mData_select_mac_pos.getIsActive().equals("1")){
+                mac_round.setEnabled(false);
+                mac_pro_test.setEnabled(false);
+                mac_test_point.setEnabled(false);
+            }
         }
     }
 
@@ -2881,12 +2926,12 @@ public class SterileActivity extends AppCompatActivity{
                 String result = null;
 
                 try {
-                    result = httpConnect.sendPostRequest(getUrl + "get_sterilebasket.php", data);
+                    result = httpConnect.sendPostRequestBackground(getUrl + "get_sterilebasket.php", data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                Log.d("tog_basket","result = "+result);
+                Log.d("tog_basket","check_basket result = "+result);
 
                 return result;
             }
@@ -2932,8 +2977,8 @@ public class SterileActivity extends AppCompatActivity{
                                         false
                                 ));
                             }else{
-                                Log.d("tog_chk_item_in_basket","list_item getUsagecode = "+xlist_item_basket.get(cnt).getUsagecode());
-                                Log.d("tog_chk_item_in_basket","list_item c.getString(UsageCode) = "+c.getString("UsageCode"));
+//                                Log.d("tog_chk_item_in_basket","list_item getUsagecode = "+xlist_item_basket.get(cnt).getUsagecode());
+//                                Log.d("tog_chk_item_in_basket","list_item c.getString(UsageCode) = "+c.getString("UsageCode"));
 
                                 if(!xlist_item_basket.get(cnt).getUsagecode().equals(c.getString("UsageCode"))){
                                     loadind_dialog_show();
@@ -2986,13 +3031,13 @@ public class SterileActivity extends AppCompatActivity{
 
                 try {
                     //wash
-                    result = httpConnect.sendPostRequest(getUrl + "get_item_in_sterile_basket.php", data);
+                    result = httpConnect.sendPostRequestBackground(getUrl + "get_item_in_sterile_basket.php", data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                Log.d("tog_get_item","data = " + data);
-                Log.d("tog_get_item","result = " + result);
+                Log.d("tog_get_item","check_item_in_basket data = " + data);
+                Log.d("tog_get_item","check_item_in_basket result = " + result);
                 return result;
             }
 

@@ -167,28 +167,29 @@ public class SignatureDepartmentDetailActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if(c.getString("result").equals("A")) {
-                            list.add(
-                                    new ModelPayoutDetailSignature(
-                                            c.getString("ID"),
-                                            c.getString("itemcode"),
-                                            c.getString("itemname"),
-                                            c.getString("ItemStockID"),
-                                            c.getString("UsageCode"),
+                            if(c.getString("Balance_Qty").equals("0")){
+                                list.add(
+                                        new ModelPayoutDetailSignature(
+                                                c.getString("ID"),
+                                                c.getString("itemcode"),
+                                                c.getString("itemname"),
+                                                c.getString("ItemStockID"),
+                                                c.getString("UsageCode"),
 
-                                            c.getString("Pay_Qty"),
-                                            c.getString("Stock_Qty"),
-                                            c.getString("Qty"),
-                                            c.getString("Balance_Qty"),
-                                            null,
+                                                c.getString("Pay_Qty"),
+                                                c.getString("Stock_Qty"),
+                                                c.getString("Qty"),
+                                                c.getString("Balance_Qty"),
+                                                null,
 
-                                            c.getString("IsWasting"),
-                                            c.getString("IsReceiveNotSterile"),
-                                            "",
-                                            "",
-                                            i
-                                    )
-                            );
-
+                                                c.getString("IsWasting"),
+                                                c.getString("IsReceiveNotSterile"),
+                                                "",
+                                                "",
+                                                i
+                                        )
+                                );
+                            }
                         }else{
 
                         }

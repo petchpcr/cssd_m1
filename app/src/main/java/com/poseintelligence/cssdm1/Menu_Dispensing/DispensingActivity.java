@@ -199,6 +199,10 @@ public class DispensingActivity extends AppCompatActivity {
 
     SearchableSpinner spn_usr_receive;
 
+    private TextView text_switch_department_or;
+    private Switch switch_department_or;
+    String Is_department_or = "0";
+
     ArrayList<String> xDataUserCode = new ArrayList<String>();
 
     public void speakText(String textContents) {
@@ -282,13 +286,22 @@ public class DispensingActivity extends AppCompatActivity {
     }
 
     private void initPrinterStyle() {
+        Log.d("initPrinterStyle","initPrinterStyle");
         try {
             SunmiPrintHelper.getInstance().initPrinter();
-            have_printer = true;
+
         } catch (Exception e) {
             have_printer = false;
+        }finally {
+
+            have_printer = true;
+            int s = SunmiPrintHelper.getInstance().sunmiPrinter;
+            if (s==0){
+                have_printer = false;
+            }
         }
 
+        Log.d("initPrinterStyle","have_printer = "+have_printer);
     }
 
     private void byWidget() {
@@ -313,6 +326,8 @@ public class DispensingActivity extends AppCompatActivity {
         switch_opt = (Switch) findViewById(R.id.switch_opt);
         switch_mode = (Switch) findViewById(R.id.switch_mode);
 
+        switch_mode.setChecked(false);
+
         txt_doc_type = (TextView) findViewById(R.id.txt_doc_type);
         title_2 = (TextView) findViewById(R.id.title_2);
         title_3 = (TextView) findViewById(R.id.title_3);
@@ -330,6 +345,14 @@ public class DispensingActivity extends AppCompatActivity {
         spn_usr_receive.setTitle("เลือกผู้รับ");//lang
         spn_usr_receive.setPositiveButton("");//lang
         spn_usr_receive_box = (LinearLayout) findViewById(R.id.spn_usr_receive_box);
+
+        switch_department_or = (Switch) findViewById(R.id.switch_department_or);
+        text_switch_department_or = (TextView) findViewById(R.id.text_switch_department_or);
+
+        if (!((CssdProject) getApplication()).Project().equals("RAMA")) {
+            switch_department_or.setVisibility(View.GONE);
+            text_switch_department_or.setVisibility(View.GONE);
+        }
     }
 
     private void byEvent() {
@@ -372,6 +395,18 @@ public class DispensingActivity extends AppCompatActivity {
             }
         });
 
+        switch_department_or.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    Is_department_or = "1";
+                    text_switch_department_or.setText("แผนก");
+                } else {
+                    Is_department_or = "0";
+                    text_switch_department_or.setText("OR");
+                }
+                displayDepartment(null, -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+            }
+        });
         // ===============================
         // Block 2
         // ===============================
@@ -397,11 +432,22 @@ public class DispensingActivity extends AppCompatActivity {
 
                 //System.out.println("SelectedItemPosition = " + DepIndex);
 
-                if (isChecked) {
-                    switch_mode.setText("ทั้งหมด ");
-                } else {
-                    switch_mode.setText("ค้างจ่าย ");
+                if (((CssdProject) getApplication()).Project().equals("RAMA")) {
+                    if(isChecked){
+                        switch_mode.setText("ย้อนหลัง");
+                    }else{
+                        switch_mode.setText("ปัจจุบัน");
+                    }
+                }else{
+                    if (isChecked) {
+                        switch_mode.setText("ทั้งหมด ");
+                    } else {
+                        switch_mode.setText("ค้างจ่าย ");
+                    }
                 }
+
+
+
 
                 //displayPay(DepID, null);
 
@@ -1626,13 +1672,21 @@ public class DispensingActivity extends AppCompatActivity {
                                     dialog.show();
                                 } else {
                                     s_expiring = true;
-                                    CheckItem(usagecode);
-//                                    addItem(xUsageCode);
+
+                                    if (((CssdProject) getApplication()).Project().equals("VCH")) {
+                                        addItem(xUsageCode);
+                                    }else{
+                                        CheckItem(usagecode);
+                                    }
                                 }
 
                             } else {
-                                CheckItem(usagecode);
-//                                addItem(xUsageCode);
+                                if (((CssdProject) getApplication()).Project().equals("VCH")) {
+                                    addItem(xUsageCode);
+                                }else{
+                                    CheckItem(usagecode);
+                                }
+
                             }
                         }
 
@@ -1775,6 +1829,8 @@ public class DispensingActivity extends AppCompatActivity {
 //                                nMidia.getAudio("pay_in_full" );
 
                                 Log.d("tog_s_expiring", "s_expiring: " + s_expiring);
+                                Log.d("tog_s_expiring", "PA_IsUsedPayOkSound: " + PA_IsUsedPayOkSound);
+                                Log.d("tog_s_expiring", "ST_SoundAndroidVersion9: " + ST_SoundAndroidVersion9);
                                 if (!s_expiring) {
                                     s_expiring = false;
                                     if (PA_IsUsedPayOkSound) {
@@ -2913,6 +2969,8 @@ public class DispensingActivity extends AppCompatActivity {
         Log.d("tog_focus", "displayDepartment");
         final boolean is_borrow = false; // switch_type.isChecked();
 
+        switch_mode.setChecked(false);
+
         class DisplayDepartment extends AsyncTask<String, Void, String> {
 
             private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
@@ -3015,7 +3073,7 @@ public class DispensingActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
 
                 data.put("p_used_in_payout", "p");
-
+                data.put("p_type", Is_department_or);
                 if (pDepName != null && !pDepName.trim().equals("")) {
                     data.put("pDepName", pDepName);
                 }
@@ -3061,6 +3119,9 @@ public class DispensingActivity extends AppCompatActivity {
 
     public void select_dept(int position) {
         list_department.setSelection(position);
+        ((ListDepartmentAdapter)list_department_adapter).setSelection(position);
+        Log.d("tog_selectedPos","select_dept setSelection == "+ position);
+
         DepIndex = position;
         DepID = Model_Department.get(position).getID();
         DepName = Model_Department.get(position).getDepName2();

@@ -13,7 +13,11 @@ import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
 import java.util.ArrayList;
 
 public class CssdProject extends Application {
+
     private AppCompatActivity xActivity;
+
+    public static int isNonActiveTime = 0;
+    public static boolean siri_api_login = false;
 
     public static  String D_DATABASE="1";
     public static  String Project = "RAMA";
@@ -111,6 +115,8 @@ public class CssdProject extends Application {
     boolean PA_IsUsedPayOkSound = false;
 
     boolean SR_IsUsedLot = false;
+
+    int ST_LoginTimeOut = -1;
 
     String MD_URL = "";
 
@@ -699,6 +705,14 @@ public class CssdProject extends Application {
 
     public void setPA_IsUsedPayOkSound(boolean PA_IsUsedPayOkSound) {
         this.PA_IsUsedPayOkSound = PA_IsUsedPayOkSound;
+    }
+
+    public int getST_LoginTimeOut() {
+        return ST_LoginTimeOut;
+    }
+
+    public void setST_LoginTimeOut(int ST_LoginTimeOut) {
+        this.ST_LoginTimeOut = ST_LoginTimeOut;
     }
 
     public boolean isSR_IsUsedLot() {

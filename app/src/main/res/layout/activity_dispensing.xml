@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,6 +89,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_weight="1"
                 android:gravity="center_vertical">
 
                 <EditText
@@ -118,6 +119,26 @@
                     android:background="@drawable/search" />
 
             </RelativeLayout>
+
+            <Switch
+                android:id="@+id/switch_department_or"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical"
+                android:maxLines="1"
+                android:textColor="#FFFFFF"
+                android:textSize="18dp"
+                android:textStyle="bold"></Switch>
+
+            <TextView
+                android:id="@+id/text_switch_department_or"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:gravity="center|center_vertical"
+                android:maxLines="1"
+                android:text="OR"
+                android:textSize="18dp"
+                android:textStyle="bold"></TextView>
         </LinearLayout>
 
         <LinearLayout

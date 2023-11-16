@@ -97,11 +97,10 @@ public class Login extends AppCompatActivity {
 
     int dev = 0;
 
-    boolean siri_api_login = true;
     int siri_api_login_checj_param = 0;
-    String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=8e1ef250-a884-4095-8de0-19ba84bcfb26&prompt=login&redirect_uri=http://172.29.38.151:9015/cssd_siriraj/";
+    String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=888e92d7-dc65-4f49-8eab-2fbbc1b10dc4&prompt=login&redirect_uri=http://172.29.61.150:9015/cssd_siriraj/";
 
-//    String S_ReDirect = "http://10.11.9.27:8080/Cssd_Siriraj2/?code=123";
+//    String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=8e1ef250-a884-4095-8de0-19ba84bcfb26&prompt=login&redirect_uri=http://172.29.38.151:9015/cssd_siriraj/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,6 +154,7 @@ public class Login extends AppCompatActivity {
         public void onServiceConnected(ComponentName name, IBinder service) {
             CheckConnectionService.MyBinder myBinder = (CheckConnectionService.MyBinder) service;
             checkConnectionService = myBinder.getService();
+            checkConnectionService.is_login = false;
             mServiceBound = true;
         }
     };
@@ -251,6 +251,7 @@ public class Login extends AppCompatActivity {
         builder.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
             }
         });
         builder.show();
@@ -282,10 +283,16 @@ public class Login extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Log.d("tog_ccs","stopService" );
+        checkConnectionService.
         stopService(intentService);
         finish();
     }
     WebView wb;
+    String ad_id = "";
+    String ad_name = "";
+    boolean Is_onLogin = false;
+    ProgressDialog dialogonLogin;
+
     private void byWidget() {
 //        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
@@ -301,28 +308,37 @@ public class Login extends AppCompatActivity {
 //            button_qr_login.setVisibility(View.GONE);
 //        }
 
+        dialogonLogin = new ProgressDialog(Login.this);
+        dialogonLogin.setTitle(Cons.TITLE);
+        dialogonLogin.setIcon(R.drawable.pose_favicon_2x);
+        dialogonLogin.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+        dialogonLogin.setCanceledOnTouchOutside(false);
+        dialogonLogin.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+        dialogonLogin.setIndeterminate(true);
+
         RelativeLayout r = (RelativeLayout) findViewById(R.id.r);
         wb = (WebView) findViewById(R.id.web_login);
-        if(siri_api_login){
+        if(CssdProject.siri_api_login){
+
             r.setVisibility(View.GONE);
             wb.setVisibility(View.VISIBLE);
             wb.getSettings().setJavaScriptEnabled(true);
             wb.getSettings().setLoadWithOverviewMode(true);
             wb.getSettings().setUseWideViewPort(true);
             wb.getSettings().setBuiltInZoomControls(true);
+            wb.getSettings().setSupportMultipleWindows(true);
             wb.loadUrl(S_ReDirect);
+            siri_api_login_checj_param = 0;
 
+            Log.d("paramNames","loadUrl --- "+S_ReDirect);
             wb.setWebViewClient(new WebViewClient() {
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
-                    siri_api_login_checj_param = 0;
-                    String id = "";
-                    String ad_name = "";
+                public void onPageFinished(WebView view, String url){
 
+                    Log.d("paramNames","onPageFinished");
                     Uri xurl = Uri.parse(wb.getUrl());
 
-                    Log.d("paramNames","xurl --- "+xurl);
+                    Log.d("paramNames","xurl --- "+xurl.getHost());
 
                     Set<String> paramNames = xurl.getQueryParameterNames();
                     for (String key: paramNames) {
@@ -332,48 +348,43 @@ public class Login extends AppCompatActivity {
 
                         switch(key) {
                             case "id":
-                                siri_api_login_checj_param++;
-                                id = xurl.getQueryParameter(key);
-                                break;
-                            case "name":
-                                siri_api_login_checj_param++;
-                                ad_name = xurl.getQueryParameter(key);
-                                break;
-                            case "Department":
-                                siri_api_login_checj_param++;
-                                break;
-                            case "Position":
+                                ad_id = xurl.getQueryParameter(key);
                                 siri_api_login_checj_param++;
                                 break;
                             case "code":
-                                if(siri_api_login_checj_param==0){
-                                    siri_api_login_checj_param++;
-                                }
+                                siri_api_login_checj_param++;
                                 break;
 
                         }
                     }
 
-                    Log.d("paramNames"," siri_api_login_checj_param--- "+siri_api_login_checj_param);
-                    if(siri_api_login_checj_param==4){
-                        String[] ad = ad_name.split(" ");
-                        onLogin(ad[0],ad[1]);
-                    }
+                    if(ad_id.equals("")){
+                        if(siri_api_login_checj_param>0){
+                            Log.d("paramNames"," call getLinkLogin ");
+                            if(!dialogonLogin.isShowing()){
+                                dialogonLogin.setTitle(Cons.TITLE);
+                                dialogonLogin.setIcon(R.drawable.pose_favicon_2x);
+                                dialogonLogin.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+                                dialogonLogin.setCanceledOnTouchOutside(false);
+                                dialogonLogin.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+                                dialogonLogin.setIndeterminate(true);
+                                dialogonLogin.show();
+                            }
+                            wb.setVisibility(View.GONE);
+                            wb.loadUrl("javascript:getLinkLogin(2)");
+//                        wb.loadUrl("javascript:getLinkLogin('http://10.11.9.27:8080/cssd_web/cssd_main.zul','"+xurl.getQueryParameter("code")+"')");
 
-                    // return true; //Indicates WebView to NOT load the url;
-                    return false; //Allow WebView to load url
-                }
+                        }
+                    }else{
+                        Log.d("paramNames"," call onLogin "+ad_id);
+                        if(!Is_onLogin){
+                            Is_onLogin = true;
+                            onLogin("",ad_id);
+                        }
 
-                public void onPageFinished(WebView view, String url){
-
-                    Uri xurl = Uri.parse(wb.getUrl());
-                    if(siri_api_login_checj_param==1){
-                        wb.loadUrl("javascript:getLinkLogin('http://10.11.9.27:8080/cssd_web/index.zul','"+xurl.getQueryParameter("code")+"')");
                     }
                 }
             });
-
-
         }
     }
 
@@ -398,7 +409,8 @@ public class Login extends AppCompatActivity {
         iSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                wb.loadUrl("http://10.11.9.27:8080/cssd_web/index.zul?id=10004754&name=บัณฑิต พาสิงห์สี&Department=CSSD&Position=นักวิชาการสารสนเทศ&code=AAA");
+
+//                wb.loadUrl("http://192.168.1.111:8080/api?code=1234");
                 pDialog();
             }
         });
@@ -408,7 +420,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 try {
 
-//                    dep_device();
+                    dep_device();
 
                     if (!pword.getText().toString().equals("")) {
 
@@ -632,20 +644,18 @@ public class Login extends AppCompatActivity {
     public void onLogin(final String uname, final String pword) {
         class onLogin extends AsyncTask<String, Void, String> {
 
-            private ProgressDialog dialog = new ProgressDialog(Login.this);
+
 
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                dialog.setTitle(Cons.TITLE);
-                dialog.setIcon(R.drawable.pose_favicon_2x);
-                dialog.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
-                dialog.setIndeterminate(true);
+                wb.setVisibility(View.GONE);
 
-                dialog.show();
+                if(!dialogonLogin.isShowing()){
+                    dialogonLogin.show();
+                }
+
             }
 
             @Override
@@ -663,7 +673,7 @@ public class Login extends AppCompatActivity {
                             Parameter pm = new Parameter();
                             pm.setUserid( c.getInt("id") );
                             pm.setName( c.getString("username") );
-                            pm.setLang( c.getString("Lang") );
+//                            pm.setLang( c.getString("Lang") );
                             pm.setIsAdmin( c.getString("IsAdmin" ).equals("0")?false:true );
                             pm.setEmCode( c.getString("EmpCode" ) );
                             pm.setEmName( c.getString("EmpName" ) );
@@ -683,14 +693,26 @@ public class Login extends AppCompatActivity {
 
 //                            return;
                             getConfigurationMenu(c.getInt("id")+"");
+                        }else{
+                            if(CssdProject.siri_api_login){
+                                wb.setVisibility(View.VISIBLE);
+                                wb.loadUrl(S_ReDirect);
+                                Is_onLogin = false;
+                            }
                         }
                     }
                 } catch (JSONException e) {
+                    if(CssdProject.siri_api_login){
+                        ad_id = "";
+                        wb.setVisibility(View.VISIBLE);
+                        wb.loadUrl(S_ReDirect);
+                        Is_onLogin = false;
+                    }
                     //Toast.makeText(Login.this, Cons.WARNING_CONNECT_SERVER_FAIL, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }finally {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
+                    if (dialogonLogin.isShowing()) {
+                        dialogonLogin.dismiss();
                     }
                 }
             }
@@ -701,9 +723,11 @@ public class Login extends AppCompatActivity {
 
                 if(uname.equals("IsUseQrEmCodeLogin")){
                     data.put("EmpCode", pword);
-                }else if(siri_api_login){
-                    data.put("fname", uname);
-                    data.put("lname", pword);
+                }else if(CssdProject.siri_api_login){
+//                    data.put("fname", uname);
+//                    data.put("lname", pword);
+
+                    data.put("EmpCodeAD", pword);
                 }else{
                     data.put("uname", uname);
                     data.put("pword", pword);
@@ -1099,10 +1123,12 @@ public class Login extends AppCompatActivity {
                             ((CssdProject) getApplication()).setAP_AddRickReturnToPreviousProcess(c.getInt("AP_AddRickReturnToPreviousProcess"));
                             ((CssdProject) getApplication()).setAP_IsUsedNotification(c.getBoolean("AP_IsUsedNotification"));
                             ((CssdProject) getApplication()).setAP_UsedScanForApprove(c.getBoolean("AP_UsedScanForApprove"));
-                            ((CssdProject) getApplication()).setMD_URL(c.getString("MD_URL"));
 
-                            Log.d("tog_LoadConfig","SR_IsUsedLot isNull = "+c.isNull("SR_IsUsedLot"));
-                            Log.d("tog_LoadConfig","SR_IsUsedLot getBoolean = "+c.getBoolean("SR_IsUsedLot"));
+
+                            if(!c.isNull("MD_URL")){
+                                ((CssdProject) getApplication()).setMD_URL(c.getString("MD_URL"));
+                            }
+
                             if(!c.isNull("SR_IsUsedLot")){
                                 ((CssdProject) getApplication()).setSR_IsUsedLot(c.getBoolean("SR_IsUsedLot"));
                             }
@@ -1140,6 +1166,14 @@ public class Login extends AppCompatActivity {
                                 ((CssdProject) getApplication()).setSR_IsUsedBasket_M1(false);
                             }
 
+                            Log.d("tog_LoadConfig","ST_LoginTimeOut isNull= "+c.isNull("ST_LoginTimeOut"));
+                            if(!c.isNull("ST_LoginTimeOut")){
+
+                                Log.d("tog_LoadConfig","ST_LoginTimeOut = "+c.getInt("ST_LoginTimeOut"));
+                                ((CssdProject) getApplication()).setST_LoginTimeOut(c.getInt("ST_LoginTimeOut"));
+                            }
+
+
                             get_config_m1();
 
                         }else{
@@ -1160,6 +1194,7 @@ public class Login extends AppCompatActivity {
 
                 String result = http.sendPostRequest(getUrl + "cssd_select_configurations.php", data);
 
+                Log.d("tog_LoadConfig","getUrl = "+getUrl + "cssd_select_configurations.php");
                 Log.d("tog_LoadConfig","data = "+data);
                 Log.d("tog_LoadConfig","result = "+result);
 
@@ -1299,11 +1334,6 @@ public class Login extends AppCompatActivity {
                                 config_m1.add( m1 );
                             }
 
-                            ((CssdProject) getApplication()).setcM1( config_m1 );
-                            Intent intent = new Intent(Login.this,MainMenu.class);
-                            startActivity(intent);
-                            finish();
-
                             // Get
 //                            Desktop_SendSterile = c.getString("Desktop_SendSterile").equals("1");
 //                            Desktop_Wash = c.getString("Desktop_Wash").equals("1");
@@ -1322,9 +1352,13 @@ public class Login extends AppCompatActivity {
 //                            Desktop_TakeBack = c.getString("Desktop_TakeBack").equals("1");
 //                            Desktop_LabelType = c.getString("Desktop_LabelType").equals("1");
 
-                        }else{
-                            System.out.println("E");
                         }
+
+                        checkConnectionService.is_login = true;
+                        ((CssdProject) getApplication()).setcM1( config_m1 );
+                        Intent intent = new Intent(Login.this,MainMenu.class);
+                        startActivity(intent);
+                        finish();
                     }
 
                 } catch (JSONException e) {

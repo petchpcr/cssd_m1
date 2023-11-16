@@ -36,6 +36,8 @@ import java.util.ArrayList;
 public class ListItemBasketAdapter extends ArrayAdapter<ItemInBasket> {
     private final ArrayList<ItemInBasket> list;
     private final Activity context;
+
+    boolean mac_is_working = false;
     int width=0;
 
     public ListItemBasketAdapter(Activity context, ArrayList<ItemInBasket> list) {
@@ -46,6 +48,7 @@ public class ListItemBasketAdapter extends ArrayAdapter<ItemInBasket> {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         context.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         width = displayMetrics.widthPixels;
+        mac_is_working = ((SterileActivity)context).mac_is_working;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -82,6 +85,11 @@ public class ListItemBasketAdapter extends ArrayAdapter<ItemInBasket> {
             }
         });
         Log.d("tog_chk","chk = "+position+"---"+list.get(position).isChk());
+
+        if(mac_is_working){
+            checkBox.setVisibility(View.GONE);
+            bt_delete.setVisibility(View.GONE);
+        }
 
         return view;
     }

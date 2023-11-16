@@ -36,12 +36,13 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
 
     // if called with the same position multiple lines it works as toggle
     public void setSelection(int position) {
-        /*if (selectedPos == position) {
-            selectedPos = NOT_SELECTED;
-        } else {
-            selectedPos = position;
-        }*/
+//        if (selectedPos == position) {
+//            selectedPos = NOT_SELECTED;
+//        } else {
+//            selectedPos = position;
+//        }
 
+        Log.d("tog_selectedPos","setSelection == "+ selectedPos);
         selectedPos = position;
 
         notifyDataSetChanged();
@@ -52,7 +53,7 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.activity_list_1, parent, false);
 
-//        final LinearLayout relativeLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
+        final LinearLayout relativeLayout = (LinearLayout) view.findViewById(R.id.relativeLayout);
         final TextView code = (TextView) view.findViewById(R.id.code);
         final TextView name = (TextView) view.findViewById(R.id.basketname);
         final TextView name2 = (TextView) view.findViewById(R.id.name2);
@@ -62,12 +63,13 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
         name.setText(list.get(position).getDepName2());
         code.setText(list.get(position).getID());
 
+        Log.d("tog_selectedPos",position +" == "+ selectedPos);
         if (position == selectedPos) {
-            // your color for selected item
-            view.setBackgroundColor(Color.parseColor("#D6EAF8"));
+//            view.setBackgroundColor(Color.parseColor("#D6EAF8"));
+            relativeLayout.setBackgroundColor(Color.parseColor(color));
         } else {
-            // your color for non-selected item
-            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            relativeLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
         }
 
 

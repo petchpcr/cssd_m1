@@ -23,6 +23,7 @@ import androidx.annotation.Nullable;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.Login;
+import com.poseintelligence.cssdm1.MainMenu;
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.WaitConnectDialog;
@@ -36,6 +37,7 @@ public class CheckConnectionService extends Service {
     Handler handler  = new Handler();
     Runnable runnable;
 
+    public static boolean is_login = false;
 
     private IBinder mBinder = new MyBinder();
 
@@ -46,7 +48,14 @@ public class CheckConnectionService extends Service {
         check_connecting();
     }
 
-    public void show_wait_connecting(){
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stop_checking_connect();
+        Log.d("tog_ccs","onDestroy" );
+    }
+
+    private void show_wait_connecting(){
         ConnectivityManager conMgr =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
         if (netInfo == null){
@@ -60,6 +69,17 @@ public class CheckConnectionService extends Service {
                 mActivity.fin();
                 mActivity = null;
             }
+
+            Log.d("tog_ccs","isNonActiveTime = "+((CssdProject) getApplication()).isNonActiveTime);
+            if(((CssdProject) getApplication()).getST_LoginTimeOut()>=0 && is_login){
+                if(((CssdProject) getApplication()).isNonActiveTime>=((CssdProject) getApplication()).getST_LoginTimeOut()){
+
+                    Intent intent = new Intent(this,Login.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+            }
+
         }
 
 //        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
@@ -68,7 +88,7 @@ public class CheckConnectionService extends Service {
 
     }
 
-    public void check_connecting(){
+    private void check_connecting(){
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -76,10 +96,18 @@ public class CheckConnectionService extends Service {
 
                 handler.postDelayed(runnable, 1000);
 //                handler.removeCallbacks(runnable);
+
+                if(((CssdProject) getApplication()).getST_LoginTimeOut()>=0){
+                    ((CssdProject) getApplication()).isNonActiveTime++;
+                }
             }
         };
 
         handler.postDelayed(runnable, 1000);
+    }
+
+    private void stop_checking_connect(){
+        handler.removeCallbacks(runnable);
     }
 
     @Nullable
@@ -95,4 +123,5 @@ public class CheckConnectionService extends Service {
             return CheckConnectionService.this;
         }
     }
+
 }
