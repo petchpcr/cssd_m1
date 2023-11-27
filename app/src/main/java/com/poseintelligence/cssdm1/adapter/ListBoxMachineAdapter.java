@@ -51,8 +51,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         this.wiget_list = wiget_list;
 
         ((SterileActivity)context).title_2.setText(" ");
-        ((SterileActivity)context).mac_round.setSelection(0);
-        ((SterileActivity)context).mac_round.setEnabled(false);
+//        ((SterileActivity)context).mac_round.setSelection(0);
+//        ((SterileActivity)context).mac_round.setEnabled(false);
         ((SterileActivity)context).is_have_loader = false;
     }
 
@@ -160,8 +160,8 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
             ((SterileActivity)context).setProgramAndRound(select_mac_pos,mData.size(),mData.get(select_mac_pos));
         }else{
             ((SterileActivity)context).title_2.setText(" ");
-            ((SterileActivity)context).mac_round.setSelection(0);
-            ((SterileActivity)context).mac_round.setEnabled(false);
+//            ((SterileActivity)context).mac_round.setSelection(0);
+//            ((SterileActivity)context).mac_round.setEnabled(false);
         }
     }
 

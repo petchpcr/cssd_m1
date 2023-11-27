@@ -169,6 +169,7 @@ public class DispensingActivity extends AppCompatActivity {
     private Switch switch_opt;
 
     private EditText txt_usage_code;
+    private String mass_usage_code="";
 
     private LinearLayout spn_usr_receive_box;
     // ---------------------------------------------------------------------------------------------
@@ -349,7 +350,7 @@ public class DispensingActivity extends AppCompatActivity {
         switch_department_or = (Switch) findViewById(R.id.switch_department_or);
         text_switch_department_or = (TextView) findViewById(R.id.text_switch_department_or);
 
-        if (!((CssdProject) getApplication()).Project().equals("RAMA")) {
+        if (!((CssdProject) getApplication()).Project().equals("SIPH")) {
             switch_department_or.setVisibility(View.GONE);
             text_switch_department_or.setVisibility(View.GONE);
         }
@@ -432,7 +433,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                 //System.out.println("SelectedItemPosition = " + DepIndex);
 
-                if (((CssdProject) getApplication()).Project().equals("RAMA")) {
+                if (((CssdProject) getApplication()).Project().equals("SIPH")) {
                     if(isChecked){
                         switch_mode.setText("ย้อนหลัง");
                     }else{
@@ -561,57 +562,60 @@ public class DispensingActivity extends AppCompatActivity {
 
         });
 
-        txt_usage_code.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-//                    speakText("Strat");
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                            if (txt_usage_code.length() > 0) {
-
-                                String S_Code = txt_usage_code.getText().toString().toLowerCase();
-                                if (S_Code.length() < 6) {
-                                    boolean x = true;
-                                    for (int i = 0; i < Model_Department.size(); i++) {
-
-                                        Log.d("top_dep", "ID = " + Model_Department.get(i));
-                                        if (Model_Department.get(i).getID().equals(S_Code.substring(1))) {
-                                            DepIndex = i;
-                                            getQRPay("payrow", "0");
-                                            x = false;
-                                        }
-                                    }
-                                    if (x) {
-                                        Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    txt_usage_code.setText("");
-                                    return false;
-                                } else {
-                                    checkInput();
-                                }
-                            }
-
-//                            String txt = txt_usage_code.getText().toString();
-//                            if(!B_IsNonSelectDocument) {
-//                                if (DepID != null) {
-//                                    checkInput();
-//                                } else {
-//                                    findDepartmentByQR(txt, true);
+//        txt_usage_code.setOnKeyListener(new View.OnKeyListener() {
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+////                    speakText("Strat");
+//                    switch (keyCode) {
+//                        case KeyEvent.KEYCODE_DPAD_CENTER:
+//                        case KeyEvent.KEYCODE_ENTER:
+//                            String input = txt_usage_code.getText().toString();
+//                            txt_usage_code.setText("");
+//
+//                            if (input.length() > 0) {
+//
+//                                String S_Code = input.toLowerCase();
+//                                if (Block_1.getVisibility() == View.VISIBLE) {
+//                                    if (S_Code.length() < 6) {
+//                                        boolean x = true;
+//                                        for (int i = 0; i < Model_Department.size(); i++) {
+//
+//                                            Log.d("top_dep", "ID = " + Model_Department.get(i));
+//                                            if (Model_Department.get(i).getID().equals(S_Code.substring(1))) {
+//                                                DepIndex = i;
+//                                                getQRPay("payrow", "0");
+//                                                x = false;
+//                                            }
+//                                        }
+//                                        if (x) {
+//                                            Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+//                                        }
+//
+//                                        return false;
+//                                    }
+//                                }else {
+//                                    checkInput(input);
 //                                }
 //                            }
-                            return true;
-                        default:
-                            break;
-                    }
-                }
-
-                return false;
-            }
-
-
-        });
+//
+////                            if(!B_IsNonSelectDocument) {
+////                                if (DepID != null) {
+////                                    checkInput();
+////                                } else {
+////                                    findDepartmentByQR(input, true);
+////                                }
+////                            }
+//                            return true;
+//                        default:
+//                            break;
+//                    }
+//                }
+//
+//                return false;
+//            }
+//
+//
+//        });
 
 //        txt_search_department.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -923,10 +927,9 @@ public class DispensingActivity extends AppCompatActivity {
         Is_Zone = ((CssdProject) getApplication()).getcM1().get(7).getActive();
     }
 
-    private void checkInput() {
+    private void checkInput(String input) {
 
         Log.d("tog_flow", "checkInput");
-        String input = txt_usage_code.getText().toString();
 
 //        B_IsNonSelectDocument = true;
         if (switch_opt.isChecked()) {
@@ -985,7 +988,16 @@ public class DispensingActivity extends AppCompatActivity {
 //                                        checkExpiring(usagecode);
 //                                    }
 
-                                f_checkExpiring(usagecode);
+
+                                if (((CssdProject) getApplication()).Project().equals("SIPH")){
+                                    f_checkCloseExpiring(usagecode);
+                                }else{
+                                    if (PA_IsUsedFIFO) {
+                                        f_checkExpiring(usagecode);
+                                    } else {
+                                        f_checkCloseExpiring(usagecode);
+                                    }
+                                }
                             }
                         }
                     }
@@ -1024,9 +1036,36 @@ public class DispensingActivity extends AppCompatActivity {
             }
         }
 
-        checkDuplicate ru = new checkDuplicate();
 
-        ru.execute();
+        if(false){
+            checkDuplicate ru = new checkDuplicate();
+            ru.execute();
+        }else{
+            boolean check_Duplicate = false;
+            for(int i = 0 ; i < Model_Payout_Detail_item.size(); i++){
+
+                if (Model_Payout_Detail_item.get(i).getUsageCode().equals(usagecode)){
+
+                    check_Duplicate = true;
+
+                }
+
+            }
+
+            if(check_Duplicate == false){
+                if (((CssdProject) getApplication()).Project().equals("SIPH")){
+                    f_checkCloseExpiring(usagecode);
+                }else{
+                    if (PA_IsUsedFIFO) {
+                        f_checkExpiring(usagecode);
+                    } else {
+                        f_checkCloseExpiring(usagecode);
+                    }
+                }
+            }
+        }
+
+
     }
 
     // **1
@@ -1331,7 +1370,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                             if (c.getString("Qty_pay").equals("0")){
 
-                                SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"));
+                                SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
 
                             }else {
                                 if (c.getString("IsWasting").equals("1")){
@@ -1340,7 +1379,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                                 }else {
 
-                                    SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"));
+                                    SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
 
                                 }
                             }
@@ -1616,7 +1655,15 @@ public class DispensingActivity extends AppCompatActivity {
                             Log.d("xxx", "result : " + c.getString("DateDiff"));
 
                             Log.d("tog_flow", "ST_SoundAndroidVersion9 : " + ST_SoundAndroidVersion9);
-                            if (c.getInt("DateDiff") < 4) {
+                            if (c.getInt("DateDiff") <= 0) {
+                                if (ST_SoundAndroidVersion9) {
+                                    Log.d("tog_flow", "speakText : ");
+                                    speakText("expire");
+                                } else {
+                                    Log.d("tog_flow", "nMidia : ");
+                                    nMidia.getAudio("expire");
+                                }
+                            }else if (c.getInt("DateDiff") < 4) {
 
                                 if (ST_SoundAndroidVersion9) {
                                     speakText("close expiring ");
@@ -1681,7 +1728,7 @@ public class DispensingActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                if (((CssdProject) getApplication()).Project().equals("VCH")) {
+                                if (((CssdProject) getApplication()).Project().equals("VCH")||((CssdProject) getApplication()).Project().equals("SIPH")) {
                                     addItem(xUsageCode);
                                 }else{
                                     CheckItem(usagecode);
@@ -2039,16 +2086,25 @@ public class DispensingActivity extends AppCompatActivity {
 
         ru.execute();
     }
-    public void addItem(final String p_usage_code ) {
+    ArrayList<String> addItem_p_usage_code = new ArrayList<String>();
+    int add_item_loop =0;
+    public void addItem(final String p_usage_code) {
 
         Log.d("tog_flow", "addItem");
         final boolean B_Is_Borrow = false; // switch_type.isChecked();
+        String p_is_borrow = B_Is_Borrow ? "1" : "0";
 
         class Add extends AsyncTask<String, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                add_item_loop++;
+            }
 
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
+                add_item_loop--;
                 try {
 
                     JSONObject jsonObj = new JSONObject(s);
@@ -2141,7 +2197,15 @@ public class DispensingActivity extends AppCompatActivity {
                                 params2.width = 250;
                                 imageCreate.setLayoutParams(params2);
                                 // Display Payout Detail
-                                displayPayoutDetail(DocNo, false);
+//                                displayPayoutDetail(DocNo, false);
+                                if(add_item_loop ==0){
+                                    displayPayoutDetail(DocNo, false);
+                                }else{
+                                    if(addItem_p_usage_code.size()>0){
+                                        addItem(addItem_p_usage_code.get(0));
+                                        addItem_p_usage_code.remove(0);
+                                    }
+                                }
 
                             } else if (result.equals("3")) {
 
@@ -2154,7 +2218,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 callDialog(msg);
 
                                 // Display Payout Detail
-                                displayPayoutDetail(DocNo, false);
+                                if(add_item_loop ==0){
+                                    displayPayoutDetail(DocNo, false);
+                                }else{
+                                    if(addItem_p_usage_code.size()>0){
+                                        addItem(addItem_p_usage_code.get(0));
+                                        addItem_p_usage_code.remove(0);
+                                    }
+                                }
 
                                 return;
 
@@ -2163,7 +2234,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 callQR("user_approve", msg);
 
                                 // Display Payout Detail
-                                displayPayoutDetail(DocNo, false);
+                                if(add_item_loop ==0){
+                                    displayPayoutDetail(DocNo, false);
+                                }else{
+                                    if(addItem_p_usage_code.size()>0){
+                                        addItem(addItem_p_usage_code.get(0));
+                                        addItem_p_usage_code.remove(0);
+                                    }
+                                }
 
                                 return;
 
@@ -2172,7 +2250,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 callCloseDocument();
 
                                 // Display Payout Detail
-                                displayPayoutDetail(DocNo, false);
+                                if(add_item_loop ==0){
+                                    displayPayoutDetail(DocNo, false);
+                                }else{
+                                    if(addItem_p_usage_code.size()>0){
+                                        addItem(addItem_p_usage_code.get(0));
+                                        addItem_p_usage_code.remove(0);
+                                    }
+                                }
 
                             } else if (!result.equals("0")) {
 
@@ -2195,7 +2280,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 return;
                             } else {
                                 // Display Payout Detail
-                                displayPayoutDetail(DocNo, false);
+                                if(add_item_loop ==0){
+                                    displayPayoutDetail(DocNo, false);
+                                }else{
+                                    if(addItem_p_usage_code.size()>0){
+                                        addItem(addItem_p_usage_code.get(0));
+                                        addItem_p_usage_code.remove(0);
+                                    }
+                                }
                             }
 
                         } else {
@@ -2256,8 +2348,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                 data.put("p_docno", DocNo == null ? "" : DocNo);
                 data.put("p_is_manual", (RefDocNo == null || RefDocNo.trim().equals("")) ? "1" : "0");
-                data.put("p_is_borrow", B_Is_Borrow ? "1" : "0");
-                data.put("p_usage_code", p_usage_code.toUpperCase());
+                data.put("p_is_borrow", params[2]);
+                data.put("p_usage_code", params[1].toUpperCase());
                 data.put("p_qty", "1");
                 data.put("p_user_code", ((CssdProject) getApplication()).getPm().getUserid() + "");
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
@@ -2271,9 +2363,16 @@ public class DispensingActivity extends AppCompatActivity {
             }
         }
 
-        Add ru = new Add();
+        if(add_item_loop ==0){
+            Add AddItem = new Add();
+            AddItem.execute(p_usage_code,p_is_borrow);
+        }else if(DocNo != null){
+            Add AddItem = new Add();
+            AddItem.execute(p_usage_code,p_is_borrow);
+        }else{
+            addItem_p_usage_code.add(p_usage_code);
+        }
 
-        ru.execute();
     }
 
     private void clearAll(boolean isDisplayDepartment) {
@@ -2424,7 +2523,7 @@ public class DispensingActivity extends AppCompatActivity {
                     callQR("user_approve", "สแกนรหัสผู้อนุมัติจ่าย เพื่อปิดเอกสาร.");
                 } else {
 //                    updatePayout(DocNo, DepID);
-                    if (((CssdProject) getApplication()).Project().equals("RAMA") || ((CssdProject) getApplication()).Project().equals("BGH")) {
+                    if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA") || ((CssdProject) getApplication()).Project().equals("BGH")) {
                         updatePayout(DocNo, DepID, "0");
                     } else if (((CssdProject) getApplication()).Project().equals("VCH")) {
                         updatePayout(DocNo, DepID, "3");
@@ -3064,7 +3163,6 @@ public class DispensingActivity extends AppCompatActivity {
 
                     txt_search_department.requestFocus();
                     Log.d("tog_focus", "txt_search_department focus");
-//                    txt_usage_code.requestFocus();
                 }
             }
 
@@ -3092,7 +3190,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                 try {
 
-                    if (((CssdProject) getApplication()).Project().equals("RAMA") || ((CssdProject) getApplication()).Project().equals("BGH")) {
+                    if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA") || ((CssdProject) getApplication()).Project().equals("BGH")) {
                         result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department.php", data);
                     } else if (((CssdProject) getApplication()).Project().equals("VCH")) {
                         result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department_new.php", data);
@@ -3332,6 +3430,8 @@ public class DispensingActivity extends AppCompatActivity {
     public void focus() {
         txt_usage_code.setText("");
         txt_usage_code.requestFocus();
+
+        mass_usage_code = "";
         Log.d("tog_focus", "focus()");
     }
 
@@ -4518,8 +4618,6 @@ public class DispensingActivity extends AppCompatActivity {
         }
     }
 
-
-    String mass_onkey = "";
 //    public void dialog_wait_scan(String data,String type){
 //        ProgressDialog wait_dialog = new ProgressDialog(DispensingActivity.this);
 //
@@ -4776,7 +4874,7 @@ public class DispensingActivity extends AppCompatActivity {
         ru.execute();
     }
 
-    public void SetAdapter (final String Itemcode, final String Qty, final String itemname, final String Stock, final String RefDocNo){
+    public void SetAdapter (final String Itemcode, final String Qty, final String itemname, final String Stock, final String RefDocNo,String p_usage){
 
         boolean check_model = false;
 
@@ -4839,7 +4937,7 @@ public class DispensingActivity extends AppCompatActivity {
                             Itemcode,
                             itemname,
                             "",
-                            "",
+                            p_usage,
 
                             "1",
                             stc,
@@ -4861,5 +4959,45 @@ public class DispensingActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event)
+    {
+        if (Block_1.getVisibility() == View.VISIBLE) {
+            return super.dispatchKeyEvent(event);
+        }
 
+        int keyCode = event.getKeyCode();
+
+        Log.d("tog_allKey","keyCode = "+keyCode);
+        if (event.getAction() == KeyEvent.ACTION_DOWN)
+        {
+            if(keyCode == KeyEvent.KEYCODE_BACK ){
+                onBackPressed();
+            }
+            else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+
+                if (mass_usage_code.length() > 0) {
+                    if (Block_1.getVisibility() == View.GONE) {
+                        checkInput(mass_usage_code);
+                        Log.d("tog_dispatchKey","checkInput = "+mass_usage_code);
+                    }
+                }
+                mass_usage_code = "";
+                return false;
+            }
+
+            int unicodeChar = event.getUnicodeChar();
+
+            if(unicodeChar!=0){
+                mass_usage_code=mass_usage_code+(char)unicodeChar;
+            }
+
+            Log.d("tog_dispatchKey","keyCode = "+keyCode);
+            Log.d("tog_dispatchKey","mass_onkey = "+mass_usage_code);
+
+            return false;
+        }
+
+        return super.dispatchKeyEvent(event);
+    }
 }

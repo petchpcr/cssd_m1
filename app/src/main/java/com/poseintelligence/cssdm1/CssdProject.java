@@ -20,7 +20,10 @@ public class CssdProject extends Application {
     public static boolean siri_api_login = false;
 
     public static  String D_DATABASE="1";
-    public static  String Project = "RAMA";
+    public static  String Project = "SIPH";
+
+//    public static  String D_DATABASE="1";
+//    public static  String Project = "RAMA";
 
 //    public static  String D_DATABASE="0";
 //    public static  String Project = "VCH";

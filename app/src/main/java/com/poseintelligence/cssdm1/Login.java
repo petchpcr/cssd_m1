@@ -1314,27 +1314,28 @@ public class Login extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
 
-                try {
-                    JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                if(!s.equals("Error Registering")){
+                    try {
+                        JSONObject jsonObj = new JSONObject(s);
+                        rs = jsonObj.getJSONArray(TAG_RESULTS);
 
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
+                        for (int i = 0; i < rs.length(); i++) {
+                            JSONObject c = rs.getJSONObject(i);
 
-                        if (c.getString("result").equals("A")) {
+                            if (c.getString("result").equals("A")) {
 
-                            Log.d("tog_ConfigurationMenu","Desktop_Receive_Pay_NonUsage = "+c.getString("Desktop_Receive_Pay_NonUsage").equals("1"));
-                            if(c.getString("Desktop_Receive_Pay_NonUsage").equals("1")){
-                                ConfigM1 m1 = new ConfigM1();
-                                m1.setCngId( config_m1.size()+"" );
-                                m1.setBtImg("bt_nonusage");
-                                m1.setActive(true);
-                                m1.setStatus(true);
-                                m1.setShowBtn(true);
-                                config_m1.add( m1 );
-                            }
+                                Log.d("tog_ConfigurationMenu","Desktop_Receive_Pay_NonUsage = "+c.getString("Desktop_Receive_Pay_NonUsage").equals("1"));
+                                if(c.getString("Desktop_Receive_Pay_NonUsage").equals("1")){
+                                    ConfigM1 m1 = new ConfigM1();
+                                    m1.setCngId( config_m1.size()+"" );
+                                    m1.setBtImg("bt_nonusage");
+                                    m1.setActive(true);
+                                    m1.setStatus(true);
+                                    m1.setShowBtn(true);
+                                    config_m1.add( m1 );
+                                }
 
-                            // Get
+                                // Get
 //                            Desktop_SendSterile = c.getString("Desktop_SendSterile").equals("1");
 //                            Desktop_Wash = c.getString("Desktop_Wash").equals("1");
 ////                            Desktop_Sterile = c.getString("Desktop_Sterile").equals("1");
@@ -1352,19 +1353,22 @@ public class Login extends AppCompatActivity {
 //                            Desktop_TakeBack = c.getString("Desktop_TakeBack").equals("1");
 //                            Desktop_LabelType = c.getString("Desktop_LabelType").equals("1");
 
+                            }
+
                         }
 
-                        checkConnectionService.is_login = true;
-                        ((CssdProject) getApplication()).setcM1( config_m1 );
-                        Intent intent = new Intent(Login.this,MainMenu.class);
-                        startActivity(intent);
-                        finish();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
+                checkConnectionService.is_login = true;
+                ((CssdProject) getApplication()).setcM1( config_m1 );
+                Intent intent = new Intent(Login.this,MainMenu.class);
+                startActivity(intent);
+                finish();
             }
+
+
 
             @Override
             protected String doInBackground(String... params) {
@@ -1381,5 +1385,6 @@ public class Login extends AppCompatActivity {
         ConfigurationMenu ru = new ConfigurationMenu();
         ru.execute();
     }
+
 
 }

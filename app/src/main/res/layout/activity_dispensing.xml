@@ -409,7 +409,8 @@
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/label_division"
             android:layout_alignParentEnd="true"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:visibility="invisible">
 
             <EditText
                 android:id="@+id/txt_usage_code"

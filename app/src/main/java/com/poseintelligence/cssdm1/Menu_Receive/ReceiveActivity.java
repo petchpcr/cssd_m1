@@ -3554,7 +3554,7 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 String result = null;
 //                String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile.php", data);
-                if(((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
+                if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile.php", data);
                 }else if (((CssdProject) getApplication()).Project().equals("VCH")){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile_new.php", data);
@@ -3709,7 +3709,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 String result = null;
                 try {
 
-                    if(((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
+                    if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
                         result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
                     }else if (((CssdProject) getApplication()).Project().equals("VCH")){
                         result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count_new.php", data);
