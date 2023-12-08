@@ -786,7 +786,6 @@ public class DispensingActivity extends AppCompatActivity {
             int s = x.indexOf(y);
 
             if(s>=0){
-                Log.d("tog_handler_dept","tttt Model_Department.get(i).getDepName() = "+Model_Department.get(i).getDepName());
                 list.add(Model_Department.get(i));
             }
         }
