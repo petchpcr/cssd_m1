@@ -145,7 +145,12 @@ public class DispensingActivity extends AppCompatActivity {
     private LinearLayout Block_2;
     private LinearLayout Block_3;
     private LinearLayout Block_4;
+    private LinearLayout Block_5;
     private RelativeLayout linear_layout_search;
+
+    private ListView scan_log;
+    private TextView scan_log_num;
+    private ArrayAdapter<String> scan_log_adapter;
 
     private ImageView img_back_1;
     private ImageView img_back_2;
@@ -188,7 +193,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     String user_name_pay;
 
-    public static String text_search_department = "";
+    public String text_search_department = "";
 
     boolean s_expiring = false;
 
@@ -208,6 +213,12 @@ public class DispensingActivity extends AppCompatActivity {
 
     public void speakText(String textContents) {
         tts.speak(textContents, TextToSpeech.QUEUE_FLUSH, null, null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler_dept.removeCallbacks(runnable_dept);
     }
 
     @Override
@@ -332,6 +343,35 @@ public class DispensingActivity extends AppCompatActivity {
         txt_doc_type = (TextView) findViewById(R.id.txt_doc_type);
         title_2 = (TextView) findViewById(R.id.title_2);
         title_3 = (TextView) findViewById(R.id.title_3);
+
+
+        Block_5 = (LinearLayout) findViewById(R.id.Block5);
+        LinearLayout scan_log_li = (LinearLayout) findViewById(R.id.scan_log_li);
+        scan_log_num = (TextView) findViewById(R.id.scan_log_num);
+        TextView textViewClose5 = (TextView) findViewById(R.id.textViewClose5);
+        scan_log = (ListView) findViewById(R.id.scan_log);
+        scan_log_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, scan_log_listItems);
+        scan_log.setAdapter(scan_log_adapter);
+
+        textViewClose5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Block_5.setVisibility(View.GONE);
+            }
+        });
+        scan_log_num.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String x = "'";
+                for(int i = 0 ;i<scan_log_listItems.size();i++){
+                    x=x+"','"+scan_log_listItems.get(i);
+                }
+                x=x+"'";
+
+                f_checkExpiring(x);
+            }
+        });
+
         list_payout_detail_item = (ListView) findViewById(R.id.list_payout_detail_item);
 
         txt_p_approve_code = (TextView) findViewById(R.id.p_approve_code);
@@ -358,6 +398,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private void byEvent() {
         handler_dept.postDelayed(runnable_dept , 3000);
+
         // ===============================
         // Block 1
         // ===============================
@@ -392,7 +433,7 @@ public class DispensingActivity extends AppCompatActivity {
 //                displayDepartment(txt_search_department.getText().toString(), -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 //                }
                 text_search_department = txt_search_department.getText().toString();
-                list_department_adapter.notifyDataSetChanged();
+                list_department_adapter_notifyDataSetChanged();
             }
         });
 
@@ -419,6 +460,7 @@ public class DispensingActivity extends AppCompatActivity {
                 Block_2.setVisibility(View.GONE);
                 Block_3.setVisibility(View.GONE);
                 Block_4.setVisibility(View.GONE);
+                Block_5.setVisibility(View.GONE);
                 switch_opt.setVisibility(View.GONE);
                 imageCreate.setVisibility(View.GONE);
                 txt_search_department.setText("");
@@ -431,7 +473,6 @@ public class DispensingActivity extends AppCompatActivity {
         switch_mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                //System.out.println("SelectedItemPosition = " + DepIndex);
 
                 if (((CssdProject) getApplication()).Project().equals("SIPH")) {
                     if(isChecked){
@@ -454,11 +495,6 @@ public class DispensingActivity extends AppCompatActivity {
 
                 clearDocument();
 
-                /*if(switch_department.isChecked()){
-                    findDepartmentByQR(DepID);
-                }else{
-                    displayDepartment(null, DepIndex);
-                }*/
             }
         });
 
@@ -474,12 +510,16 @@ public class DispensingActivity extends AppCompatActivity {
                 Block_2.setVisibility(View.VISIBLE);
                 Block_3.setVisibility(View.GONE);
                 Block_4.setVisibility(View.VISIBLE);
+                Block_5.setVisibility(View.GONE);
                 switch_opt.setVisibility(View.GONE);
                 imageCreate.setVisibility(View.GONE);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
                 linear_layout_search.setLayoutParams(params);
                 DocNo = null;
                 RefDocNo = null;
+
+                scan_log_listItems.clear();
+                scan_log_adapter.notifyDataSetChanged();
             }
         });
 
@@ -562,60 +602,60 @@ public class DispensingActivity extends AppCompatActivity {
 
         });
 
-//        txt_usage_code.setOnKeyListener(new View.OnKeyListener() {
-//            public boolean onKey(View v, int keyCode, KeyEvent event) {
-//                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-////                    speakText("Strat");
-//                    switch (keyCode) {
-//                        case KeyEvent.KEYCODE_DPAD_CENTER:
-//                        case KeyEvent.KEYCODE_ENTER:
-//                            String input = txt_usage_code.getText().toString();
-//                            txt_usage_code.setText("");
-//
-//                            if (input.length() > 0) {
-//
-//                                String S_Code = input.toLowerCase();
-//                                if (Block_1.getVisibility() == View.VISIBLE) {
-//                                    if (S_Code.length() < 6) {
-//                                        boolean x = true;
-//                                        for (int i = 0; i < Model_Department.size(); i++) {
-//
-//                                            Log.d("top_dep", "ID = " + Model_Department.get(i));
-//                                            if (Model_Department.get(i).getID().equals(S_Code.substring(1))) {
-//                                                DepIndex = i;
-//                                                getQRPay("payrow", "0");
-//                                                x = false;
-//                                            }
-//                                        }
-//                                        if (x) {
-//                                            Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
-//                                        }
-//
-//                                        return false;
-//                                    }
-//                                }else {
-//                                    checkInput(input);
+        txt_usage_code.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+//                    speakText("Strat");
+                    switch (keyCode) {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            String input = txt_usage_code.getText().toString();
+                            txt_usage_code.setText("");
+
+                            if (input.length() > 0) {
+
+                                String S_Code = input.toLowerCase();
+                                if (Block_1.getVisibility() == View.VISIBLE) {
+                                    if (S_Code.length() < 6) {
+                                        boolean x = true;
+                                        for (int i = 0; i < Model_Department.size(); i++) {
+
+                                            Log.d("top_dep", "ID = " + Model_Department.get(i));
+                                            if (Model_Department.get(i).getID().equals(S_Code.substring(1))) {
+                                                DepIndex = i;
+                                                getQRPay("payrow", "0");
+                                                x = false;
+                                            }
+                                        }
+                                        if (x) {
+                                            Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        return false;
+                                    }
+                                }else {
+                                    checkInput(input);
+                                }
+                            }
+
+//                            if(!B_IsNonSelectDocument) {
+//                                if (DepID != null) {
+//                                    checkInput();
+//                                } else {
+//                                    findDepartmentByQR(input, true);
 //                                }
 //                            }
-//
-////                            if(!B_IsNonSelectDocument) {
-////                                if (DepID != null) {
-////                                    checkInput();
-////                                } else {
-////                                    findDepartmentByQR(input, true);
-////                                }
-////                            }
-//                            return true;
-//                        default:
-//                            break;
-//                    }
-//                }
-//
-//                return false;
-//            }
-//
-//
-//        });
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+
+                return false;
+            }
+
+
+        });
 
 //        txt_search_department.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -702,23 +742,58 @@ public class DispensingActivity extends AppCompatActivity {
 //            }
 //        }
 //    }
-
+    boolean Is_text_search_department =false;
     Handler handler_dept = new Handler(Looper.getMainLooper());
     Runnable runnable_dept  = new Runnable() {
         @Override
         public void run() {
 
-            if(!text_search_department.equals(txt_search_department.getText().toString())){
-                Log.d("tog_ld","txt_search_department = "+txt_search_department.getText().toString());
 
-                text_search_department = txt_search_department.getText().toString();
-                list_department_adapter.notifyDataSetChanged();
+            if(txt_search_department.getText().toString().length()>0){
 
+//                Log.d("tog_handler_dept","tttt txt_search_department = "+txt_search_department.getText().toString());
+                if(text_search_department.equals(txt_search_department.getText().toString())){
+                    if(Is_text_search_department){
+                        Is_text_search_department =false;
+                        list_department_adapter_notifyDataSetChanged();
+                    }
+                }else{
+                    Is_text_search_department = true;
+                    text_search_department = txt_search_department.getText().toString();
+                }
+            }else{
+
+//                Log.d("tog_handler_dept","ffff txt_search_department = "+txt_search_department.getText().toString());
+                if(Is_text_search_department){
+                    Is_text_search_department =false;
+                    text_search_department = txt_search_department.getText().toString();
+                    Log.d("tog_handler_dept","fff text_search_department = "+text_search_department);
+                    list_department_adapter_notifyDataSetChanged();
+
+                }
             }
 
-            handler_dept.postDelayed(this, 1000); // Optional, to repeat the task.
+            handler_dept.postDelayed(this, 400); // Optional, to repeat the task.
         }
     };
+
+    public void list_department_adapter_notifyDataSetChanged(){
+        String y = text_search_department.toLowerCase();
+
+        List<ModelDepartment> list = new ArrayList<>();
+        for(int i = 0;i<Model_Department.size();i++){
+            String x = Model_Department.get(i).getDepName().toLowerCase();
+            int s = x.indexOf(y);
+
+            if(s>=0){
+                Log.d("tog_handler_dept","tttt Model_Department.get(i).getDepName() = "+Model_Department.get(i).getDepName());
+                list.add(Model_Department.get(i));
+            }
+        }
+
+        list_department_adapter = new ListDepartmentAdapter(DispensingActivity.this, list, "#D6EAF8");
+        list_department.setAdapter(list_department_adapter);
+    }
 
 //    public void findDepartmentByQR(final String p_qr, final boolean IsPlaySound) {
 //        class DepartmentByQR extends AsyncTask<String, Void, String> {
@@ -964,10 +1039,12 @@ public class DispensingActivity extends AppCompatActivity {
                         if (c.getInt("Cnt") > 0) {
 
                             Log.d("tog_flow", "Cnt = 1");
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("repeat_scan");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("repeat_scan");
+                                }
                             }
 
                         } else {
@@ -990,7 +1067,7 @@ public class DispensingActivity extends AppCompatActivity {
 
 
                                 if (((CssdProject) getApplication()).Project().equals("SIPH")){
-                                    f_checkCloseExpiring(usagecode);
+                                    f_checkExpiring(usagecode);
                                 }else{
                                     if (PA_IsUsedFIFO) {
                                         f_checkExpiring(usagecode);
@@ -1054,7 +1131,7 @@ public class DispensingActivity extends AppCompatActivity {
 
             if(check_Duplicate == false){
                 if (((CssdProject) getApplication()).Project().equals("SIPH")){
-                    f_checkCloseExpiring(usagecode);
+                    f_checkExpiring(usagecode);
                 }else{
                     if (PA_IsUsedFIFO) {
                         f_checkExpiring(usagecode);
@@ -1100,11 +1177,12 @@ public class DispensingActivity extends AppCompatActivity {
 
                             } else {
 //                                Log.d("xxx","fifo...");
-
-                                if (ST_SoundAndroidVersion9) {
-                                    speakText("fifo");
-                                } else {
-                                    nMidia.getAudio("fifo");
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        speakText("fifo");
+                                    } else {
+                                        nMidia.getAudio("fifo");
+                                    }
                                 }
 
                                 AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("คุณต้องการเพิ่มรายการนี้หรือไม่")
@@ -1137,10 +1215,12 @@ public class DispensingActivity extends AppCompatActivity {
 
                         if (c.getString("result").equals("R")) {
 
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("repeat_scan");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("repeat_scan");
+                                }
                             }
 
                         }
@@ -1211,37 +1291,42 @@ public class DispensingActivity extends AppCompatActivity {
 
                             Log.d("tog_flow", "ST_SoundAndroidVersion9 : " + ST_SoundAndroidVersion9);
                             if (c.getInt("DateDiff") < 0) {
-                                if (ST_SoundAndroidVersion9) {
-                                    Log.d("tog_flow", "speakText : ");
-                                    speakText("expire");
-                                } else {
-                                    Log.d("tog_flow", "nMidia : ");
-                                    nMidia.getAudio("expire");
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        Log.d("tog_flow", "speakText : ");
+                                        speakText("expire");
+                                    } else {
+                                        Log.d("tog_flow", "nMidia : ");
+                                        nMidia.getAudio("expire");
+                                    }
                                 }
                             } else if (c.getInt("DateDiff") < 4) {
-
-                                if (ST_SoundAndroidVersion9) {
-                                    speakText("close expiring ");
-                                } else {
-                                    nMidia.getAudio("expiring");
-                                    nMidia.getAudio("within");
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        speakText("close expiring ");
+                                    } else {
+                                        nMidia.getAudio("expiring");
+                                        nMidia.getAudio("within");
+                                    }
                                 }
 
                                 if (c.getInt("DateDiff") == 0) {
-
-                                    if (ST_SoundAndroidVersion9) {
-                                        speakText("today");
-                                    } else {
-                                        nMidia.getAudio("today");
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText("today");
+                                        } else {
+                                            nMidia.getAudio("today");
+                                        }
                                     }
 
                                 } else {
-
-                                    if (ST_SoundAndroidVersion9) {
-                                        speakText("in " + c.getString("DateDiff") + " day");
-                                    } else {
-                                        nMidia.getAudio(c.getString("DateDiff"));
-                                        nMidia.getAudio("day");
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText("in " + c.getString("DateDiff") + " day");
+                                        } else {
+                                            nMidia.getAudio(c.getString("DateDiff"));
+                                            nMidia.getAudio("day");
+                                        }
                                     }
 
                                 }
@@ -1286,10 +1371,12 @@ public class DispensingActivity extends AppCompatActivity {
                             if ((xUsageCode.length() == 6) || (xUsageCode.length() == 11)) {
                                 addItem(xUsageCode);
                             } else {
-                                if (ST_SoundAndroidVersion9) {
-                                    speakText("no");
-                                } else {
-                                    nMidia.getAudio("no_item_found");
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        speakText("no");
+                                    } else {
+                                        nMidia.getAudio("no_item_found");
+                                    }
                                 }
                             }
                         }
@@ -1431,7 +1518,8 @@ public class DispensingActivity extends AppCompatActivity {
         ru.execute();
     }
 
-
+    boolean test_2811 = false;
+    String add_usage_test_2811 = "";
     public void f_checkExpiring(final String usagecode) {
         class checkExpiring extends AsyncTask<String, Void, String> {
 
@@ -1443,7 +1531,7 @@ public class DispensingActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-
+                add_usage_test_2811 = "";
                 try {
                     JSONObject jsonObj = new JSONObject(s);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
@@ -1455,27 +1543,53 @@ public class DispensingActivity extends AppCompatActivity {
                         Log.d("xxx", "result : " + c.getString("result"));
                         final String xUsageCode = c.getString("usedcode");
                         if (c.getString("result").equals("A")) {
-                            Log.d("xxx", "result : " + c.getString("DateDiff"));
 
-                            Log.d("tog_flow", "DateDiff : " + c.getString("DateDiff"));
-                            if (c.getInt("DateDiff") <= 0) {
-                                if (ST_SoundAndroidVersion9) {
-                                    Log.d("tog_flow", "speakText : ");
-                                    speakText("expire");
+                            //test
+                            if(test_2811){
+                                if (c.getInt("DateDiff") <= 0) {
+                                    for(int iii=0;iii<scan_log_listItems.size();iii++){
+                                        if(scan_log_listItems.get(iii).equals(xUsageCode)){
+                                            scan_log_listItems.set(iii,xUsageCode+" (Expire)");
+                                            if (Block_5.getVisibility() == View.VISIBLE) {
+                                                Log.d("scan_log_adapter", "notifyDataSetChanged : 1");
+                                                scan_log_adapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    }
                                 } else {
-                                    Log.d("tog_flow", "nMidia : ");
-                                    nMidia.getAudio("expire");
+                                    add_usage_test_2811 = add_usage_test_2811+","+xUsageCode;
                                 }
-                            } else {
+                            }else{
+                                Log.d("xxx", "result : " + c.getString("DateDiff"));
 
-                                if (PA_IsUsedFIFO) {
-                                    String arr[] = usagecode.split("-");
-                                    String itemcode = arr[0];
-                                    Log.d("tog_flow", "checkFIFO ");
-                                    f_checkFIFO(itemcode, usagecode);
+                                Log.d("tog_flow", "DateDiff : " + c.getString("DateDiff"));
+                                if (c.getInt("DateDiff") <= 0) {
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            Log.d("tog_flow", "speakText : ");
+                                            speakText("expire");
+                                        } else {
+                                            Log.d("tog_flow", "nMidia : ");
+                                            nMidia.getAudio("expire");
+                                        }
+                                    }
+
                                 } else {
-                                    Log.d("tog_flow", "checkExpiring ");
-                                    f_checkCloseExpiring(usagecode);
+
+                                    if (PA_IsUsedFIFO) {
+                                        String arr[] = usagecode.split("-");
+                                        String itemcode = arr[0];
+                                        Log.d("tog_flow", "checkFIFO ");
+                                        f_checkFIFO(itemcode, usagecode);
+                                    } else {
+                                        Log.d("tog_flow", "checkExpiring ");
+
+                                        if (((CssdProject) getApplication()).Project().equals("SIPH")) {
+                                            addItem(xUsageCode);
+                                        }else{
+                                            f_checkCloseExpiring(usagecode);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1484,6 +1598,10 @@ public class DispensingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     focus();
+                }
+
+                if(test_2811){
+                    addItem_test_2811(add_usage_test_2811);
                 }
             }
 
@@ -1545,11 +1663,12 @@ public class DispensingActivity extends AppCompatActivity {
 
                             } else {
 //                                Log.d("xxx","fifo...");
-
-                                if (ST_SoundAndroidVersion9) {
-                                    speakText("fifo");
-                                } else {
-                                    nMidia.getAudio("fifo");
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        speakText("fifo");
+                                    } else {
+                                        nMidia.getAudio("fifo");
+                                    }
                                 }
 
                                 AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("คุณต้องการเพิ่มรายการนี้หรือไม่")
@@ -1581,11 +1700,12 @@ public class DispensingActivity extends AppCompatActivity {
                         }
 
                         if (c.getString("result").equals("R")) {
-
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("repeat_scan");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("repeat_scan");
+                                }
                             }
 
                         }
@@ -1655,38 +1775,33 @@ public class DispensingActivity extends AppCompatActivity {
                             Log.d("xxx", "result : " + c.getString("DateDiff"));
 
                             Log.d("tog_flow", "ST_SoundAndroidVersion9 : " + ST_SoundAndroidVersion9);
-                            if (c.getInt("DateDiff") <= 0) {
-                                if (ST_SoundAndroidVersion9) {
-                                    Log.d("tog_flow", "speakText : ");
-                                    speakText("expire");
-                                } else {
-                                    Log.d("tog_flow", "nMidia : ");
-                                    nMidia.getAudio("expire");
-                                }
-                            }else if (c.getInt("DateDiff") < 4) {
-
-                                if (ST_SoundAndroidVersion9) {
-                                    speakText("close expiring ");
-                                } else {
-                                    nMidia.getAudio("expiring");
-                                    nMidia.getAudio("within");
+                            if (c.getInt("DateDiff") < 4) {
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        speakText("close expiring ");
+                                    } else {
+                                        nMidia.getAudio("expiring");
+                                        nMidia.getAudio("within");
+                                    }
                                 }
 
                                 if (c.getInt("DateDiff") == 0) {
-
-                                    if (ST_SoundAndroidVersion9) {
-                                        speakText("today");
-                                    } else {
-                                        nMidia.getAudio("today");
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText("today");
+                                        } else {
+                                            nMidia.getAudio("today");
+                                        }
                                     }
 
                                 } else {
-
-                                    if (ST_SoundAndroidVersion9) {
-                                        speakText("in " + c.getString("DateDiff") + " day");
-                                    } else {
-                                        nMidia.getAudio(c.getString("DateDiff"));
-                                        nMidia.getAudio("day");
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText("in " + c.getString("DateDiff") + " day");
+                                        } else {
+                                            nMidia.getAudio(c.getString("DateDiff"));
+                                            nMidia.getAudio("day");
+                                        }
                                     }
 
                                 }
@@ -1728,7 +1843,7 @@ public class DispensingActivity extends AppCompatActivity {
                                 }
 
                             } else {
-                                if (((CssdProject) getApplication()).Project().equals("VCH")||((CssdProject) getApplication()).Project().equals("SIPH")) {
+                                if (((CssdProject) getApplication()).Project().equals("VCH")) {
                                     addItem(xUsageCode);
                                 }else{
                                     CheckItem(usagecode);
@@ -1796,11 +1911,12 @@ public class DispensingActivity extends AppCompatActivity {
 
                             //callDialogAddItemCode(p_item_code, c.getString("itemname"), Integer.valueOf(c.getString("c")).intValue());
                         } else {
-
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("no");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("no");
+                                }
                             }
                             callDialog(c.getString("Message"));
                         }
@@ -1880,11 +1996,13 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring", "ST_SoundAndroidVersion9: " + ST_SoundAndroidVersion9);
                                 if (!s_expiring) {
                                     s_expiring = false;
-                                    if (PA_IsUsedPayOkSound) {
-                                        if (ST_SoundAndroidVersion9) {
-                                            speakText("complete");
-                                        } else {
-                                            nMidia.getAudio("okay");
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (PA_IsUsedPayOkSound) {
+                                            if (ST_SoundAndroidVersion9) {
+                                                speakText("complete");
+                                            } else {
+                                                nMidia.getAudio("okay");
+                                            }
                                         }
                                     }
                                 }
@@ -1893,11 +2011,13 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring","s_expiring: "+s_expiring);
                                 if(!s_expiring){
                                     s_expiring = false;
-                                    if(PA_IsUsedPayOkSound){
-                                        if(ST_SoundAndroidVersion9){
-                                            speakText(c.getString("PayQty"));
-                                        }else{
-                                            nMidia.getAudio(c.getString("PayQty"));
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (PA_IsUsedPayOkSound) {
+                                            if (ST_SoundAndroidVersion9) {
+                                                speakText(c.getString("PayQty"));
+                                            } else {
+                                                nMidia.getAudio(c.getString("PayQty"));
+                                            }
                                         }
                                     }
 
@@ -2010,10 +2130,12 @@ public class DispensingActivity extends AppCompatActivity {
                             }
 
                         }else{
-                            if(ST_SoundAndroidVersion9){
-                                speakText("no");
-                            }else{
-                                nMidia.getAudio("no");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("no");
+                                }
                             }
 //                            callDialog(msg);
 
@@ -2090,6 +2212,8 @@ public class DispensingActivity extends AppCompatActivity {
     int add_item_loop =0;
     public void addItem(final String p_usage_code) {
 
+
+        Log.d("tog_add_pay_loop", "addItem --- p_usage_code : " + p_usage_code);
         Log.d("tog_flow", "addItem");
         final boolean B_Is_Borrow = false; // switch_type.isChecked();
         String p_is_borrow = B_Is_Borrow ? "1" : "0";
@@ -2105,6 +2229,8 @@ public class DispensingActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 add_item_loop--;
+
+                Log.d("tog_add_pay_loop", "add_item_loop : " + add_item_loop);
                 try {
 
                     JSONObject jsonObj = new JSONObject(s);
@@ -2125,11 +2251,13 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring", "s_expiring: " + s_expiring);
                                 if (!s_expiring) {
                                     s_expiring = false;
-                                    if (PA_IsUsedPayOkSound) {
-                                        if (ST_SoundAndroidVersion9) {
-                                            speakText("complete");
-                                        } else {
-                                            nMidia.getAudio("okay");
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (PA_IsUsedPayOkSound) {
+                                            if (ST_SoundAndroidVersion9) {
+                                                speakText("complete");
+                                            } else {
+                                                nMidia.getAudio("okay");
+                                            }
                                         }
                                     }
                                 }
@@ -2138,16 +2266,28 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring", "s_expiring: " + s_expiring);
                                 if (!s_expiring) {
                                     s_expiring = false;
-                                    if (PA_IsUsedPayOkSound) {
-                                        if (ST_SoundAndroidVersion9) {
-                                            speakText(c.getString("PayQty"));
-                                        } else {
-                                            nMidia.getAudio(c.getString("PayQty"));
+                                    if (MD_IsUsedSoundScanQR) {
+                                        if (PA_IsUsedPayOkSound) {
+                                            if (ST_SoundAndroidVersion9) {
+                                                speakText(c.getString("PayQty"));
+                                            } else {
+                                                nMidia.getAudio(c.getString("PayQty"));
+                                            }
                                         }
                                     }
-
                                 }
                             }
+
+//                            for(int iii=0;iii<scan_log_listItems.size();iii++){
+//                                if(scan_log_listItems.get(iii).equals(p_usage_code)){
+//                                    scan_log_listItems.set(iii,p_usage_code+" (✓)");
+//                                    if (Block_5.getVisibility() == View.VISIBLE) {
+//                                        Log.d("scan_log_adapter", "notifyDataSetChanged : 2");
+//                                        scan_log_adapter.notifyDataSetChanged();
+//                                    }
+//                                }
+//                            }
+
 
                             Log.d("tog_flow", "addItem DocNo = " + DocNo);
 
@@ -2198,12 +2338,15 @@ public class DispensingActivity extends AppCompatActivity {
                                 imageCreate.setLayoutParams(params2);
                                 // Display Payout Detail
 //                                displayPayoutDetail(DocNo, false);
-                                if(add_item_loop ==0){
-                                    displayPayoutDetail(DocNo, false);
+
+                                if(addItem_p_usage_code.size()>0){
+                                    Log.d("tog_add_pay_loop", "NON displayPayoutDetail : " + addItem_p_usage_code.get(0));
+                                    addItem(addItem_p_usage_code.get(0));
+                                    addItem_p_usage_code.remove(0);
                                 }else{
-                                    if(addItem_p_usage_code.size()>0){
-                                        addItem(addItem_p_usage_code.get(0));
-                                        addItem_p_usage_code.remove(0);
+                                    if(add_item_loop ==0){
+                                        Log.d("tog_add_pay_loop", "displayPayoutDetail : " + p_usage_code);
+                                        displayPayoutDetail(DocNo, false);
                                     }
                                 }
 
@@ -2218,12 +2361,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 callDialog(msg);
 
                                 // Display Payout Detail
-                                if(add_item_loop ==0){
-                                    displayPayoutDetail(DocNo, false);
+                                if(addItem_p_usage_code.size()>0){
+                                    Log.d("tog_add_pay_loop", "NON displayPayoutDetail : " + addItem_p_usage_code.get(0));
+                                    addItem(addItem_p_usage_code.get(0));
+                                    addItem_p_usage_code.remove(0);
                                 }else{
-                                    if(addItem_p_usage_code.size()>0){
-                                        addItem(addItem_p_usage_code.get(0));
-                                        addItem_p_usage_code.remove(0);
+                                    if(add_item_loop ==0){
+                                        Log.d("tog_add_pay_loop", "displayPayoutDetail : " + p_usage_code);
+                                        displayPayoutDetail(DocNo, false);
                                     }
                                 }
 
@@ -2234,12 +2379,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 callQR("user_approve", msg);
 
                                 // Display Payout Detail
-                                if(add_item_loop ==0){
-                                    displayPayoutDetail(DocNo, false);
+                                if(addItem_p_usage_code.size()>0){
+                                    Log.d("tog_add_pay_loop", "NON displayPayoutDetail : " + addItem_p_usage_code.get(0));
+                                    addItem(addItem_p_usage_code.get(0));
+                                    addItem_p_usage_code.remove(0);
                                 }else{
-                                    if(addItem_p_usage_code.size()>0){
-                                        addItem(addItem_p_usage_code.get(0));
-                                        addItem_p_usage_code.remove(0);
+                                    if(add_item_loop ==0){
+                                        Log.d("tog_add_pay_loop", "displayPayoutDetail : " + p_usage_code);
+                                        displayPayoutDetail(DocNo, false);
                                     }
                                 }
 
@@ -2250,12 +2397,14 @@ public class DispensingActivity extends AppCompatActivity {
                                 callCloseDocument();
 
                                 // Display Payout Detail
-                                if(add_item_loop ==0){
-                                    displayPayoutDetail(DocNo, false);
+                                if(addItem_p_usage_code.size()>0){
+                                    Log.d("tog_add_pay_loop", "NON displayPayoutDetail : " + addItem_p_usage_code.get(0));
+                                    addItem(addItem_p_usage_code.get(0));
+                                    addItem_p_usage_code.remove(0);
                                 }else{
-                                    if(addItem_p_usage_code.size()>0){
-                                        addItem(addItem_p_usage_code.get(0));
-                                        addItem_p_usage_code.remove(0);
+                                    if(add_item_loop ==0){
+                                        Log.d("tog_add_pay_loop", "displayPayoutDetail : " + p_usage_code);
+                                        displayPayoutDetail(DocNo, false);
                                     }
                                 }
 
@@ -2280,21 +2429,25 @@ public class DispensingActivity extends AppCompatActivity {
                                 return;
                             } else {
                                 // Display Payout Detail
-                                if(add_item_loop ==0){
-                                    displayPayoutDetail(DocNo, false);
+                                if(addItem_p_usage_code.size()>0){
+                                    Log.d("tog_add_pay_loop", "NON displayPayoutDetail : " + addItem_p_usage_code.get(0));
+                                    addItem(addItem_p_usage_code.get(0));
+                                    addItem_p_usage_code.remove(0);
                                 }else{
-                                    if(addItem_p_usage_code.size()>0){
-                                        addItem(addItem_p_usage_code.get(0));
-                                        addItem_p_usage_code.remove(0);
+                                    if(add_item_loop ==0){
+                                        Log.d("tog_add_pay_loop", "displayPayoutDetail : " + p_usage_code);
+                                        displayPayoutDetail(DocNo, false);
                                     }
                                 }
                             }
 
                         } else {
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("no");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("no");
+                                }
                             }
 //                            callDialog(msg);
 
@@ -2348,8 +2501,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                 data.put("p_docno", DocNo == null ? "" : DocNo);
                 data.put("p_is_manual", (RefDocNo == null || RefDocNo.trim().equals("")) ? "1" : "0");
-                data.put("p_is_borrow", params[2]);
-                data.put("p_usage_code", params[1].toUpperCase());
+                data.put("p_is_borrow", p_is_borrow);
+                data.put("p_usage_code",p_usage_code.toUpperCase());
                 data.put("p_qty", "1");
                 data.put("p_user_code", ((CssdProject) getApplication()).getPm().getUserid() + "");
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
@@ -2359,19 +2512,250 @@ public class DispensingActivity extends AppCompatActivity {
                 String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage.php", data);
                 Log.d("tog_add_pay_detail", "data : " + data);
                 Log.d("tog_add_pay_detail", "result : " + result);
+
+//                Log.d("tog_add_pay_loop", "p_usage_code :  --- "+p_usage_code);
+//                Log.d("tog_add_pay_loop", "result : " + result);
                 return result;
             }
         }
 
         if(add_item_loop ==0){
+            Log.d("tog_add_pay_loop", add_item_loop+" data : 1 ---"+p_usage_code);
             Add AddItem = new Add();
-            AddItem.execute(p_usage_code,p_is_borrow);
+            AddItem.execute();
         }else if(DocNo != null){
+            Log.d("tog_add_pay_loop", add_item_loop+" data : 2 ---"+p_usage_code);
             Add AddItem = new Add();
-            AddItem.execute(p_usage_code,p_is_borrow);
+            AddItem.execute();
         }else{
+            Log.d("tog_add_pay_loop", add_item_loop+" data : 3 ---"+p_usage_code);
             addItem_p_usage_code.add(p_usage_code);
         }
+
+    }
+
+    public void addItem_test_2811(final String p_usage_code) {
+
+
+        Log.d("tog_add_pay_loop", "addItem --- p_usage_code : " + p_usage_code);
+        Log.d("tog_flow", "addItem");
+        final boolean B_Is_Borrow = false; // switch_type.isChecked();
+        String p_is_borrow = B_Is_Borrow ? "1" : "0";
+
+        class Add extends AsyncTask<String, Void, String> {
+            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
+                this.dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                boolean is_dispaly = false;
+                Log.d("tog_add_pay_loop", "add_item_loop : " + add_item_loop);
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        String result = c.getString("result_code");
+                        String msg = c.getString("Message");
+                        String result_usage = c.getString("result_usage");
+
+                        System.out.println("result = " + c.getString("result"));
+                        System.out.println("result_code = " + result);
+                        if (c.getString("result").equals("A")) {
+
+                            if (DocNo == null) {
+
+                                Log.d("tog_flow", "B_IsNonSelectDocument = " + B_IsNonSelectDocument);
+
+                                DocNo = c.getString("DocNo");
+
+                                if (B_IsNonSelectDocument) {
+
+                                    // Clear Department
+                                    list_department.setAdapter(null);
+
+                                    // Display Payout NA
+                                    displayDocumentNA();
+
+                                } else {
+
+                                    // Display Department
+//                                    if (!switch_department.isChecked()) {
+//                                        displayDepartment(null, -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+//                                    }
+
+                                    // Display Payout
+                                    displayPay(DepID, DocNo, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+                                }
+
+                                switch_opt.setChecked(false);
+                                Block_1.setVisibility(View.GONE);
+                                Block_2.setVisibility(View.GONE);
+                                Block_3.setVisibility(View.VISIBLE);
+                                Block_4.setVisibility(View.VISIBLE);
+                                switch_opt.setVisibility(View.VISIBLE);
+                                imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
+                                if (Model_Pay.size() > 0) {
+                                    title_3.setText(DocNo + " / " + Model_Pay.get(0).getDepName() + " (M)");
+                                } else {
+                                    title_3.setText(DocNo + " / " + DepName + " (M)");
+                                }
+
+                                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                params1.width = Is_imageCreate ? 255 : 505;
+                                params1.setMargins(0, 0, 15, 0);
+                                linear_layout_search.setLayoutParams(params1);
+                                LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                                params2.width = 250;
+                                imageCreate.setLayoutParams(params2);
+                                // Display Payout Detail
+//                                displayPayoutDetail(DocNo, false);
+
+                                is_dispaly = true;
+
+                            } else if (result.equals("3")) {
+
+                                callDialog(msg);
+
+                            } else if (result.equals("6")) {
+
+                                callDialog(msg);
+
+                                is_dispaly = true;
+
+                            } else if (result.equals("7")) {
+
+                                callQR("user_approve", msg);
+
+                                is_dispaly = true;
+
+                                return;
+
+                            } else if (result.equals("8")) {
+
+                                callCloseDocument();
+
+                                is_dispaly = true;
+
+                            } else if (!result.equals("0")) {
+
+                                callDialog(msg);
+
+                                clearAll(false);
+
+                            } else {
+                                is_dispaly = true;
+                            }
+
+                            for(int iii=0;iii<scan_log_listItems.size();iii++){
+                                if(scan_log_listItems.get(iii).equals(result_usage)){
+                                    scan_log_listItems.set(iii,result_usage+" (✓)");
+                                    scan_log_adapter.notifyDataSetChanged();
+                                }
+                            }
+
+                        } else {
+//                            callDialog(msg);
+
+//                            if (c.getString("result").equals("E")) {
+//                                callDialog(msg, "0");
+//                            } else {
+//                                callDialog(msg, "1");
+//                            }
+
+                            p_usage_code_pay = p_usage_code.toUpperCase();
+                            Docno_paylog = c.getString("DocNo");
+                            Dep_paylog = c.getString("DepName");
+
+                            for(int iii=0;iii<scan_log_listItems.size();iii++){
+                                if(scan_log_listItems.get(iii).equals(result_usage)){
+                                    scan_log_listItems.set(iii,result_usage+" (X)"+msg);
+                                    if (Block_5.getVisibility() == View.VISIBLE) {
+                                        Log.d("scan_log_adapter", "notifyDataSetChanged : 3");
+                                        scan_log_adapter.notifyDataSetChanged();
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    if(is_dispaly){
+                        displayPayoutDetail(DocNo, false);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                if (B_IsNonSelectDocument) {
+                    data.put("p_is_non_department", "1");
+                    data.put("p_DeptID", "-1");
+                } else if (DepID != null) {
+                    data.put("p_DeptID", DepID);
+                }
+
+                if (PA_IsUsedApprover) {
+                    data.put("p_IsUsedApprover", "1");
+                }
+
+                if (PA_IsUsedRecipienter) {
+                    data.put("p_IsUsedRecipienter", "1");
+                }
+
+                if (PA_IsConfirmClosePayout) {
+                    data.put("IsConfirmClosePayout", "1");
+                }
+
+                data.put("SS_IsGroupPayout", SS_IsGroupPayout ? "1" : "0");
+
+                data.put("SR_ReceiveFromDeposit", SR_ReceiveFromDeposit ? "1" : "0");
+
+                data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
+
+                data.put("p_docno", DocNo == null ? "" : DocNo);
+                data.put("p_is_manual", (RefDocNo == null || RefDocNo.trim().equals("")) ? "1" : "0");
+                data.put("p_is_borrow", p_is_borrow);
+                data.put("p_usage_code",p_usage_code.toUpperCase());
+                data.put("p_qty", "1");
+                data.put("p_user_code", ((CssdProject) getApplication()).getPm().getUserid() + "");
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("p_device", "M1");
+
+                Log.d("OOOO", ((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage.php?" + data);
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage_list.php", data);
+                Log.d("tog_add_pay_detail", "data : " + data);
+                Log.d("tog_add_pay_detail", "result : " + result);
+
+//                Log.d("tog_add_pay_loop", "p_usage_code :  --- "+p_usage_code);
+//                Log.d("tog_add_pay_loop", "result : " + result);
+                return result;
+            }
+        }
+
+        Log.d("tog_add_pay_loop", add_item_loop+" data : 2 ---"+p_usage_code);
+        Add AddItem = new Add();
+        AddItem.execute();
 
     }
 
@@ -2418,11 +2802,12 @@ public class DispensingActivity extends AppCompatActivity {
     public void removeItem(final String p_usage_code) {
 
         if (DocNo == null) {
-
-            if (ST_SoundAndroidVersion9) {
-                speakText("no");
-            } else {
-                nMidia.getAudio("no");
+            if (MD_IsUsedSoundScanQR) {
+                if (ST_SoundAndroidVersion9) {
+                    speakText("no");
+                } else {
+                    nMidia.getAudio("no");
+                }
             }
             Toast.makeText(DispensingActivity.this, Cons.WARNING_SELECT_DOC, Toast.LENGTH_SHORT).show();
             focus();
@@ -2446,21 +2831,26 @@ public class DispensingActivity extends AppCompatActivity {
 //                            nMidia.getAudio(c.getString("PayQty"));
 //                            speakText(c.getString("PayQty"));
                             // Display Payout Detail
-
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("okay");
-                            } else {
-                                nMidia.getAudio("okay");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (PA_IsUsedPayOkSound) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        speakText("okay");
+                                    } else {
+                                        nMidia.getAudio("okay");
+                                    }
+                                }
                             }
 
                             displayPayoutDetail(DocNo, false);
                         } else {
                             callDialog(c.getString("Message"));
 
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("no");
+                            if (MD_IsUsedSoundScanQR) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("no");
+                                } else {
+                                    nMidia.getAudio("no");
+                                }
                             }
 
                         }
@@ -2652,7 +3042,6 @@ public class DispensingActivity extends AppCompatActivity {
                         if (c.getString("result").equals("A")) {
                             DocNo = null;
                             RefDocNo = null;
-//                            DepIndex = -1;
 
                             list_payout_detail_item.setAdapter(null);
                             list_pay.setAdapter(null);
@@ -2676,7 +3065,6 @@ public class DispensingActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
-
                     if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
@@ -3118,40 +3506,19 @@ public class DispensingActivity extends AppCompatActivity {
                     list_department_adapter = new ListDepartmentAdapter(DispensingActivity.this, list, "#D6EAF8");
                     list_department.setAdapter(list_department_adapter);
 
-//                    if(depIndex > -1) {
-//                        ((ListDepartmentAdapter) adapter).setSelection(depIndex);
-//                        DepName = Model_Department.get(depIndex).getDepName();
-//                        DepIndex = depIndex;
-//                    }else if(DepID != null){
-//
-//                        Iterator li = Model_Department.iterator();
-//                        int i = 0;
-//
-//                        while (li.hasNext()) {
-//
-//                            ModelDepartment m = (ModelDepartment) li.next();
-//
-//                            if (m.getID().equals(DepID)) {
-//                                ((ListDepartmentAdapter) adapter).setSelection(i);
-//                                DepName = m.getDepName();
-//                                break;
-//                            }
-//
-//                            i++;
-//                        }
-//                    }
-
                     list_department.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            DepIndex = position;
+                            ModelDepartment pos_dept = list_department_adapter.getItem(position);
+                            for (int ii = 0; ii < Model_Department.size(); ii++) {
+                                if (Model_Department.get(ii).getID().equals(pos_dept.getID())) {
+                                    DepIndex = ii;
+                                    break;
+                                }
+                            }
                             getQRPay("payrow", "0");
                         }
                     });
 
-                    Log.d("tog_focus", "DepIndex = " + DepIndex);
-//                    if(DepIndex > -1){
-//                        displayPay(DepID, null,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
-//                    }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -3431,7 +3798,6 @@ public class DispensingActivity extends AppCompatActivity {
         txt_usage_code.setText("");
         txt_usage_code.requestFocus();
 
-        mass_usage_code = "";
         Log.d("tog_focus", "focus()");
     }
 
@@ -3448,14 +3814,14 @@ public class DispensingActivity extends AppCompatActivity {
 
         class DisplayPay extends AsyncTask<String, Void, String> {
 
-            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
+//            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
 
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.show();
+//                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
+//                this.dialog.show();
             }
 
             @Override
@@ -3578,9 +3944,9 @@ public class DispensingActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
+//                    if (dialog.isShowing()) {
+//                        dialog.dismiss();
+//                    }
 
                     focus();
 
@@ -3702,17 +4068,17 @@ public class DispensingActivity extends AppCompatActivity {
 
         class DisplayPayout extends AsyncTask<String, Void, String> {
 
-            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
+//            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
 
             // variable
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
 
-                if (isShowDialog) {
-                    this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                    this.dialog.show();
-                }
+//                if (isShowDialog) {
+//                    this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
+//                    this.dialog.show();
+//                }
             }
 
             @Override
@@ -3780,9 +4146,9 @@ public class DispensingActivity extends AppCompatActivity {
                 adapter = new ListPayoutDetailItemAdapter(DispensingActivity.this, Model_Payout_Detail_item, PA_IsWastingPayout, RefDocNo);
                 list_payout_detail_item.setAdapter(adapter);
 
-                if (isShowDialog && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
+//                if (isShowDialog && dialog.isShowing()) {
+//                    dialog.dismiss();
+//                }
 
                 focus();
 
@@ -4959,10 +5325,16 @@ public class DispensingActivity extends AppCompatActivity {
         }
     }
 
+    ArrayList<String> scan_log_listItems=new ArrayList<String>();
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
         if (Block_1.getVisibility() == View.VISIBLE) {
+            return super.dispatchKeyEvent(event);
+        }
+
+        if(linear_layout_search.getVisibility() == View.VISIBLE){
             return super.dispatchKeyEvent(event);
         }
 
@@ -4976,13 +5348,40 @@ public class DispensingActivity extends AppCompatActivity {
             }
             else if (keyCode == KeyEvent.KEYCODE_ENTER) {
 
-                if (mass_usage_code.length() > 0) {
+                Log.d("tog_allKey", "mass_usage_code = "+mass_usage_code);
+                String mass = mass_usage_code;
+                mass_usage_code = "";
+                Log.d("tog_add_pay_usage_code", "Empty = "+mass);
+                if (mass.length() > 0) {
                     if (Block_1.getVisibility() == View.GONE) {
-                        checkInput(mass_usage_code);
-                        Log.d("tog_dispatchKey","checkInput = "+mass_usage_code);
+//                        for(int iii=0;iii<scan_log_listItems.size();iii++){
+//                            if(scan_log_listItems.get(iii).equals(mass)){
+//                                return false;
+//                            }
+//                        }
+
+                        if(test_2811){
+                            //        B_IsNonSelectDocument = true;
+                            if (switch_opt.isChecked()) {
+                                removeItem(mass);
+                            } else {
+                                if (Block_5.getVisibility() == View.VISIBLE) {
+                                    Log.d("scan_log_adapter", "notifyDataSetChanged : 4");
+                                    scan_log_listItems.add(mass);
+                                    scan_log_adapter.notifyDataSetChanged();
+                                    scan_log_num.setText("Number = "+scan_log_listItems.size());
+                                }else{
+                                    Block_5.setVisibility(View.VISIBLE);
+                                }
+                            }
+
+                        }else{
+                            Log.d("tog_add_pay_usage_code", "checkInput = "+mass);
+                            checkInput(mass);
+                            Log.d("tog_dispatchKey","checkInput = "+mass);
+                        }
                     }
                 }
-                mass_usage_code = "";
                 return false;
             }
 

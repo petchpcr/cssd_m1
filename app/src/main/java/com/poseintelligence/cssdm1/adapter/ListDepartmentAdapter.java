@@ -73,17 +73,17 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
         }
 
 
-        if(!((DispensingActivity) context).text_search_department.equals("")){
-            String x = list.get(position).getDepName().toLowerCase();
-            String y = ((DispensingActivity) context).text_search_department.toLowerCase();
-
-            int s = x.indexOf(y);
-
-            if(s<0){
-                view = inflater.inflate(R.layout.activity_list_emtry, parent, false);
-            }
-
-        }
+//        if(!((DispensingActivity) context).text_search_department.equals("")){
+//            String x = list.get(position).getDepName().toLowerCase();
+//            String y = ((DispensingActivity) context).text_search_department.toLowerCase();
+//
+//            int s = x.indexOf(y);
+//
+//            if(s<0){
+//                view = inflater.inflate(R.layout.activity_list_emtry, parent, false);
+//            }
+//
+//        }
         return view;
     }
 

@@ -1544,11 +1544,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     for(int i=0;i<rs.length();i++) {
                         JSONObject c = rs.getJSONObject(i);
 
-                        if (Page.equals("0")){
-                            round.setText("เครื่อง : "+c.getString("WashMachineID")+"/"+c.getString("WashRoundNumber"));
-                        }else {
-                            round.setText("เครื่อง : "+c.getString("SterileMachineID")+"/"+c.getString("SterileRoundNumber"));
-                        }
+                        round.setText("เครื่อง/รอบ : "+c.getString("MachineID")+"/"+c.getString("RoundNumber"));
 
                     }
                 } catch (JSONException e) {
@@ -1571,6 +1567,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                Log.d("display_round_mac","data = "+data);
+                Log.d("display_round_mac","result = "+result);
                 return result;
             }
             // =========================================================================================
