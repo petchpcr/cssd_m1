@@ -1521,6 +1521,7 @@ public class BasketWashingActivity extends AppCompatActivity {
                     show_dialog("Warning","ไม่สามารถสร้างเอกสารได้");
                 }
             }
+
             @Override
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String,String>();

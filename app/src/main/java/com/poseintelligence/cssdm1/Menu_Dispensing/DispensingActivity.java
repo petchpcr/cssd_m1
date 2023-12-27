@@ -15,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.speech.tts.TextToSpeech;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -145,13 +146,7 @@ public class DispensingActivity extends AppCompatActivity {
     private LinearLayout Block_2;
     private LinearLayout Block_3;
     private LinearLayout Block_4;
-    private LinearLayout Block_5;
     private RelativeLayout linear_layout_search;
-
-    private ListView scan_log;
-    private TextView scan_log_num;
-    private ArrayAdapter<String> scan_log_adapter;
-
     private ImageView img_back_1;
     private ImageView img_back_2;
     private ImageView img_back_3;
@@ -211,6 +206,8 @@ public class DispensingActivity extends AppCompatActivity {
 
     ArrayList<String> xDataUserCode = new ArrayList<String>();
 
+    private Vibrator x_vibrator;
+
     public void speakText(String textContents) {
         tts.speak(textContents, TextToSpeech.QUEUE_FLUSH, null, null);
     }
@@ -260,6 +257,8 @@ public class DispensingActivity extends AppCompatActivity {
             displayDepartment("", -1, "");
 
         text_search_department = "";
+
+        x_vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
     private void speakTextInit() {
@@ -343,34 +342,6 @@ public class DispensingActivity extends AppCompatActivity {
         txt_doc_type = (TextView) findViewById(R.id.txt_doc_type);
         title_2 = (TextView) findViewById(R.id.title_2);
         title_3 = (TextView) findViewById(R.id.title_3);
-
-
-        Block_5 = (LinearLayout) findViewById(R.id.Block5);
-        LinearLayout scan_log_li = (LinearLayout) findViewById(R.id.scan_log_li);
-        scan_log_num = (TextView) findViewById(R.id.scan_log_num);
-        TextView textViewClose5 = (TextView) findViewById(R.id.textViewClose5);
-        scan_log = (ListView) findViewById(R.id.scan_log);
-        scan_log_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, scan_log_listItems);
-        scan_log.setAdapter(scan_log_adapter);
-
-        textViewClose5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Block_5.setVisibility(View.GONE);
-            }
-        });
-        scan_log_num.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String x = "'";
-                for(int i = 0 ;i<scan_log_listItems.size();i++){
-                    x=x+"','"+scan_log_listItems.get(i);
-                }
-                x=x+"'";
-
-                f_checkExpiring(x);
-            }
-        });
 
         list_payout_detail_item = (ListView) findViewById(R.id.list_payout_detail_item);
 
@@ -460,7 +431,6 @@ public class DispensingActivity extends AppCompatActivity {
                 Block_2.setVisibility(View.GONE);
                 Block_3.setVisibility(View.GONE);
                 Block_4.setVisibility(View.GONE);
-                Block_5.setVisibility(View.GONE);
                 switch_opt.setVisibility(View.GONE);
                 imageCreate.setVisibility(View.GONE);
                 txt_search_department.setText("");
@@ -510,7 +480,6 @@ public class DispensingActivity extends AppCompatActivity {
                 Block_2.setVisibility(View.VISIBLE);
                 Block_3.setVisibility(View.GONE);
                 Block_4.setVisibility(View.VISIBLE);
-                Block_5.setVisibility(View.GONE);
                 switch_opt.setVisibility(View.GONE);
                 imageCreate.setVisibility(View.GONE);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -519,7 +488,6 @@ public class DispensingActivity extends AppCompatActivity {
                 RefDocNo = null;
 
                 scan_log_listItems.clear();
-                scan_log_adapter.notifyDataSetChanged();
             }
         });
 
@@ -953,7 +921,7 @@ public class DispensingActivity extends AppCompatActivity {
         // Get Config
         // -----------------------------------------------------------------------------------------
         PA_IsNotificationPopupExpiringScan = ((CssdProject) getApplication()).isPA_IsNotificationPopupExpiringScan();
-//        ST_SoundAndroidVersion9 = false;
+//        ST_SoundAndroidVersion9 = true;
         ST_SoundAndroidVersion9 = ((CssdProject) getApplication()).isST_SoundAndroidVersion9();
         Log.d("tog_LoadConfig", "PA_IsNotificationPopupExpiringScan = " + PA_IsNotificationPopupExpiringScan);
         SS_IsGroupPayout = ((CssdProject) getApplication()).isSS_IsGroupPayout();
@@ -1118,18 +1086,42 @@ public class DispensingActivity extends AppCompatActivity {
             ru.execute();
         }else{
             boolean check_Duplicate = false;
-            for(int i = 0 ; i < Model_Payout_Detail_item.size(); i++){
 
-                if (Model_Payout_Detail_item.get(i).getUsageCode().equals(usagecode)){
+//            for(int i = 0 ; i < Model_Payout_Detail_item.size(); i++){
+//
+//                Log.d("tog_checkDupl","getUsageCode() = "+Model_Payout_Detail_item.get(i).getUsageCode());
+//                if (Model_Payout_Detail_item.get(i).getUsageCode().equals(usagecode)){
+//                    check_Duplicate = true;
+//                    break;
+//                }
+//
+//            }
+
+            Log.d("tog_checkDupl","-------------------- usagecode = "+usagecode);
+//            เช็คซ้ำ
+            for(int iii=0;iii<scan_log_listItems.size();iii++){
+
+                Log.d("tog_checkDupl","getUsageCode() = "+scan_log_listItems.get(iii));
+                if(scan_log_listItems.get(iii).equals(usagecode.toUpperCase())){
 
                     check_Duplicate = true;
+                    x_vibrator.vibrate(1000);
+                    //แจ้งซ้ำ
+                    if (MD_IsUsedSoundScanQR) {
+                        if (ST_SoundAndroidVersion9) {
+                            speakText("no");
+                        } else {
+                            nMidia.getAudio("no");
+                        }
+                    }
 
+                    break;
                 }
-
             }
 
             if(check_Duplicate == false){
                 if (((CssdProject) getApplication()).Project().equals("SIPH")){
+                    scan_log_listItems.add(usagecode.toUpperCase());
                     f_checkExpiring(usagecode);
                 }else{
                     if (PA_IsUsedFIFO) {
@@ -1517,8 +1509,6 @@ public class DispensingActivity extends AppCompatActivity {
         ru.execute();
     }
 
-    boolean test_2811 = false;
-    String add_usage_test_2811 = "";
     public void f_checkExpiring(final String usagecode) {
         class checkExpiring extends AsyncTask<String, Void, String> {
 
@@ -1530,7 +1520,6 @@ public class DispensingActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                add_usage_test_2811 = "";
                 try {
                     JSONObject jsonObj = new JSONObject(s);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
@@ -1543,51 +1532,32 @@ public class DispensingActivity extends AppCompatActivity {
                         final String xUsageCode = c.getString("usedcode");
                         if (c.getString("result").equals("A")) {
 
-                            //test
-                            if(test_2811){
-                                if (c.getInt("DateDiff") <= 0) {
-                                    for(int iii=0;iii<scan_log_listItems.size();iii++){
-                                        if(scan_log_listItems.get(iii).equals(xUsageCode)){
-                                            scan_log_listItems.set(iii,xUsageCode+" (Expire)");
-                                            if (Block_5.getVisibility() == View.VISIBLE) {
-                                                Log.d("scan_log_adapter", "notifyDataSetChanged : 1");
-                                                scan_log_adapter.notifyDataSetChanged();
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    add_usage_test_2811 = add_usage_test_2811+","+xUsageCode;
-                                }
-                            }else{
-                                Log.d("xxx", "result : " + c.getString("DateDiff"));
-
-                                Log.d("tog_flow", "DateDiff : " + c.getString("DateDiff"));
-                                if (c.getInt("DateDiff") <= 0) {
-                                    if (MD_IsUsedSoundScanQR) {
-                                        if (ST_SoundAndroidVersion9) {
-                                            Log.d("tog_flow", "speakText : ");
-                                            speakText("expire");
-                                        } else {
-                                            Log.d("tog_flow", "nMidia : ");
-                                            nMidia.getAudio("expire");
-                                        }
-                                    }
-
-                                } else {
-
-                                    if (PA_IsUsedFIFO) {
-                                        String arr[] = usagecode.split("-");
-                                        String itemcode = arr[0];
-                                        Log.d("tog_flow", "checkFIFO ");
-                                        f_checkFIFO(itemcode, usagecode);
+                            if (c.getInt("DateDiff") <= 0) {
+                                scan_log_listItems.remove(xUsageCode.toUpperCase());
+                                if (MD_IsUsedSoundScanQR) {
+                                    if (ST_SoundAndroidVersion9) {
+                                        Log.d("tog_flow", "speakText : ");
+                                        speakText("expire");
                                     } else {
-                                        Log.d("tog_flow", "checkExpiring ");
+                                        Log.d("tog_flow", "nMidia : ");
+                                        nMidia.getAudio("expire");
+                                    }
+                                }
 
-                                        if (((CssdProject) getApplication()).Project().equals("SIPH")) {
-                                            addItem(xUsageCode);
-                                        }else{
-                                            f_checkCloseExpiring(usagecode);
-                                        }
+                            } else {
+
+                                if (PA_IsUsedFIFO) {
+                                    String arr[] = usagecode.split("-");
+                                    String itemcode = arr[0];
+                                    Log.d("tog_flow", "checkFIFO ");
+                                    f_checkFIFO(itemcode, usagecode);
+                                } else {
+                                    Log.d("tog_flow", "checkExpiring ");
+
+                                    if (((CssdProject) getApplication()).Project().equals("SIPH")) {
+                                        addItem(xUsageCode);
+                                    }else{
+                                        f_checkCloseExpiring(usagecode);
                                     }
                                 }
                             }
@@ -1599,9 +1569,6 @@ public class DispensingActivity extends AppCompatActivity {
                     focus();
                 }
 
-                if(test_2811){
-                    addItem_test_2811(add_usage_test_2811);
-                }
             }
 
             @Override
@@ -1995,13 +1962,11 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring", "ST_SoundAndroidVersion9: " + ST_SoundAndroidVersion9);
                                 if (!s_expiring) {
                                     s_expiring = false;
-                                    if (MD_IsUsedSoundScanQR) {
-                                        if (PA_IsUsedPayOkSound) {
-                                            if (ST_SoundAndroidVersion9) {
-                                                speakText("complete");
-                                            } else {
-                                                nMidia.getAudio("okay");
-                                            }
+                                    if (PA_IsUsedPayOkSound) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText("complete");
+                                        } else {
+                                            nMidia.getAudio("okay");
                                         }
                                     }
                                 }
@@ -2010,13 +1975,11 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring","s_expiring: "+s_expiring);
                                 if(!s_expiring){
                                     s_expiring = false;
-                                    if (MD_IsUsedSoundScanQR) {
-                                        if (PA_IsUsedPayOkSound) {
-                                            if (ST_SoundAndroidVersion9) {
-                                                speakText(c.getString("PayQty"));
-                                            } else {
-                                                nMidia.getAudio(c.getString("PayQty"));
-                                            }
+                                    if (PA_IsUsedPayOkSound) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText(c.getString("PayQty"));
+                                        } else {
+                                            nMidia.getAudio(c.getString("PayQty"));
                                         }
                                     }
 
@@ -2250,13 +2213,11 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring", "s_expiring: " + s_expiring);
                                 if (!s_expiring) {
                                     s_expiring = false;
-                                    if (MD_IsUsedSoundScanQR) {
-                                        if (PA_IsUsedPayOkSound) {
-                                            if (ST_SoundAndroidVersion9) {
-                                                speakText("complete");
-                                            } else {
-                                                nMidia.getAudio("okay");
-                                            }
+                                    if (PA_IsUsedPayOkSound) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText("complete");
+                                        } else {
+                                            nMidia.getAudio("okay");
                                         }
                                     }
                                 }
@@ -2265,27 +2226,17 @@ public class DispensingActivity extends AppCompatActivity {
                                 Log.d("tog_s_expiring", "s_expiring: " + s_expiring);
                                 if (!s_expiring) {
                                     s_expiring = false;
-                                    if (MD_IsUsedSoundScanQR) {
-                                        if (PA_IsUsedPayOkSound) {
-                                            if (ST_SoundAndroidVersion9) {
-                                                speakText(c.getString("PayQty"));
-                                            } else {
-                                                nMidia.getAudio(c.getString("PayQty"));
-                                            }
+                                    if (PA_IsUsedPayOkSound) {
+                                        if (ST_SoundAndroidVersion9) {
+                                            speakText(c.getString("PayQty"));
+                                        } else {
+                                            nMidia.getAudio(c.getString("PayQty"));
                                         }
                                     }
                                 }
                             }
 
-//                            for(int iii=0;iii<scan_log_listItems.size();iii++){
-//                                if(scan_log_listItems.get(iii).equals(p_usage_code)){
-//                                    scan_log_listItems.set(iii,p_usage_code+" (✓)");
-//                                    if (Block_5.getVisibility() == View.VISIBLE) {
-//                                        Log.d("scan_log_adapter", "notifyDataSetChanged : 2");
-//                                        scan_log_adapter.notifyDataSetChanged();
-//                                    }
-//                                }
-//                            }
+
 
 
                             Log.d("tog_flow", "addItem DocNo = " + DocNo);
@@ -2441,6 +2392,8 @@ public class DispensingActivity extends AppCompatActivity {
                             }
 
                         } else {
+                            Log.d("tog_checkDupl", "remove p_usage_code : " + p_usage_code);
+                            scan_log_listItems.remove(p_usage_code.toUpperCase());
                             if (MD_IsUsedSoundScanQR) {
                                 if (ST_SoundAndroidVersion9) {
                                     speakText("no");
@@ -2533,231 +2486,6 @@ public class DispensingActivity extends AppCompatActivity {
 
     }
 
-    public void addItem_test_2811(final String p_usage_code) {
-
-
-        Log.d("tog_add_pay_loop", "addItem --- p_usage_code : " + p_usage_code);
-        Log.d("tog_flow", "addItem");
-        final boolean B_Is_Borrow = false; // switch_type.isChecked();
-        String p_is_borrow = B_Is_Borrow ? "1" : "0";
-
-        class Add extends AsyncTask<String, Void, String> {
-            private ProgressDialog dialog = new ProgressDialog(DispensingActivity.this);
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                this.dialog.setMessage(Cons.WAIT_FOR_PROCESS);
-                this.dialog.show();
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-
-                boolean is_dispaly = false;
-                Log.d("tog_add_pay_loop", "add_item_loop : " + add_item_loop);
-                try {
-
-                    JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
-
-                        String result = c.getString("result_code");
-                        String msg = c.getString("Message");
-                        String result_usage = c.getString("result_usage");
-
-                        System.out.println("result = " + c.getString("result"));
-                        System.out.println("result_code = " + result);
-                        if (c.getString("result").equals("A")) {
-
-                            if (DocNo == null) {
-
-                                Log.d("tog_flow", "B_IsNonSelectDocument = " + B_IsNonSelectDocument);
-
-                                DocNo = c.getString("DocNo");
-
-                                if (B_IsNonSelectDocument) {
-
-                                    // Clear Department
-                                    list_department.setAdapter(null);
-
-                                    // Display Payout NA
-                                    displayDocumentNA();
-
-                                } else {
-
-                                    // Display Department
-//                                    if (!switch_department.isChecked()) {
-//                                        displayDepartment(null, -1,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
-//                                    }
-
-                                    // Display Payout
-                                    displayPay(DepID, DocNo, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
-                                }
-
-                                switch_opt.setChecked(false);
-                                Block_1.setVisibility(View.GONE);
-                                Block_2.setVisibility(View.GONE);
-                                Block_3.setVisibility(View.VISIBLE);
-                                Block_4.setVisibility(View.VISIBLE);
-                                switch_opt.setVisibility(View.VISIBLE);
-                                imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
-                                if (Model_Pay.size() > 0) {
-                                    title_3.setText(DocNo + " / " + Model_Pay.get(0).getDepName() + " (M)");
-                                } else {
-                                    title_3.setText(DocNo + " / " + DepName + " (M)");
-                                }
-
-                                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params1.width = Is_imageCreate ? 255 : 505;
-                                params1.setMargins(0, 0, 15, 0);
-                                linear_layout_search.setLayoutParams(params1);
-                                LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params2.width = 250;
-                                imageCreate.setLayoutParams(params2);
-                                // Display Payout Detail
-//                                displayPayoutDetail(DocNo, false);
-
-                                is_dispaly = true;
-
-                            } else if (result.equals("3")) {
-
-                                callDialog(msg);
-
-                            } else if (result.equals("6")) {
-
-                                callDialog(msg);
-
-                                is_dispaly = true;
-
-                            } else if (result.equals("7")) {
-
-                                callQR("user_approve", msg);
-
-                                is_dispaly = true;
-
-                                return;
-
-                            } else if (result.equals("8")) {
-
-                                callCloseDocument();
-
-                                is_dispaly = true;
-
-                            } else if (!result.equals("0")) {
-
-                                callDialog(msg);
-
-                                clearAll(false);
-
-                            } else {
-                                is_dispaly = true;
-                            }
-
-                            for(int iii=0;iii<scan_log_listItems.size();iii++){
-                                if(scan_log_listItems.get(iii).equals(result_usage)){
-                                    scan_log_listItems.set(iii,result_usage+" (✓)");
-                                    scan_log_adapter.notifyDataSetChanged();
-                                }
-                            }
-
-                        } else {
-//                            callDialog(msg);
-
-//                            if (c.getString("result").equals("E")) {
-//                                callDialog(msg, "0");
-//                            } else {
-//                                callDialog(msg, "1");
-//                            }
-
-                            p_usage_code_pay = p_usage_code.toUpperCase();
-                            Docno_paylog = c.getString("DocNo");
-                            Dep_paylog = c.getString("DepName");
-
-                            for(int iii=0;iii<scan_log_listItems.size();iii++){
-                                if(scan_log_listItems.get(iii).equals(result_usage)){
-                                    scan_log_listItems.set(iii,result_usage+" (X)"+msg);
-                                    if (Block_5.getVisibility() == View.VISIBLE) {
-                                        Log.d("scan_log_adapter", "notifyDataSetChanged : 3");
-                                        scan_log_adapter.notifyDataSetChanged();
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-
-                    if(is_dispaly){
-                        displayPayoutDetail(DocNo, false);
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    if (dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                }
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                HashMap<String, String> data = new HashMap<String, String>();
-
-                if (B_IsNonSelectDocument) {
-                    data.put("p_is_non_department", "1");
-                    data.put("p_DeptID", "-1");
-                } else if (DepID != null) {
-                    data.put("p_DeptID", DepID);
-                }
-
-                if (PA_IsUsedApprover) {
-                    data.put("p_IsUsedApprover", "1");
-                }
-
-                if (PA_IsUsedRecipienter) {
-                    data.put("p_IsUsedRecipienter", "1");
-                }
-
-                if (PA_IsConfirmClosePayout) {
-                    data.put("IsConfirmClosePayout", "1");
-                }
-
-                data.put("SS_IsGroupPayout", SS_IsGroupPayout ? "1" : "0");
-
-                data.put("SR_ReceiveFromDeposit", SR_ReceiveFromDeposit ? "1" : "0");
-
-                data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "1" : "0");
-
-                data.put("p_docno", DocNo == null ? "" : DocNo);
-                data.put("p_is_manual", (RefDocNo == null || RefDocNo.trim().equals("")) ? "1" : "0");
-                data.put("p_is_borrow", p_is_borrow);
-                data.put("p_usage_code",p_usage_code.toUpperCase());
-                data.put("p_qty", "1");
-                data.put("p_user_code", ((CssdProject) getApplication()).getPm().getUserid() + "");
-                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-                data.put("p_device", "M1");
-
-                Log.d("OOOO", ((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage.php?" + data);
-                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_add_payout_detail_usage_list.php", data);
-                Log.d("tog_add_pay_detail", "data : " + data);
-                Log.d("tog_add_pay_detail", "result : " + result);
-
-//                Log.d("tog_add_pay_loop", "p_usage_code :  --- "+p_usage_code);
-//                Log.d("tog_add_pay_loop", "result : " + result);
-                return result;
-            }
-        }
-
-        Log.d("tog_add_pay_loop", add_item_loop+" data : 2 ---"+p_usage_code);
-        Add AddItem = new Add();
-        AddItem.execute();
-
-    }
-
     private void clearAll(boolean isDisplayDepartment) {
         B_IsNonSelectDocument = false;
 
@@ -2830,13 +2558,12 @@ public class DispensingActivity extends AppCompatActivity {
 //                            nMidia.getAudio(c.getString("PayQty"));
 //                            speakText(c.getString("PayQty"));
                             // Display Payout Detail
-                            if (MD_IsUsedSoundScanQR) {
-                                if (PA_IsUsedPayOkSound) {
-                                    if (ST_SoundAndroidVersion9) {
-                                        speakText("okay");
-                                    } else {
-                                        nMidia.getAudio("okay");
-                                    }
+                            scan_log_listItems.remove(p_usage_code.toUpperCase());
+                            if (PA_IsUsedPayOkSound) {
+                                if (ST_SoundAndroidVersion9) {
+                                    speakText("okay");
+                                } else {
+                                    nMidia.getAudio("okay");
                                 }
                             }
 
@@ -5353,32 +5080,7 @@ public class DispensingActivity extends AppCompatActivity {
                 Log.d("tog_add_pay_usage_code", "Empty = "+mass);
                 if (mass.length() > 0) {
                     if (Block_1.getVisibility() == View.GONE) {
-//                        for(int iii=0;iii<scan_log_listItems.size();iii++){
-//                            if(scan_log_listItems.get(iii).equals(mass)){
-//                                return false;
-//                            }
-//                        }
-
-                        if(test_2811){
-                            //        B_IsNonSelectDocument = true;
-                            if (switch_opt.isChecked()) {
-                                removeItem(mass);
-                            } else {
-                                if (Block_5.getVisibility() == View.VISIBLE) {
-                                    Log.d("scan_log_adapter", "notifyDataSetChanged : 4");
-                                    scan_log_listItems.add(mass);
-                                    scan_log_adapter.notifyDataSetChanged();
-                                    scan_log_num.setText("Number = "+scan_log_listItems.size());
-                                }else{
-                                    Block_5.setVisibility(View.VISIBLE);
-                                }
-                            }
-
-                        }else{
-                            Log.d("tog_add_pay_usage_code", "checkInput = "+mass);
-                            checkInput(mass);
-                            Log.d("tog_dispatchKey","checkInput = "+mass);
-                        }
+                        checkInput(mass);
                     }
                 }
                 return false;

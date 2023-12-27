@@ -17,6 +17,7 @@ public class CssdProject extends Application {
     private AppCompatActivity xActivity;
 
     public static int isNonActiveTime = 0;
+//    public static boolean siri_api_login = true;
     public static boolean siri_api_login = false;
 
     public static  String D_DATABASE="1";
@@ -144,7 +145,7 @@ public class CssdProject extends Application {
         this.xActivity = xActivity;
     }
 
-    public int getCustomerId() { return I_CustomerId; }
+    public int getCustomerId() { return pm.getUserid(); }
     public void setCustomerId(String s_CustomerId) { I_CustomerId = Integer.valueOf(s_CustomerId).intValue(); }
 
     public String getxUrl() { return xUrl; }

@@ -69,6 +69,7 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         String macname = mData.get(position).getMachineName();
         holder.macname.setText(macname);
 
+        Log.d("tog_position_machine","position = "+position);
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +83,6 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
                 }
             }
         });
-
 
         if(position==select_mac_pos){
             onItemSelect(holder.macname,holder.mac,holder.mac_image,holder.ll);

@@ -79,17 +79,17 @@ public class SterileActivity extends AppCompatActivity{
     public TextView title_2;
 
     public int mac_round_on_change = 0;
-
     ArrayAdapter<String> adp_mac_round;
-//    public Spinner mac_round;
+    public Spinner mac_round;
+    ArrayAdapter<String> adp_mac_pro_test;
+    public Spinner mac_pro_test;
+    ArrayAdapter<String> adp_mac_test_point;
+    ArrayAdapter<String> adp_mac_test_point_default;
+    public Spinner mac_test_point;
 
-//    ArrayAdapter<String> adp_mac_pro_test;
-//    public Spinner mac_pro_test;
-
-//    ArrayAdapter<String> adp_mac_test_point;
-//    ArrayAdapter<String> adp_mac_test_point_default;
-//    public Spinner mac_test_point;
+    boolean isShow_editDocTab_1 = false;
     public boolean SR_IsEditRound = false;
+    public boolean SR_M1IsSetTestProg = false;
     public boolean SR_IsUsedLot = false;
 
     public boolean ST_SoundAndroidVersion9 = false;
@@ -234,6 +234,7 @@ public class SterileActivity extends AppCompatActivity{
         SR_IsRememberUserOperation = ((CssdProject) getApplication()).isSR_IsRememberUserOperation() ;
         SR_IsUsedBasket_M1 = ((CssdProject) getApplication()).isSR_IsUsedBasket_M1();
         SR_IsEditRound = ((CssdProject) getApplication()).isSR_IsEditRound();
+        Log.d("tog_SR_IsEditRound","SR_IsEditRound = "+SR_IsEditRound);
         SR_IsUsedLot = ((CssdProject) getApplication()).isSR_IsUsedLot();
 
         LinearLayout linear_mac_test_point = (LinearLayout) findViewById(R.id.linear_mac_test_point);
@@ -260,93 +261,7 @@ public class SterileActivity extends AppCompatActivity{
 
         mac_image = (ImageView) findViewById(R.id.mac_image);
 
-//        mac_round = (Spinner) findViewById(R.id.mac_round);
-//        ArrayList<String> data_mac_round = new ArrayList<String>();
-//        data_mac_round.add("");
-//        for(int i=1;i<=100;i++){
-//            data_mac_round.add(i+"");
-//        }
-//        adp_mac_round = new ArrayAdapter<String>(SterileActivity.this, R.drawable.spn_bg_sr,data_mac_round);
-//        adp_mac_round.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        mac_round.setAdapter(adp_mac_round);
-//        mac_round.setEnabled(false);
-
-//        adp_mac_round.notifyDataSetChanged();
-//        mac_round.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Log.d("tog_change_doc_round","mac_round_on_change = "+mac_round_on_change);
-//                Log.d("tog_change_doc_round","change_doc_round = "+i);
-//
-//                if(mac_round_on_change!=i && i>0) {
-//                    if (list_mac_adapter.select_mac_pos >= 0) {
-//                        if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
-//                            change_doc_round(i+"",list.get(list_mac_adapter.select_mac_pos).getDocNo());
-//                        } else {
-//                            Log.d("tog_change_doc_round", "mac_empty_id");
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Log.d("tog_change_doc_round","onNothingSelected");
-//            }
-//        });
-
-//        mac_pro_test = (Spinner) findViewById(R.id.mac_pro_test);
-//        mac_pro_test.setEnabled(false);
-//        mac_pro_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//                String val = data_mac_pro_test.get(mac_pro_test.getSelectedItem().toString());
-//                if (list_mac_adapter.select_mac_pos >= 0) {
-//                    if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
-//                        change_test_program(val,list.get(list_mac_adapter.select_mac_pos).getDocNo());
-//                    } else {
-//                        Log.d("tog_mac_pro_test", "mac_empty_id");
-//                    }
-//                }else {
-//                    Log.d("tog_mac_pro_test", "select_mac_pos = "+list_mac_adapter.select_mac_pos);
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Log.d("tog_change_doc_round","onNothingSelected");
-//            }
-//        });
-//
-//        ArrayList<String> mac_test_point_data_default = new ArrayList<String>();
-//        mac_test_point_data_default.add(" ");
-//        adp_mac_test_point_default = new ArrayAdapter<String>(SterileActivity.this,R.drawable.spn_bg_sr,mac_test_point_data_default);
-//        adp_mac_test_point_default.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        mac_test_point = (Spinner) findViewById(R.id.mac_test_point);
-//        mac_test_point.setEnabled(false);
-//        mac_test_point.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Log.d("tog_mac_round_on_change","mac_round_on_change = "+mac_round_on_change);
-//
-//                if(mac_round_on_change!=i && i>0) {
-//                    if (list_mac_adapter.select_mac_pos >= 0) {
-//                        if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
-//                            change_doc_round(i+"",list.get(list_mac_adapter.select_mac_pos).getDocNo());
-//                        } else {
-//                            Log.d("tog_change_doc_round", "mac_empty_id");
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//                Log.d("tog_change_doc_round","onNothingSelected");
-//            }
-//        });
+        editDocTab_1();
 
         TextView textViewBasketH = (TextView) findViewById(R.id.textViewBasketH);
         if(SR_IsUsedBasket_M1){
@@ -482,6 +397,103 @@ public class SterileActivity extends AppCompatActivity{
         get_basket("null");
     }
 
+    public void editDocTab_1(){
+
+        LinearLayout edit_doc_tab_1 = (LinearLayout) findViewById(R.id.edit_doc_tab_1);
+
+        if(!isShow_editDocTab_1){
+            edit_doc_tab_1.setVisibility(View.GONE);
+            return;
+        }
+
+        mac_round = (Spinner) findViewById(R.id.mac_round);
+        ArrayList<String> data_mac_round = new ArrayList<String>();
+        data_mac_round.add("");
+        for(int i=1;i<=100;i++){
+            data_mac_round.add(i+"");
+        }
+        adp_mac_round = new ArrayAdapter<String>(SterileActivity.this, R.drawable.spn_bg_sr,data_mac_round);
+        adp_mac_round.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mac_round.setAdapter(adp_mac_round);
+        mac_round.setEnabled(false);
+
+        mac_round.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("tog_change_doc_round","mac_round_on_change = "+mac_round_on_change);
+                Log.d("tog_change_doc_round","change_doc_round = "+i);
+
+                if(mac_round_on_change!=i && i>0) {
+                    if (list_mac_adapter.select_mac_pos >= 0) {
+                        if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
+                            change_doc_round(i+"",list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                        } else {
+                            Log.d("tog_change_doc_round", "mac_empty_id");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("tog_change_doc_round","onNothingSelected");
+            }
+        });
+
+        mac_pro_test = (Spinner) findViewById(R.id.mac_pro_test);
+        mac_pro_test.setEnabled(false);
+        mac_pro_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                String val = data_mac_pro_test.get(mac_pro_test.getSelectedItem().toString());
+                if (list_mac_adapter.select_mac_pos >= 0) {
+                    if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
+                        change_test_program(val,list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                    } else {
+                        Log.d("tog_mac_pro_test", "mac_empty_id");
+                    }
+                }else {
+                    Log.d("tog_mac_pro_test", "select_mac_pos = "+list_mac_adapter.select_mac_pos);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("tog_change_doc_round","onNothingSelected");
+            }
+        });
+
+        ArrayList<String> mac_test_point_data_default = new ArrayList<String>();
+        mac_test_point_data_default.add(" ");
+        adp_mac_test_point_default = new ArrayAdapter<String>(SterileActivity.this,R.drawable.spn_bg_sr,mac_test_point_data_default);
+        adp_mac_test_point_default.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mac_test_point = (Spinner) findViewById(R.id.mac_test_point);
+        mac_test_point.setEnabled(false);
+        mac_test_point.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("tog_mac_round_on_change","mac_round_on_change = "+mac_round_on_change);
+
+                if(mac_round_on_change!=i && i>0) {
+                    if (list_mac_adapter.select_mac_pos >= 0) {
+                        if (!list.get(list_mac_adapter.select_mac_pos).getMachineID().equals(mac_empty_id)) {
+                            change_doc_round(i+"",list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                        } else {
+                            Log.d("tog_change_doc_round", "mac_empty_id");
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.d("tog_change_doc_round","onNothingSelected");
+            }
+        });
+    }
+
     public void loadind_dialog_show(){
 
         Log.d("tog_loadind_dialog","loadind_dialog_show");
@@ -526,6 +538,7 @@ public class SterileActivity extends AppCompatActivity{
                     JSONObject jsonObj = new JSONObject(result);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
 
+                    Log.d("tog_position_machine","mac_id = "+mac_id);
                     if(mac_id.equals("null")){
                         list.clear();
                         map_machine.clear();
@@ -549,9 +562,11 @@ public class SterileActivity extends AppCompatActivity{
                             list.add(new ModelMachine(mac_empty_id,mac_empty_id,"0","0",mac_empty_id,"",""));
                         }
 
+                        Log.d("tog_position_machine","setAdapter = S");
                         list_mac_adapter = new ListBoxMachineAdapter(SterileActivity.this, list,list_mac);
                         list_mac.setAdapter(list_mac_adapter);
 
+                        Log.d("tog_position_machine","setAdapter = E");
                         show_mac("",View.GONE);
                         mac_id_non_approve = -1;
                         show_basket("",View.GONE);
@@ -568,7 +583,7 @@ public class SterileActivity extends AppCompatActivity{
                         }else{
                             for (int i = 0; i < rs.length(); i++) {
                                 JSONObject c = rs.getJSONObject(i);
-                                Log.d("tog_scan_basket","xID = "+c.getString("xID")+"---"+mac_id);
+                                Log.d("tog_position_machine","xID = "+c.getString("xID")+"---"+mac_id);
 
                                 for (int j = 0; j < list.size(); j++) {
                                     if(list.get(j).getMachineID().equals(c.getString("xID"))){
@@ -1794,348 +1809,346 @@ public class SterileActivity extends AppCompatActivity{
         obj.execute();
     }
 
-//    HashMap<String, String> data_mac_pro_test = new HashMap<String, String>();
-//
-//    public void get_test_program(String S_Sterile_Type_Or_Process_ID,String TestProgramID){
-//
-//        class get_test_program extends AsyncTask<String, Void, String> {
-//
-//            // variable
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                loadind_dialog_show();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String result) {
-//                super.onPostExecute(result);
-//                ArrayList<String> _data = new ArrayList<String>();
-//                _data.add("-");
-//                data_mac_pro_test.put("-","0");
-//                int pos_select = 0;
-//                try {
-//                    JSONObject jsonObj = new JSONObject(result);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-//
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        if (c.getString("result").equals("A")) {
-//                            _data.add(c.getString("Label"));
-//                            data_mac_pro_test.put(c.getString("Label"),c.getString("TestProgramID"));
-//
-//                            if(c.getString("TestProgramID").equals(TestProgramID)){
-//                                pos_select = i+1;
-//                            }
-//                        }
-//                    }
-//
-//                    adp_mac_pro_test = new ArrayAdapter<String>(SterileActivity.this,R.drawable.spn_bg_sr,_data);
-//                    adp_mac_pro_test.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    mac_pro_test.setAdapter(adp_mac_pro_test);
-//                    adp_mac_pro_test.notifyDataSetChanged();
-//
-//                    mac_pro_test.setSelection(pos_select);
-//
-//                    if(SR_IsUsedLot){
-//
-//                        get_test_point(TestProgramID);
-//                    }else{
-//
-//                        loadind_dialog_dismis();
-//                    }
-//
-//                } catch (JSONException e) {
-//
-//                    show_log_error("get_test_program.php Error = "+e);
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
+    HashMap<String, String> data_mac_pro_test = new HashMap<String, String>();
+
+    public void get_test_program(String S_Sterile_Type_Or_Process_ID,String TestProgramID){
+
+        class get_test_program extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                ArrayList<String> _data = new ArrayList<String>();
+                _data.add("-");
+                data_mac_pro_test.put("-","0");
+                int pos_select = 0;
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            _data.add(c.getString("Label"));
+                            data_mac_pro_test.put(c.getString("Label"),c.getString("TestProgramID"));
+
+                            if(c.getString("TestProgramID").equals(TestProgramID)){
+                                pos_select = i+1;
+                            }
+                        }
+                    }
+
+                    adp_mac_pro_test = new ArrayAdapter<String>(SterileActivity.this,R.drawable.spn_bg_sr,_data);
+                    adp_mac_pro_test.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    mac_pro_test.setAdapter(adp_mac_pro_test);
+
+                    mac_pro_test.setSelection(pos_select);
+
+                    if(SR_IsUsedLot){
+                        get_test_point(TestProgramID);
+                    }else{
+                        loadind_dialog_dismis();
+                    }
+
+                } catch (JSONException e) {
+
+                    show_log_error("get_test_program.php Error = "+e);
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                String result = null;
+
+                data.put("S_Sterile_Type_Or_Process_ID", S_Sterile_Type_Or_Process_ID);
+                try {
+                    result = httpConnect.sendPostRequest(getUrl + "get_test_program.php", data);
+                } catch (Exception e) {
+                    show_log_error("get_test_program.php");
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_get_test_program","result = "+result);
+
+                return result;
+            }
+
+        }
+
+        get_test_program obj = new get_test_program();
+
+        obj.execute();
+    }
+
+    public void change_test_program(String TestProgramID, String docno) {
+
+        class change_test_program extends AsyncTask<String, Void, String> {
+
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                Log.d("tog_get_test_point","change_test_program");
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            if(SR_IsUsedLot){
+                                get_test_point(TestProgramID);
+                            }
+                            loadind_dialog_dismis();
+                        }else{
+                            show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้"+c.getString("result"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้");
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("TestProgramID", TestProgramID);
+                data.put("docno", docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                String result = httpConnect.sendPostRequest(getUrl+ "change_test_program.php", data);
+
+                Log.d("tog_mac_pro_test", "data = "+data);
+
+                return result;
+            }
+        }
+
+        change_test_program obj = new change_test_program();
+        obj.execute();
+    }
+
+    HashMap<String, String> data_mac_test_point = new HashMap<String, String>();
+    public void get_test_point(String TestProgramID){
+
+        class get_test_point extends AsyncTask<String, Void, String> {
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                ArrayList<String> _data = new ArrayList<String>();
+
+                try {
+                    JSONObject jsonObj = new JSONObject(result);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        _data.add("Lot No."+c.getString("LotNo"));
+                        data_mac_test_point.put("Lot No."+c.getString("LotNo"),c.getString("RowID"));
+
+                    }
+
+                    adp_mac_test_point = new ArrayAdapter<String>(SterileActivity.this,R.drawable.spn_bg_sr,_data);
+                    adp_mac_test_point.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    mac_test_point.setAdapter(adp_mac_test_point);
+                    mac_test_point.setEnabled(true);
+//                    mac_test_point.setSelection(pos_select);
+
+                } catch (JSONException e) {
+
+                    show_log_error("get_test_program.php Error = "+e);
+                    e.printStackTrace();
+                }
+
+                loadind_dialog_dismis();
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                String Json_data = "{\"TestProgramID\": \"" + TestProgramID + "\"}";
+
 //                HashMap<String, String> data = new HashMap<String, String>();
-//
-//                String result = null;
-//
-//                data.put("S_Sterile_Type_Or_Process_ID", S_Sterile_Type_Or_Process_ID);
-//                try {
-//                    result = httpConnect.sendPostRequest(getUrl + "get_test_program.php", data);
-//                } catch (Exception e) {
-//                    show_log_error("get_test_program.php");
-//                    e.printStackTrace();
-//                }
-//
-//                Log.d("tog_get_test_program","result = "+result);
-//
-//                return result;
-//            }
-//
-//        }
-//
-//        get_test_program obj = new get_test_program();
-//
-//        obj.execute();
-//    }
-//
-//    public void change_test_program(String TestProgramID, String docno) {
-//
-//        class change_test_program extends AsyncTask<String, Void, String> {
-//
-//
-//            // variable
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                Log.d("tog_get_test_point","change_test_program");
-//                loadind_dialog_show();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//
-//                try {
-//
-//                    JSONObject jsonObj = new JSONObject(s);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-//
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        if (c.getString("result").equals("A")) {
-//                            get_test_point(TestProgramID);
-//                            loadind_dialog_dismis();
-//                        }else{
-//                            show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้"+c.getString("result"));
-//                        }
-//                    }
-//                } catch (JSONException e) {
-//                    show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้");
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                HashMap<String, String> data = new HashMap<String,String>();
 //                data.put("TestProgramID", TestProgramID);
-//                data.put("docno", docno);
-//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-//                String result = httpConnect.sendPostRequest(getUrl+ "change_test_program.php", data);
-//
-//                Log.d("tog_mac_pro_test", "data = "+data);
-//
-//                return result;
-//            }
-//        }
-//
-//        change_test_program obj = new change_test_program();
-//        obj.execute();
-//    }
-//
-//    HashMap<String, String> data_mac_test_point = new HashMap<String, String>();
-//    public void get_test_point(String TestProgramID){
-//
-//        class get_test_point extends AsyncTask<String, Void, String> {
-//
-//            // variable
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//                loadind_dialog_show();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String result) {
-//                super.onPostExecute(result);
-//                ArrayList<String> _data = new ArrayList<String>();
-//
-//                try {
-//                    JSONObject jsonObj = new JSONObject(result);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-//
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        _data.add("Lot No."+c.getString("LotNo"));
-//                        data_mac_test_point.put("Lot No."+c.getString("LotNo"),c.getString("RowID"));
-//
-//                    }
-//
-//                    adp_mac_test_point = new ArrayAdapter<String>(SterileActivity.this,R.drawable.spn_bg_sr,_data);
-//                    adp_mac_test_point.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                    mac_test_point.setAdapter(adp_mac_test_point);
-//                    adp_mac_test_point.notifyDataSetChanged();
-//                    mac_test_point.setEnabled(true);
-////                    mac_test_point.setSelection(pos_select);
-//
-//                } catch (JSONException e) {
-//
-//                    show_log_error("get_test_program.php Error = "+e);
-//                    e.printStackTrace();
-//                }
-//
-//                loadind_dialog_dismis();
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                String Json_data = "{\"TestProgramID\": \"" + TestProgramID + "\"}";
-//
-////                HashMap<String, String> data = new HashMap<String, String>();
-////                data.put("TestProgramID", TestProgramID);
-//
-//                String result = null;
-//
-//                try {
-//                    result = httpConnect.sendPostRequestJson_data(((CssdProject) getApplication()).getMD_URL() + "api_inventory/cssd_select_lot.php", Json_data);
-//                } catch (Exception e) {
-//                    show_log_error("api_inventory/cssd_select_lot.php");
-//                    e.printStackTrace();
-//                }
-//
-//                Log.d("tog_get_test_point","URL = "+((CssdProject) getApplication()).getMD_URL() + "api_inventory/cssd_select_lot.php");
-//                Log.d("tog_get_test_point","result = "+result);
-//
-//                return result;
-//            }
-//
-//        }
-//
-//        get_test_point obj = new get_test_point();
-//
-//        obj.execute();
-//    }
-//
-//    public void change_test_point(String TestProgramID, String docno) {
-//
-//        class change_test_program extends AsyncTask<String, Void, String> {
-//
-//
-//            // variable
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//
-//                loadind_dialog_show();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//
-//                try {
-//
-//                    JSONObject jsonObj = new JSONObject(s);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-//
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        if (c.getString("result").equals("A")) {
-//
-//                            loadind_dialog_dismis();
-//                        }else{
-//                            show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้"+c.getString("result"));
-//                        }
-//                    }
-//                } catch (JSONException e) {
-//                    show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้");
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                HashMap<String, String> data = new HashMap<String,String>();
-//                data.put("TestProgramID", TestProgramID);
-//                data.put("docno", docno);
-//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-//                String result = httpConnect.sendPostRequest(getUrl+ "change_test_program.php", data);
-//
-//                Log.d("tog_mac_pro_test", "data = "+data);
-//
-//                return result;
-//            }
-//        }
-//
-//        change_test_program obj = new change_test_program();
-//        obj.execute();
-//    }
-//
-//    public void change_doc_round(String SterileRoundNumber, String docno) {
-//
-//        class change_doc_round extends AsyncTask<String, Void, String> {
-//
-//
-//            // variable
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//
-//                loadind_dialog_show();
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//
-//                try {
-//
-//                    JSONObject jsonObj = new JSONObject(s);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-//
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        if (c.getString("result").equals("A")) {
-//                            reload_mac();
-//                        }else{
-//
-//                            AlertDialog.Builder builderalert_r = new AlertDialog.Builder(SterileActivity.this);
-//                            builderalert_r.setMessage("คุณได้เลือกรอบฆ่าเชื้อซ้ำ \n("+c.getString("DocNo")+" เครื่อง "+c.getString("MachineName2")+",รอบ "+c.getString("SterileRoundNumber")+") !!");
-//                            builderalert_r.setCancelable(false);
-//
-//                            builderalert_r.setNegativeButton(
-//                                    "ปิด",
-//                                    new DialogInterface.OnClickListener() {
-//                                        public void onClick(DialogInterface dialog, int id) {
-//                                            dialog.cancel();
-//
-//                                            reload_mac();
-//                                        }
-//                                    });
-//
-//                            AlertDialog alert_r = builderalert_r.create();
-//                            alert_r.show();
-//                        }
-//                    }
-//                } catch (JSONException e) {
-//                    show_dialog("Warning","ไม่สามารถเปลี่ยนรอบได้");
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                HashMap<String, String> data = new HashMap<String,String>();
-//                data.put("SterileRoundNumber", SterileRoundNumber);
-//                data.put("docno", docno);
-//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-//                String result = httpConnect.sendPostRequest(getUrl+ "change_doc_round.php", data);
-//
-//                Log.d("tog_change_doc_round","data = "+data);
-//                Log.d("tog_change_doc_round","result = "+result);
-//                return result;
-//            }
-//        }
-//
-//        change_doc_round obj = new change_doc_round();
-//        obj.execute();
-//    }
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequestJson_data(((CssdProject) getApplication()).getMD_URL() + "api_inventory/cssd_select_lot.php", Json_data);
+                } catch (Exception e) {
+                    show_log_error("api_inventory/cssd_select_lot.php");
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_get_test_point","URL = "+((CssdProject) getApplication()).getMD_URL() + "api_inventory/cssd_select_lot.php");
+                Log.d("tog_get_test_point","result = "+result);
+
+                return result;
+            }
+
+        }
+
+        get_test_point obj = new get_test_point();
+
+        obj.execute();
+    }
+
+    public void change_test_point(String TestProgramID, String docno) {
+
+        class change_test_program extends AsyncTask<String, Void, String> {
+
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+
+                            loadind_dialog_dismis();
+                        }else{
+                            show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้"+c.getString("result"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    show_dialog("Warning","ไม่สามารถโปรแกรมทดสอบได้");
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("TestProgramID", TestProgramID);
+                data.put("docno", docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                String result = httpConnect.sendPostRequest(getUrl+ "change_test_program.php", data);
+
+                Log.d("tog_mac_pro_test", "data = "+data);
+
+                return result;
+            }
+        }
+
+        change_test_program obj = new change_test_program();
+        obj.execute();
+    }
+
+    public void change_doc_round(String SterileRoundNumber, String docno) {
+
+        class change_doc_round extends AsyncTask<String, Void, String> {
+
+
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                loadind_dialog_show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            reload_mac();
+                        }else{
+
+                            AlertDialog.Builder builderalert_r = new AlertDialog.Builder(SterileActivity.this);
+                            builderalert_r.setMessage("คุณได้เลือกรอบฆ่าเชื้อซ้ำ \n("+c.getString("DocNo")+" เครื่อง "+c.getString("MachineName2")+",รอบ "+c.getString("SterileRoundNumber")+") !!");
+                            builderalert_r.setCancelable(false);
+
+                            builderalert_r.setNegativeButton(
+                                    "ปิด",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+
+                                            reload_mac();
+                                        }
+                                    });
+
+                            AlertDialog alert_r = builderalert_r.create();
+                            alert_r.show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    show_dialog("Warning","ไม่สามารถเปลี่ยนรอบได้");
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String,String>();
+                data.put("SterileRoundNumber", SterileRoundNumber);
+                data.put("docno", docno);
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                String result = httpConnect.sendPostRequest(getUrl+ "change_doc_round.php", data);
+
+                Log.d("tog_change_doc_round","data = "+data);
+                Log.d("tog_change_doc_round","result = "+result);
+                return result;
+            }
+        }
+
+        change_doc_round obj = new change_doc_round();
+        obj.execute();
+    }
 
     public void get_doc_in_mac(String docno){
 
@@ -2170,7 +2183,9 @@ public class SterileActivity extends AppCompatActivity{
                             get_data =true;
                             Log.d("tog_tag_reload_basket","6");
 
-//                            get_test_program(typeID,c.getString("TestProgramID"));
+                            if(SR_M1IsSetTestProg){
+                                get_test_program(typeID,c.getString("TestProgramID"));
+                            }
 
                             reload_basket();
                         }
@@ -2838,9 +2853,9 @@ public class SterileActivity extends AppCompatActivity{
 
         if(select_mac_pos==(mData_size-emtpyPos)){
             title_2.setText(" ");
+
 //            mac_round.setSelection(0, false);
 //            mac_round.setEnabled(false);
-//
 //
 //            mac_pro_test.setSelection(0, false);
 //            mac_pro_test.setEnabled(false);
@@ -2860,23 +2875,23 @@ public class SterileActivity extends AppCompatActivity{
             }
 
             title_2.setText("โปรแกรม : "+mData_select_mac_pos.getProgramName()+"\tรอบ : "+mData_select_mac_pos.getRoundNumber()+"\nผู้ทำรายการ : "+loader);
-//            title_2.setText("โปรแกรม : "+mData_select_mac_pos.getProgramName()+"\nผู้ทำรายการ : "+loader);
+            if(isShow_editDocTab_1){
+                title_2.setText("โปรแกรม : "+mData_select_mac_pos.getProgramName()+"\nผู้ทำรายการ : "+loader);
+                mac_round.setEnabled(SR_IsEditRound);
 
+                mac_round_on_change = mData_select_mac_pos.getIntRoundNumber();
+                Log.d("tog_change_doc_round", "setSelection"+mac_round_on_change);
+                mac_round.setSelection(mData_select_mac_pos.getIntRoundNumber(), false);
 
-//            mac_round.setEnabled(SR_IsEditRound);
-//
-//            mac_round_on_change = mData_select_mac_pos.getIntRoundNumber();
-//            Log.d("tog_change_doc_round", "setSelection"+mac_round_on_change);
-//            mac_round.setSelection(mData_select_mac_pos.getIntRoundNumber(), false);
-//
-//            mac_pro_test.setEnabled(true);
-//            mac_test_point.setEnabled(true);
-//
-//            if(mData_select_mac_pos.getIsActive().equals("1")){
-//                mac_round.setEnabled(false);
-//                mac_pro_test.setEnabled(false);
-//                mac_test_point.setEnabled(false);
-//            }
+                mac_pro_test.setEnabled(true);
+                mac_test_point.setEnabled(true);
+
+                if(mData_select_mac_pos.getIsActive().equals("1")){
+                    mac_round.setEnabled(false);
+                    mac_pro_test.setEnabled(false);
+                    mac_test_point.setEnabled(false);
+                }
+            }
         }
     }
 
