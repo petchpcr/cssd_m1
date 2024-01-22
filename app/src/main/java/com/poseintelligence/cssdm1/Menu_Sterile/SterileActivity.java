@@ -87,7 +87,7 @@ public class SterileActivity extends AppCompatActivity{
     ArrayAdapter<String> adp_mac_test_point_default;
     public Spinner mac_test_point;
 
-    boolean isShow_editDocTab_1 = false;
+    boolean isShow_editDocTab_1 = true;
     public boolean SR_IsEditRound = false;
     public boolean SR_M1IsSetTestProg = false;
     public boolean SR_IsUsedLot = false;
