@@ -195,10 +195,10 @@ public class CheckQR_Approve extends Activity {
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
-                if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr.php", data);
-                }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                if(((CssdProject) getApplication()).Project().equals("VCH")){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr_new.php", data);
+                }else{
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr.php", data);
                 }
 
                 Log.d("Checkuser",data+"");
@@ -290,10 +290,11 @@ public class CheckQR_Approve extends Activity {
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
-                if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr.php", data);
-                }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+
+                if(((CssdProject) getApplication()).Project().equals("VCH")){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr_new.php", data);
+                }else{
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr.php", data);
                 }
 
                 return  result;
@@ -389,10 +390,11 @@ public class CheckQR_Approve extends Activity {
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
                 String result = null;
-                if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr.php", data);
-                }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+
+                if(((CssdProject) getApplication()).Project().equals("VCH")){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr_new.php", data);
+                }else{
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "chk_qr/check_qr.php", data);
                 }
                 return  result;
             }

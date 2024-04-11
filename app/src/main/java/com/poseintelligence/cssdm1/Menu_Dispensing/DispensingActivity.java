@@ -361,10 +361,11 @@ public class DispensingActivity extends AppCompatActivity {
         switch_department_or = (Switch) findViewById(R.id.switch_department_or);
         text_switch_department_or = (TextView) findViewById(R.id.text_switch_department_or);
 
-        if (!((CssdProject) getApplication()).Project().equals("SIPH")) {
+        if (!((CssdProject) getApplication()).Project().equals("SIPH")&&!((CssdProject) getApplication()).Project().equals("RM9")) {
             switch_department_or.setVisibility(View.GONE);
             text_switch_department_or.setVisibility(View.GONE);
         }
+
     }
 
     private void byEvent() {
@@ -444,7 +445,7 @@ public class DispensingActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
 
-                if (((CssdProject) getApplication()).Project().equals("SIPH")) {
+                if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RM9")) {
                     if(isChecked){
                         switch_mode.setText("ย้อนหลัง");
                     }else{
@@ -921,8 +922,9 @@ public class DispensingActivity extends AppCompatActivity {
         // Get Config
         // -----------------------------------------------------------------------------------------
         PA_IsNotificationPopupExpiringScan = ((CssdProject) getApplication()).isPA_IsNotificationPopupExpiringScan();
-//        ST_SoundAndroidVersion9 = true;
+//        ST_SoundAndroidVersion9 = false;
         ST_SoundAndroidVersion9 = ((CssdProject) getApplication()).isST_SoundAndroidVersion9();
+        Log.d("tog_LoadConfig", "ST_SoundAndroidVersion9 = " + ST_SoundAndroidVersion9);
         Log.d("tog_LoadConfig", "PA_IsNotificationPopupExpiringScan = " + PA_IsNotificationPopupExpiringScan);
         SS_IsGroupPayout = ((CssdProject) getApplication()).isSS_IsGroupPayout();
         SS_IsCopyPayout = ((CssdProject) getApplication()).isSS_IsCopyPayout();
@@ -961,7 +963,8 @@ public class DispensingActivity extends AppCompatActivity {
 
         PA_IsUsedPayOkSound = ((CssdProject) getApplication()).isPA_IsUsedPayOkSound();
 
-        Log.d("tog_LoadConfig", "PA_IsUsedPayOkSound = " + PA_IsUsedPayOkSound);
+        Log.d("tog_LoadConfig", "PA_IsUsedFIFO = " + PA_IsUsedFIFO);
+        Log.d("tog_LoadConfig", "MD_IsUsedSoundScanQR = " + MD_IsUsedSoundScanQR);
         //======================================================
         //  M1
         //======================================================
@@ -1033,7 +1036,7 @@ public class DispensingActivity extends AppCompatActivity {
 //                                    }
 
 
-                                if (((CssdProject) getApplication()).Project().equals("SIPH")){
+                                if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RM9")){
                                     f_checkExpiring(usagecode);
                                 }else{
                                     if (PA_IsUsedFIFO) {
@@ -1120,7 +1123,7 @@ public class DispensingActivity extends AppCompatActivity {
             }
 
             if(check_Duplicate == false){
-                if (((CssdProject) getApplication()).Project().equals("SIPH")){
+                if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RM9")){
                     scan_log_listItems.add(usagecode.toUpperCase());
                     f_checkExpiring(usagecode);
                 }else{
@@ -1554,7 +1557,7 @@ public class DispensingActivity extends AppCompatActivity {
                                 } else {
                                     Log.d("tog_flow", "checkExpiring ");
 
-                                    if (((CssdProject) getApplication()).Project().equals("SIPH")) {
+                                    if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RM9")) {
                                         addItem(xUsageCode);
                                     }else{
                                         f_checkCloseExpiring(usagecode);
@@ -2639,11 +2642,12 @@ public class DispensingActivity extends AppCompatActivity {
                     callQR("user_approve", "สแกนรหัสผู้อนุมัติจ่าย เพื่อปิดเอกสาร.");
                 } else {
 //                    updatePayout(DocNo, DepID);
-                    if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA") || ((CssdProject) getApplication()).Project().equals("BGH")) {
-                        updatePayout(DocNo, DepID, "0");
-                    } else if (((CssdProject) getApplication()).Project().equals("VCH")) {
+                    if (((CssdProject) getApplication()).Project().equals("VCH")) {
                         updatePayout(DocNo, DepID, "3");
+                    }else{
+                        updatePayout(DocNo, DepID, "");
                     }
+
 
                 }
 
@@ -3283,10 +3287,10 @@ public class DispensingActivity extends AppCompatActivity {
 
                 try {
 
-                    if (((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA") || ((CssdProject) getApplication()).Project().equals("BGH")) {
-                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department.php", data);
-                    } else if (((CssdProject) getApplication()).Project().equals("VCH")) {
+                    if (((CssdProject) getApplication()).Project().equals("VCH")) {
                         result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department_new.php", data);
+                    }else{
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_select_department.php", data);
                     }
 
                 } catch (Exception e) {
@@ -5087,6 +5091,10 @@ public class DispensingActivity extends AppCompatActivity {
             }
 
             int unicodeChar = event.getUnicodeChar();
+
+//            if(keyCode==37){
+//                mass_usage_code = "";
+//            }
 
             if(unicodeChar!=0){
                 mass_usage_code=mass_usage_code+(char)unicodeChar;

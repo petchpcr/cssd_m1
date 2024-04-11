@@ -654,7 +654,8 @@ public class ReceiveActivity extends AppCompatActivity {
                     // Display List Detail
                     displaySendSterileDetail(d.getDocno());
 
-                    CheckStatusDocNo(d.getDocno());
+                    //Close by toy 225-01-2024
+//                    CheckStatusDocNo(d.getDocno());
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -1846,7 +1847,7 @@ public class ReceiveActivity extends AppCompatActivity {
                                 });
 
                                 quitDialog.show();
-                            }else if (SS_IsUsedChangeDepartment && c.getString("IsStatus").equals("4") || c.getString("IsStatus").equals("5")){
+                            }else if (SS_IsUsedChangeDepartment && (c.getString("IsStatus").equals("4") || c.getString("IsStatus").equals("5")) && !c.getString("DepID").equals(p_dept_id) ){
 
                                 String text_Message = c.getString("Message");
                                 String S_DeptName = c.getString("DepName");
@@ -1858,6 +1859,7 @@ public class ReceiveActivity extends AppCompatActivity {
                                 final View customLayout = getLayoutInflater().inflate( R.layout.dialog_alert_1, null);
                                 TextView tView = customLayout.findViewById( R.id.tView);
                                 tView.setText( "รหัสใช้งานนี้อยู่ในแผนก " + S_DeptName + " คุณต้องการเปลี่ยนแผนกหรือไม่ ?" );
+//                                tView.setText(text_Message );
                                 quitDialog.setView(customLayout);
                                 quitDialog.setPositiveButton("ตกลง", new DialogInterface.OnClickListener() {
 
@@ -2055,9 +2057,9 @@ public class ReceiveActivity extends AppCompatActivity {
                 }
 
                 data.put("p_project_id", Integer.toString ( ((CssdProject) getApplication()).getCustomerId()) );
-
+//                String result = "";
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_complete.php", data);
-                Log.d("onSave","data = "+data);
+                Log.d("onSave","data = "+httpConnect.ChkPostDataString(data));
                 Log.d("onSave","result = "+result);
                 return result;
             }
@@ -3361,8 +3363,9 @@ public class ReceiveActivity extends AppCompatActivity {
 //                if(((CssdProject) getApplication()).getPm().getEmCode() == 201 || ((CssdProject) getApplication()).getPm().getEmCode() == 211){
 //                    data.put("p_is_used_itemstock_department", "1");
 //                }
-
+                Log.d("ondeletedetail","data = "+httpConnect.ChkPostDataString(data));
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_delete_send_sterile_detail.php", data);
+//                String result = "";
 
                 return result;
             }
@@ -3554,11 +3557,12 @@ public class ReceiveActivity extends AppCompatActivity {
 
                 String result = null;
 //                String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile.php", data);
-                if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
-                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile.php", data);
-                }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                if (((CssdProject) getApplication()).Project().equals("VCH")){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile_new.php", data);
+                }else{
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_update_send_sterile.php", data);
                 }
+
                 return result;
             }
 
@@ -3709,12 +3713,11 @@ public class ReceiveActivity extends AppCompatActivity {
                 String result = null;
                 try {
 
-                    if(((CssdProject) getApplication()).Project().equals("SIPH")||((CssdProject) getApplication()).Project().equals("RAMA")||((CssdProject) getApplication()).Project().equals("BGH")){
-                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
-                    }else if (((CssdProject) getApplication()).Project().equals("VCH")){
+                    if (((CssdProject) getApplication()).Project().equals("VCH")){
                         result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count_new.php", data);
+                    }else{
+                        result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
                     }
-//                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_display_usage_count.php", data);
 
                 }catch(Exception e){
                     e.printStackTrace();

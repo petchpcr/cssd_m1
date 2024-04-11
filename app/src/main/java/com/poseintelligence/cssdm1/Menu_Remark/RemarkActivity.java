@@ -346,20 +346,19 @@ public class RemarkActivity extends AppCompatActivity {
 
     @SuppressLint("MissingSuperCall")
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-        Log.d("tog_onActivity","requestCode = "+requestCode);
-
         if (requestCode == IMAGE_CAPTURE_CODE){
-            Log.d("tog_onActivity","onActivityResult data = "+data);
-            if(data==null){
+//            if(data==null){
                 try {
-                    Log.d("tog_onActivity","onActivityResult 1");
-                    images1.setImageURI(image_uri1);
+
+//                    images1.setImageURI(image_uri1);
+
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri1);
+                    images1.setImageBitmap(bitmap);
                     uploadImage(ID_Pic,DocNo_pic, String.valueOf(images1),PicNum);
-                    Log.d("tog_onActivity","onActivityResult 2");
                 }catch (Exception e){
 
                 }
-            }
+//            }
         }
     }
 

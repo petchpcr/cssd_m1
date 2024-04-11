@@ -2,6 +2,7 @@ package com.poseintelligence.cssdm1;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,21 +17,29 @@ public class CssdProject extends Application {
 
     private AppCompatActivity xActivity;
 
+    public static boolean Is_de_bug = false;
+//    public static boolean Is_de_bug = true;
     public static int isNonActiveTime = 0;
-//    public static boolean siri_api_login = true;
     public static boolean siri_api_login = false;
+    public static boolean ldap_login = false;
 
-    public static  String D_DATABASE="1";
-    public static  String Project = "SIPH";
+    public static String D_DATABASE="1";
+    public static String Project = "SIPH";
 
-//    public static  String D_DATABASE="1";
-//    public static  String Project = "RAMA";
+//    public static boolean siri_api_login = true;
 
-//    public static  String D_DATABASE="0";
-//    public static  String Project = "VCH";
+//    public static String D_DATABASE="1";
+//    public static String Project = "RM9";
+//    public static boolean ldap_login = true;
 
-//    public static  String D_DATABASE="0";
-//    public static  String Project = "BGH";
+//    public static String D_DATABASE="1";
+//    public static String Project = "RAMA";
+
+//    public static String D_DATABASE="0";
+//    public static String Project = "VCH";
+
+//    public static String D_DATABASE="0";
+//    public static String Project = "BGH";
 
     private String OrgName;
     private String xUrl;

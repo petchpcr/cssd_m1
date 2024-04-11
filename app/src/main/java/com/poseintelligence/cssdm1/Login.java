@@ -427,7 +427,11 @@ public class Login extends AppCompatActivity {
                         if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
                             onLogin(uname.getText().toString(), pword.getText().toString());
                         }else {
-                            onLoginApi(uname.getText().toString(), pword.getText().toString());
+                            if(CssdProject.ldap_login){
+                                getLDAPLogin(uname.getText().toString(), pword.getText().toString());
+                            }else {
+                                onLoginApi(uname.getText().toString(), pword.getText().toString());
+                            }
                         }
 
                     }else {
@@ -441,7 +445,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
-        submit.setOnLongClickListener(new View.OnLongClickListener() {
+        iSetting.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 dev++;
@@ -517,7 +521,11 @@ public class Login extends AppCompatActivity {
                                 if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
                                     onLogin(uname.getText().toString(), pword.getText().toString());
                                 }else {
-                                    onLoginApi(uname.getText().toString(), pword.getText().toString());
+                                    if(CssdProject.ldap_login){
+                                        getLDAPLogin(uname.getText().toString(), pword.getText().toString());
+                                    }else {
+                                        onLoginApi(uname.getText().toString(), pword.getText().toString());
+                                    }
                                 }
 //                                onLogin(uname.getText().toString(), pword.getText().toString());
 
@@ -641,6 +649,82 @@ public class Login extends AppCompatActivity {
         ru.execute();
     }
 
+    public void getLDAPLogin(final String uname, final String pword) {
+        class onLogin extends AsyncTask<String, Void, String> {
+
+            private ProgressDialog dialog = new ProgressDialog(Login.this);
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+                dialog.setTitle(Cons.TITLE);
+                dialog.setIcon(R.drawable.pose_favicon_2x);
+                dialog.setMessage(Cons.WAIT_FOR_AUTHENTICATION);
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0xEFFFFFFF));
+                dialog.setIndeterminate(true);
+
+                dialog.show();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                boolean t = true;
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    if (!jsonObj.getString("res").equals("0")) {
+                        onLogin("", uname);
+                        t = false;
+                    }
+//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+//
+//                    for (int i = 0; i < rs.length(); i++) {
+//                        JSONObject c = rs.getJSONObject(i);
+//
+//                        Log.d("tog_loginldap","res = "+c.getString("res"));
+//                        if (!c.getString("res").equals("0")) {
+//                            onLogin("", uname);
+//                            t = false;
+//                        }
+//                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }finally {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+
+                    if(t){
+                        Toast.makeText(Login.this, "ไม่พบรหัสผู้ใช้งานในระบบ", Toast.LENGTH_SHORT).show();
+                    }else{
+
+                    }
+
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("User", uname);
+                data.put("Pass", pword);
+
+                Log.d("tog_loginldap","url = "+ST_UrlAuthentication);
+                Log.d("tog_loginldap","data = "+data);
+                String result = http.sendPostRequest(ST_UrlAuthentication, data);
+                Log.d("tog_loginldap","result = "+result);
+                return result;
+            }
+        }
+
+        onLogin ru = new onLogin();
+        ru.execute();
+    }
+
     public void onLogin(final String uname, final String pword) {
         class onLogin extends AsyncTask<String, Void, String> {
 
@@ -724,10 +808,9 @@ public class Login extends AppCompatActivity {
                 if(uname.equals("IsUseQrEmCodeLogin")){
                     data.put("EmpCode", pword);
                 }else if(CssdProject.siri_api_login){
-//                    data.put("fname", uname);
-//                    data.put("lname", pword);
-
                     data.put("EmpCodeAD", pword);
+                }else if(CssdProject.ldap_login){
+                    data.put("EmpCodeLDAP", pword);
                 }else{
                     data.put("uname", uname);
                     data.put("pword", pword);
@@ -1136,6 +1219,7 @@ public class Login extends AppCompatActivity {
                             if(!c.isNull("ST_UrlAuthentication")){
                                 ST_UrlAuthentication = c.getString("ST_UrlAuthentication");
                             }
+                            Log.d("tog_ST_UrlAuth","ST_UrlAuthentication = "+ST_UrlAuthentication);
 
                             if(!c.isNull("ST_IsUsedEnterPasswordAfterScanLogin")){
                                 ST_IsUsedEnterPasswordAfterScanLogin = Boolean.parseBoolean(c.getString("ST_IsUsedEnterPasswordAfterScanLogin"));

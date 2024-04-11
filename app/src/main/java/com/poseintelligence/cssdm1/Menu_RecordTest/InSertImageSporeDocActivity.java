@@ -985,19 +985,35 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == 1001){
             if(pic == true){
-                images1.setImageURI(image_uri1);
-                pic = false;
-                statusPic++;
-                datapic1 = String.valueOf(data);
-                if (datapic1.equals("null")){
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri1);
+                    images1.setImageBitmap(bitmap);
                     datapic1 = "1";
-                }else {
+                } catch (Exception e){
                     datapic1 = "0";
                 }
+                pic = false;
+                statusPic++;
+
+//                images1.setImageURI(image_uri1);
+//                datapic1 = String.valueOf(data);
+//                if (datapic1.equals("null")){
+//                    datapic1 = "1";
+//                }else {
+//                    datapic1 = "0";
+//                }
+
+
             }else if (pic2 == true){
-                images2.setImageURI(image_uri2);
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri2);
+                    images2.setImageBitmap(bitmap);
+                } catch (Exception e){
+                }
                 pic2 = false;
                 statusPic++;
+
+//                images2.setImageURI(image_uri2);
             }
             pg_spinner.setSelection(Spinner_data);
         }

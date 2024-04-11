@@ -104,26 +104,55 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             {
                 Integer position = Integer.parseInt(v.getTag().toString());
 //                Log.d("OOOO","Clicked item at position: " + position + " : " + cM1.get(position).getCngName());
-                switch(cM1.get(position).getBtImg()) {
-                    case "bt_dispensing": getoPage(DispensingActivity.class); break;
-                    case "bt_receive": getoPage(ReceiveActivity.class); break;
-                    case "bt_remark": getoPage(RemarkActivity.class); break;
-                    case "bt_results": getoPage(ResultsActivity.class); break;
-                    case "bt_returnofcssd": getoPage(ReturnActivity.class); break;
-                    case "bt_machine_test": getoPage(MachineTestActivity.class); break;
-                    case "bt_sterile": getoPage(SterileActivity.class); break;
-                    case "bt_basket_washing": getoPage(BasketWashingActivity.class); break;
-                    case "bt_nonusage": getoPage(ReceivePayNonUsageActivity.class); break;
-                    case "bt_signature_dept": getoPage(SignatureDepartmentActivity.class); break;
-                }
+//                switch(cM1.get(position).getBtImg()) {
+//                    case "bt_dispensing": getoPage(DispensingActivity.class); break;
+//                    case "bt_receive": getoPage(ReceiveActivity.class); break;
+//                    case "bt_remark": getoPage(RemarkActivity.class); break;
+//                    case "bt_results": getoPage(ResultsActivity.class); break;
+//                    case "bt_returnofcssd": getoPage(ReturnActivity.class); break;
+//                    case "bt_machine_test": getoPage(MachineTestActivity.class); break;
+//                    case "bt_sterile": getoPage(SterileActivity.class); break;
+//                    case "bt_sterile_test_mac": getoPage(SterileActivity.class); break;
+//                    case "bt_basket_washing": getoPage(BasketWashingActivity.class); break;
+//                    case "bt_nonusage": getoPage(ReceivePayNonUsageActivity.class); break;
+//                    case "bt_signature_dept": getoPage(SignatureDepartmentActivity.class); break;
+//                }
+                gotoPage(cM1.get(position).getBtImg());
             }
         };
 
         get_ShowMenu_user();
     }
 
-    private void getoPage(Class gx){
+    private void gotoPage(String name){
+        Class gx = DispensingActivity.class;
+        switch(name) {
+            case "bt_dispensing":
+                gx = DispensingActivity.class;break;
+            case "bt_receive":
+                gx = ReceiveActivity.class; break;
+            case "bt_remark":
+                gx = RemarkActivity.class; break;
+            case "bt_results":
+                gx = ResultsActivity.class; break;
+            case "bt_returnofcssd":
+                gx = ReturnActivity.class; break;
+            case "bt_machine_test":
+                gx = MachineTestActivity.class; break;
+            case "bt_sterile":
+                gx = SterileActivity.class; break;
+            case "bt_sterile_mac_test":
+                gx = SterileActivity.class; break;
+            case "bt_basket_washing":
+                gx = BasketWashingActivity.class; break;
+            case "bt_nonusage":
+                gx = ReceivePayNonUsageActivity.class; break;
+            case "bt_signature_dept":
+                gx = SignatureDepartmentActivity.class; break;
+        }
+
         Intent intent = new Intent(MainMenu.this,gx);
+        intent.putExtra("MenuName", name);
         startActivity(intent);
         finish();
     }
@@ -203,10 +232,9 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 IV.setLayoutParams(params);
                 String uri = "@drawable/"+cM1.get(i).getBtImg();
                 int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Log.d("tog_menu","getDrawable uri : " +cM1.get(i).getBtImg());
                 Drawable res = getResources().getDrawable(imageResource);
                 IV.setImageDrawable( res );
-
-                Log.d("tog_menu","getDrawable : " +cM1.get(i).getBtImg());
 
                 if(user_menu.isEmpty()){
                     menu_addView(i,n,IV);
@@ -234,6 +262,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_returnofcssd": t.setText("คืนของ\nเข้าสต๊อกจ่ายกลาง"); break;
             case "bt_machine_test": t.setText("เก็บข้อมูล\nตรวจสอบเครื่อง"); break;
             case "bt_sterile": t.setText("นำเข้าตะกร้า-เครื่องฆ่าเชื้อ"); break;
+            case "bt_sterile_mac_test": t.setText("ทดสอบโปรแกรมฆ่าเชื้อ"); break;
             case "bt_basket_washing": t.setText("นำเข้าตะกร้า-เครื่องล้าง"); break;
             case "bt_nonusage": t.setText("รับ-จ่าย รายการ non-usage"); break;
             case "bt_signature_dept": t.setText("ลงชื่อผู้รับแผนก"); break;

@@ -32,9 +32,8 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all {
-//            def versionName = variant.versionName
             def date = new java.text.SimpleDateFormat("MM-dd-HHmm").format(new Date())
-            def newName = "Cssd-M1-" + date + ".apk"
+            def newName = "Cssd-M1-FULL" + date + ".apk"
             outputFileName = newName
         }
     }
