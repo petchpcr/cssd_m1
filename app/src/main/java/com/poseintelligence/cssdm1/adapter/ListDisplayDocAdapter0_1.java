@@ -61,9 +61,9 @@ public class ListDisplayDocAdapter0_1 extends ArrayAdapter<ModelDisplayDoc0_1> {
         }
 
         if (!DATA_MODEL.get(position).getWashMachineID().equals("null")){
-            holder.txt_qty.setText("เครื่อง : "+DATA_MODEL.get(position).getWashMachineID() + " รอบ : "+DATA_MODEL.get(position).getWashRoundNumber());
+            holder.txt_qty.setText(DATA_MODEL.get(position).getWashMachineID() + " รอบ : "+DATA_MODEL.get(position).getWashRoundNumber());
         }else {
-            holder.txt_qty.setText("เครื่อง : - รอบ : "+DATA_MODEL.get(position).getWashRoundNumber());
+            holder.txt_qty.setText("รอบ : "+DATA_MODEL.get(position).getWashRoundNumber());
         }
 
 

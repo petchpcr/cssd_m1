@@ -23,6 +23,7 @@ import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
+import com.poseintelligence.cssdm1.model.ModelItemSelectInBasket;
 import com.poseintelligence.cssdm1.model.ModelMachine;
 
 import org.json.JSONArray;
@@ -38,10 +39,10 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
     private LayoutInflater mInflater;
     private Context context;
     public int select_mac_pos = -1;
-    onItemSelect select_mac= new onItemSelect();
+    ModelItemSelectInBasket select_mac= new ModelItemSelectInBasket();
     RecyclerView wiget_list;
 
-    final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
+//    final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 0);
 
     // data is passed into the constructor
     public ListBoxMachineAdapter(Context context, ArrayList<ModelMachine> data,RecyclerView wiget_list) {
@@ -69,6 +70,7 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
         String macname = mData.get(position).getMachineName();
         holder.macname.setText(macname);
 
+        Log.d("tog_basketmac","position = "+position+" --- "+select_mac_pos);
         Log.d("tog_position_machine","position = "+position);
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,6 +160,7 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
             setMacSelect();
 
             ((SterileActivity)context).setProgramAndRound(select_mac_pos,mData.size(),mData.get(select_mac_pos));
+//            ((SterileActivity)context).list_mac_adapterNotifyDataSetChanged();
         }else{
             ((SterileActivity)context).title_2.setText(" ");
 //            ((SterileActivity)context).mac_round.setSelection(0);
@@ -167,43 +170,15 @@ public class ListBoxMachineAdapter extends RecyclerView.Adapter<ListBoxMachineAd
 
     public void onScanSelect(int pos) {
         select_mac_pos = pos;
+        Log.d("tog_basketmac","onScanSelect = "+select_mac_pos);
         if(select_mac_pos>=0){
 //            wiget_list.scrollToPosition(select_mac_pos);
             ((SterileActivity)context).show_mac(mData.get(pos).getMachineName(),View.VISIBLE);
 
             ((SterileActivity)context).setProgramAndRound(select_mac_pos,mData.size(),mData.get(select_mac_pos));
+//            ((SterileActivity)context).list_mac_adapterNotifyDataSetChanged();
         }
+
     }
 
-
-
-    public class onItemSelect {
-        TextView macname;
-        TextView mac;
-        ImageView mac_image;
-        LinearLayout ll;
-
-        public void setItemSelect(TextView macname, TextView mac, ImageView mac_image, LinearLayout ll) {
-            this.macname = macname;
-            this.mac = mac;
-            this.mac_image = mac_image;
-            this.ll = ll;
-        }
-
-        public TextView getMacname() {
-            return macname;
-        }
-
-        public TextView getMac() {
-            return mac;
-        }
-
-        public ImageView getMac_image() {
-            return mac_image;
-        }
-
-        public LinearLayout getLl() {
-            return ll;
-        }
-    }
 }

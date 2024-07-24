@@ -9,6 +9,7 @@ public class BasketTag {
             RefDocNo,
             TypeProcessID;
     int     qty;
+    int     position;
 
     Boolean MacActive = false;
 
@@ -33,6 +34,17 @@ public class BasketTag {
         this.IsActive_Basket = IsActive_Basket ;
         this.RefDocNo = RefDocNo ;
         this.TypeProcessID = TypeProcessID ;
+    }
+
+    public BasketTag(String ID,String name, String BasketCode, String macId,int qty, String TypeProcessID, String RefDocNo, int position) {
+        this.ID = ID;
+        Name = name;
+        this.qty = qty;
+        this.BasketCode =BasketCode ;
+        MacId = macId ;
+        this.TypeProcessID = TypeProcessID ;
+        this.RefDocNo = RefDocNo ;
+        this.position = position ;
     }
 
     public BasketTag(String ID,String name, String BasketCode, String macId,int qty, String TypeProcessID, String RefDocNo) {
@@ -123,5 +135,13 @@ public class BasketTag {
 
     public void setTypeProcessID(String typeProcessID) {
         TypeProcessID = typeProcessID;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdapter.ViewHolder> {
 
+    private ArrayList<BasketTag> all_mData;
     private ArrayList<BasketTag> mData;
     private LayoutInflater mInflater;
     private Context context;
@@ -29,13 +30,26 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
     RecyclerView wiget_list;
 
     // data is passed into the constructor
-    public ListBoxBasketAdapter(Context context, ArrayList<BasketTag> data,RecyclerView wiget_list) {
+    public ListBoxBasketAdapter(Context context, ArrayList<BasketTag> alldata, ArrayList<BasketTag> data,RecyclerView wiget_list,int select_basket_pos) {
         this.mInflater = LayoutInflater.from(context);
         this.context = context;
+        this.all_mData = alldata;
         this.mData = data;
+//        this.mData = new ArrayList<>();
         this.wiget_list = wiget_list;
-
-        Log.d("tog_getbasket","ListBoxBasketAdapter = "+select_basket_pos);
+        this.select_basket_pos = select_basket_pos;
+//        int position = 0;
+//        if(!((SterileActivity)context).get_mac_select_id().equals("Empty")){
+//            for(position = 0;position<all_mData.size();position++){
+//                if (((SterileActivity) context).get_mac_select_doc().equals(all_mData.get(position).getRefDocNo())) {
+//                    mData.add(all_mData.get(position));
+//                }
+//            }
+//        }else{
+//            mData = data;
+//        }
+//        Log.d("tog_timer_php","==================================== end1 ====================================");
+        Log.d("tog_getbasket","get_mac_select_id = "+((SterileActivity)context).get_mac_select_id());
     }
 
     // inflates the row layout from xml when needed
@@ -43,6 +57,7 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.activity_list_box_basket_adapter, parent, false);
 
+//        Log.d("tog_timer_php","onCreateViewHolder = "+select_basket_pos);
         Log.d("tog_getbasket","onCreateViewHolder = "+select_basket_pos);
         return new ViewHolder(view);
     }
@@ -50,44 +65,54 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
         holder.name.setText(mData.get(position).getName());
         holder.qty.setText(mData.get(position).getQty()+"");
 
-        Log.d("tog_getbasket","position = "+position+"---"+select_basket_pos);
+        Log.d("tog_getbasket","position = "+mData.get(position).getPosition()+"---"+select_basket_pos);
         holder.ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 Log.d("tog_getbasket","ll select_basket_pos = "+select_basket_pos);
-                if(select_basket_pos==position){
+                if(select_basket_pos==mData.get(position).getPosition()){
                     select_basket_pos=-1;
                     ListBoxBasketAdapter.this.notifyDataSetChanged();
                 }else{
-                    ((SterileActivity)context).basket_pos_non_approve = position;
+                    Log.d("tog_getbasket","onClick basket_pos_non_approve = "+mData.get(position).getPosition());
+                    ((SterileActivity)context).basket_pos_non_approve = mData.get(position).getPosition();
                     ((SterileActivity)context).reload_mac();
                 }
 
             }
         });
 
-        if(position==select_basket_pos){
+        if(mData.get(position).getPosition()==select_basket_pos){
             onItemSelect(holder.name,holder.qty,holder.image,holder.ll);
         }else{
             setItemUnSelect(holder.name,holder.qty,holder.image,holder.ll);
 
-//            Log.d("tog_getbasket_mac","get_mac_select_id = "+((SterileActivity)context).get_mac_select_id());
-            if(!((SterileActivity)context).get_mac_select_id().equals("Empty")){
-//                if(((SterileActivity)context).get_mac_select_id().equals(mData.get(position).getMacId())){
-
-                    if (!((SterileActivity) context).get_mac_select_doc().equals(mData.get(position).getRefDocNo())) {
-                        holder.ll.setVisibility(View.GONE);
-                        holder.qty.setVisibility(View.GONE);
-                    }else{
-                        Log.d("tog_getbasket_mac", "Basket  = " + (mData.get(position).getName()));
-                        Log.d("tog_getbasket_mac", "getRefDocNo = " + (mData.get(position).getRefDocNo()));
-                    }
-//                }
-            }
+//            //1907
+////            Log.d("tog_getbasket_mac","get_mac_select_id = "+((SterileActivity)context).get_mac_select_id());
+//            if(!((SterileActivity)context).get_mac_select_id().equals("Empty")){
+////                if(((SterileActivity)context).get_mac_select_id().equals(mData.get(position).getMacId())){
+//
+//                    if (!((SterileActivity) context).get_mac_select_doc().equals(mData.get(position).getRefDocNo())) {
+////                        holder.ll.setVisibility(View.GONE);
+////                        holder.qty.setVisibility(View.GONE);
+//                        if(holder.itemView.getVisibility()==View.VISIBLE){
+//
+//                            Log.d("tog_timer_php","GONE = "+mData.get(position).getPosition()+" --- "+select_basket_pos);
+//                            holder.itemView.setVisibility(View.GONE);
+//                            holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+//                        }
+//                    }else{
+//                        Log.d("tog_getbasket_mac", "Basket  = " + (mData.get(position).getName()));
+//                        Log.d("tog_getbasket_mac", "getRefDocNo = " + (mData.get(position).getRefDocNo()));
+//                    }
+////                }
+//            }
+//            //1907
         }
     }
 
@@ -140,7 +165,12 @@ public class ListBoxBasketAdapter extends RecyclerView.Adapter<ListBoxBasketAdap
         select_basket_pos = pos;
         if(select_basket_pos>=0){
             wiget_list.smoothScrollToPosition(0);
-            ((SterileActivity)context).show_basket(mData.get(pos).getName(),View.VISIBLE);
+//            for(int position = 0;position<mData.size();position++){
+//                if (select_basket_pos == mData.get(position).getPosition()) {
+//                    ((SterileActivity)context).show_basket(mData.get(select_basket_pos).getName(),View.VISIBLE);
+//                }
+//            }
+            ((SterileActivity)context).show_basket(all_mData.get(select_basket_pos).getName(),View.VISIBLE);
         }
 //        wiget_list.smoothScrollToPosition(0);
     }

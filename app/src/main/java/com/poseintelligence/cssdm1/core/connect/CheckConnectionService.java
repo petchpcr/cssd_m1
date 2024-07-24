@@ -70,7 +70,7 @@ public class CheckConnectionService extends Service {
                 mActivity = null;
             }
 
-//            Log.d("tog_ccs","isNonActiveTime = "+((CssdProject) getApplication()).isNonActiveTime);
+            Log.d("tog_ccs","isNonActiveTime = "+((CssdProject) getApplication()).isNonActiveTime);
             if(((CssdProject) getApplication()).getST_LoginTimeOut()>=0 && is_login){
                 if(((CssdProject) getApplication()).isNonActiveTime>=((CssdProject) getApplication()).getST_LoginTimeOut()){
 
@@ -93,7 +93,6 @@ public class CheckConnectionService extends Service {
             @Override
             public void run() {
                 show_wait_connecting();
-
                 handler.postDelayed(runnable, 1000);
 //                handler.removeCallbacks(runnable);
 

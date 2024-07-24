@@ -41,6 +41,7 @@ import android.widget.Toast;
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.MainMenu;
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
+import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListDepartmentAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailItemAdapter;
@@ -208,6 +209,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private Vibrator x_vibrator;
 
+
     public void speakText(String textContents) {
         tts.speak(textContents, TextToSpeech.QUEUE_FLUSH, null, null);
     }
@@ -216,7 +218,24 @@ public class DispensingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler_dept.removeCallbacks(runnable_dept);
+        check_active_time_handler.removeCallbacks(check_active_time_runnable);
     }
+
+    int ActiveTime = 0;
+    TextView active_time;
+    Handler check_active_time_handler  = new Handler();
+    Runnable check_active_time_runnable = new Runnable() {
+        @Override
+        public void run() {
+            ActiveTime++;
+            int h = Math.round((ActiveTime/60)/60);
+            int m = Math.round(ActiveTime/60)%60;
+            int s = ActiveTime%60;
+            active_time.setText("เปิดมาแล้ว "+h+" ชม. "+m+" นาที "+s+" วิ");
+
+            check_active_time_handler.postDelayed(check_active_time_runnable, 1000);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,6 +248,9 @@ public class DispensingActivity extends AppCompatActivity {
                     this.getApplicationContext()));
         }
 
+        active_time = (TextView) findViewById(R.id.textView9);
+
+        check_active_time_handler.postDelayed(check_active_time_runnable, 1000);
         byWidget();
 
         byEvent();
@@ -427,7 +449,8 @@ public class DispensingActivity extends AppCompatActivity {
         img_back_2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // do something when the corky2 is clicked
+                //handler_dept.removeCallbacks(runnable_dept);
+                handler_dept.postDelayed(runnable_dept , 1000);
                 Block_1.setVisibility(View.VISIBLE);
                 Block_2.setVisibility(View.GONE);
                 Block_3.setVisibility(View.GONE);
@@ -475,7 +498,8 @@ public class DispensingActivity extends AppCompatActivity {
         img_back_3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // do something when the corky2 is clicked
+
+                //handler_dept.removeCallbacks(runnable_dept);
                 switch_opt.setChecked(false);
                 Block_1.setVisibility(View.GONE);
                 Block_2.setVisibility(View.VISIBLE);
@@ -712,7 +736,7 @@ public class DispensingActivity extends AppCompatActivity {
 //        }
 //    }
     boolean Is_text_search_department =false;
-    Handler handler_dept = new Handler(Looper.getMainLooper());
+    Handler handler_dept = new Handler();
     Runnable runnable_dept  = new Runnable() {
         @Override
         public void run() {
@@ -2016,6 +2040,7 @@ public class DispensingActivity extends AppCompatActivity {
                                     displayPay(DepID, DocNo,ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
                                 }
 
+                                //handler_dept.removeCallbacks(runnable_dept);
                                 switch_opt.setChecked(false);
                                 Block_1.setVisibility( View.GONE );
                                 Block_2.setVisibility( View.GONE );
@@ -2269,6 +2294,7 @@ public class DispensingActivity extends AppCompatActivity {
                                     displayPay(DepID, DocNo, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
                                 }
 
+                                //handler_dept.removeCallbacks(runnable_dept);
                                 switch_opt.setChecked(false);
                                 Block_1.setVisibility(View.GONE);
                                 Block_2.setVisibility(View.GONE);
@@ -2773,6 +2799,7 @@ public class DispensingActivity extends AppCompatActivity {
                             DocNo = null;
                             RefDocNo = null;
 
+                            //handler_dept.removeCallbacks(runnable_dept);
                             list_payout_detail_item.setAdapter(null);
                             list_pay.setAdapter(null);
                             list_department.setAdapter(null);
@@ -3348,6 +3375,7 @@ public class DispensingActivity extends AppCompatActivity {
 
         }
 //                            title_2.setText( "  " );
+        //handler_dept.removeCallbacks(runnable_dept);
         Block_1.setVisibility(View.GONE);
         Block_2.setVisibility(View.VISIBLE);
         Block_3.setVisibility(View.GONE);
@@ -3618,6 +3646,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                             title_3.setText(DocNo + " / " + Model_Pay.get(position).getDepNameByPayItem());
                             displayPayoutDetail(DocNo, true);
+
+                            //handler_dept.removeCallbacks(runnable_dept);
                             Block_1.setVisibility(View.GONE);
                             Block_2.setVisibility(View.GONE);
                             Block_3.setVisibility(View.VISIBLE);

@@ -126,10 +126,14 @@ public class CssdProject extends Application {
     boolean ST_SoundAndroidVersion9 = false;
     boolean PA_IsNotificationPopupExpiringScan = false;
     boolean PA_IsUsedPayOkSound = false;
+    boolean SR_IsCheckItemInMachine = false;
+    boolean SS_IsMatchBasketAndType = false;
 
     boolean SR_IsUsedLot = false;
 
     int ST_LoginTimeOut = -1;
+
+    boolean SR_IsTestProgramRunRound_M1 = false;
 
     String MD_URL = "";
 
@@ -736,6 +740,30 @@ public class CssdProject extends Application {
         this.SR_IsUsedLot = SR_IsUsedLot;
     }
 
+    public boolean isSR_IsCheckItemInMachine() {
+        return SR_IsCheckItemInMachine;
+    }
+
+    public void setSR_IsCheckItemInMachine(boolean SR_IsCheckItemInMachine) {
+        this.SR_IsCheckItemInMachine = SR_IsCheckItemInMachine;
+    }
+
+    public boolean isSS_IsMatchBasketAndType() {
+        return SS_IsMatchBasketAndType;
+    }
+
+    public void setSS_IsMatchBasketAndType(boolean SS_IsMatchBasketAndType) {
+        this.SS_IsMatchBasketAndType = SS_IsMatchBasketAndType;
+    }
+
+    public boolean isSR_IsTestProgramRunRound_M1() {
+        return SR_IsTestProgramRunRound_M1;
+    }
+
+    public void setSR_IsTestProgramRunRound_M1(boolean SR_IsTestProgramRunRound_M1) {
+        this.SR_IsTestProgramRunRound_M1 = SR_IsTestProgramRunRound_M1;
+    }
+
     public String getMD_URL() {
         return MD_URL;
     }
@@ -743,6 +771,7 @@ public class CssdProject extends Application {
     public void setMD_URL(String MD_URL) {
         this.MD_URL = MD_URL;
     }
+
 
     public String Project() { return Project; }
 

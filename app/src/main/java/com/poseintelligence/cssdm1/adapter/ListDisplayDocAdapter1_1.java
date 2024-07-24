@@ -60,7 +60,7 @@ public class ListDisplayDocAdapter1_1 extends ArrayAdapter<ModelDisplayDoc1_1> {
 
         holder.txt_docno1.setText(DATA_MODEL.get(position).getDocNo());
 
-        holder.txt_qty.setText("เครื่อง : "+DATA_MODEL.get(position).getSterileMachineID() + " รอบ : "+DATA_MODEL.get(position).getSterileRoundNumber());
+        holder.txt_qty.setText(DATA_MODEL.get(position).getSterileMachineID() + " รอบ : "+DATA_MODEL.get(position).getSterileRoundNumber());
 
         if(DATA_MODEL.get(position).getIsActive().equals("1")){
             holder.txt_no.setTextColor( Color.BLACK );

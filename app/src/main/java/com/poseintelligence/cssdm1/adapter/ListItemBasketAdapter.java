@@ -57,6 +57,7 @@ public class ListItemBasketAdapter extends ArrayAdapter<ItemInBasket> {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View view = inflater.inflate(R.layout.activity_list_item_basket_adapter, parent, false);
 
+        Log.d("tog_basketItem","ListItemBasketAdapter = "+position);
         HorizontalScrollView h_sc = (HorizontalScrollView) view.findViewById(R.id.h_scroll);
         TextView text_1 = (TextView) view.findViewById(R.id.text_1);
         TextView text_2 = (TextView) view.findViewById(R.id.text_2);

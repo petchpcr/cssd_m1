@@ -38,6 +38,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.poseintelligence.cssdm1.core.connect.CheckConnectionService;
+import com.poseintelligence.cssdm1.core.connect.DBConnect;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.connect.HTTPPostRaw;
 import com.poseintelligence.cssdm1.core.string.Cons;
@@ -59,7 +60,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Login extends AppCompatActivity {
-    CheckConnectionService checkConnectionService;;
+    CheckConnectionService checkConnectionService;
     boolean mServiceBound = true;
     Intent intentService;
 
@@ -141,6 +142,15 @@ public class Login extends AppCompatActivity {
 
         Log.d("tog_ccs_c","ComponentName "+Login.this );
 
+//        Log.d("tog_DBC","getItemstockAddToSterileBasket " );
+//
+//        HashMap<String, String> data = new HashMap<String, String>();
+//        data.put("basket_id", "bk0001");
+//        data.put("usage_code", "I02395-242-00001");
+//        data.put("program_id", "1");
+//        data.put("mac_id", "1");
+////        DBConnect.getItemstockAddToSterileBasket(data);
+//        Log.d("tog_DBC","getItemstockAddToSterileBasket  = "+DBConnect.getItemstockAddToSterileBasket(data));
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -1255,7 +1265,30 @@ public class Login extends AppCompatActivity {
 
                                 Log.d("tog_LoadConfig","ST_LoginTimeOut = "+c.getInt("ST_LoginTimeOut"));
                                 ((CssdProject) getApplication()).setST_LoginTimeOut(c.getInt("ST_LoginTimeOut"));
+                            }else{
+
+                                ((CssdProject) getApplication()).setST_LoginTimeOut(1200);
+//                                ((CssdProject) getApplication()).setST_LoginTimeOut(15);
                             }
+
+//                            ((CssdProject) getApplication()).setST_LoginTimeOut(12000);
+
+                            if(!c.isNull("SR_IsTestProgramRunRound_M1")){
+                                ((CssdProject) getApplication()).setSR_IsTestProgramRunRound_M1(c.getBoolean("SR_IsTestProgramRunRound_M1"));
+                            }else{
+                                ((CssdProject) getApplication()).setSR_IsTestProgramRunRound_M1(false);
+                            }
+
+//                            if(!c.isNull("SR_IsCheckItemInMachine")){
+//
+//                                Log.d("tog_LoadConfig","SR_IsCheckItemInMachine = "+c.getBoolean("SR_IsCheckItemInMachine"));
+//                                ((CssdProject) getApplication()).setSR_IsCheckItemInMachine(c.getBoolean("SR_IsCheckItemInMachine"));
+//                            }
+//                            if(!c.isNull("SS_IsMatchBasketAndType")){
+//
+//                                Log.d("tog_LoadConfig","SS_IsMatchBasketAndType = "+c.getBoolean("SS_IsMatchBasketAndType"));
+//                                ((CssdProject) getApplication()).setSS_IsMatchBasketAndType(c.getBoolean("SS_IsMatchBasketAndType"));
+//                            }
 
 
                             get_config_m1();
@@ -1379,7 +1412,7 @@ public class Login extends AppCompatActivity {
 //        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
 //            onLogin("IsUseQrEmCodeLogin", "EM00011");
 //        }
-
+        onLogin("IsUseQrEmCodeLogin", "EM00011");
         if(dev==2){
             onLogin("IsUseQrEmCodeLogin", "EM00011");
         }
