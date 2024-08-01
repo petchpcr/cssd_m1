@@ -1412,7 +1412,6 @@ public class Login extends AppCompatActivity {
 //        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
 //            onLogin("IsUseQrEmCodeLogin", "EM00011");
 //        }
-        onLogin("IsUseQrEmCodeLogin", "EM00011");
         if(dev==2){
             onLogin("IsUseQrEmCodeLogin", "EM00011");
         }
