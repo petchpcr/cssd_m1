@@ -11,6 +11,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -116,6 +118,7 @@ public class SterileActivity extends AppCompatActivity{
     String typeID="";
 
     private iAudio nMidia;
+    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
 
     ArrayList<ModelMachine> list = new ArrayList<>();
     ListBoxMachineAdapter list_mac_adapter;
@@ -1419,11 +1422,11 @@ public class SterileActivity extends AppCompatActivity{
                                     );
                                 }else{
                                     reload_basket();
-//                                    nMidia.getAudio("okay");
+//                                    playAudio("okay");
                                 }
                             }else{
                                 reload_basket();
-//                                nMidia.getAudio("okay");
+//                                playAudio("okay");
                             }
                         }else if (c.getString("result").equals("D")){
                             if(c.getString("basket_id").equals("---")){
@@ -1431,9 +1434,9 @@ public class SterileActivity extends AppCompatActivity{
                                 if(list_mac_adapter.select_mac_pos != 0){
                                     if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                                         if(c.getString("sDocNo").equals(list.get(list_mac_adapter.select_mac_pos).getDocNo())){
-//                                            show_dialog("Warning","รายการซ้ำ","repeat_scan");
+                                            show_dialog("Warning","รายการซ้ำ","repeat_scan");
                                             x_vibrator.vibrate(500);
-                                            show_dialog("Warning","รายการซ้ำ");
+//                                            show_dialog("Warning","รายการซ้ำ");
                                             sDocNo = false;
                                         }
                                     }
@@ -1446,9 +1449,9 @@ public class SterileActivity extends AppCompatActivity{
 
                             }else{
                                 if(c.getString("basket_id").equals(basket_id)){
-//                                    show_dialog("Warning","รายการซ้ำ","repeat_scan");
+                                    show_dialog("Warning","รายการซ้ำ","repeat_scan");
                                     x_vibrator.vibrate(500);
-                                    show_dialog("Warning","รายการซ้ำ");
+//                                    show_dialog("Warning","รายการซ้ำ");
                                 }else{
 //                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
 //                                show_log_error("Usage = "+c.getString("basket_id")+" --- This = "+basket_id);
@@ -1461,13 +1464,13 @@ public class SterileActivity extends AppCompatActivity{
                         }else if(c.getString("result").equals("M")){
                             show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้","no");
                         }else if(c.getString("result").equals("N")){
-//                            show_dialog("Warning",c.getString("Message"),"no");
+                            show_dialog("Warning",c.getString("Message"),"no");
                             x_vibrator.vibrate(500);
-                            show_dialog("Warning",c.getString("Message"));
+//                            show_dialog("Warning",c.getString("Message"));
                         }else{
                             x_vibrator.vibrate(500);
-//                            show_dialog("Warning","ไม่พบรายการ","no_item_found");
-                            show_dialog("Warning","ไม่พบรายการ");
+                            show_dialog("Warning","ไม่พบรายการ","no_item_found");
+//                            show_dialog("Warning","ไม่พบรายการ");
                         }
 
                     }
@@ -1601,7 +1604,7 @@ public class SterileActivity extends AppCompatActivity{
                             usagecode_to_add.put(usage_code,"ไม่พบรายการ");
                         }
 
-                        nMidia.getAudio("no");
+                        playAudio("no");
                         x_vibrator.vibrate(500);
                         list_usagecode_to_add.remove(usage_code);
                         list_usagecode_to_false.remove(usage_code);
@@ -1715,7 +1718,7 @@ public class SterileActivity extends AppCompatActivity{
                             get_basket("null");
                             list_item_basket.setAdapter(null);
 
-                            nMidia.getAudio("okay");
+                            playAudio("okay");
                         }
 
                     }
@@ -1771,7 +1774,7 @@ public class SterileActivity extends AppCompatActivity{
                     }
 
                     if(c.getString("result").equals("A")) {
-//                        nMidia.getAudio("okay");
+                        playAudio("okay");
 
                         Log.d("tog_loop","addSterileDetailById => reload_basket");
 
@@ -1866,8 +1869,6 @@ public class SterileActivity extends AppCompatActivity{
     int item_in_basket_pos = -1;
     String item_in_basket_doc = "";
     public void get_item_in_basket(int pos,String doc){
-        item_in_basket_pos = pos;
-        item_in_basket_doc = doc;
 
         Log.d("tog_get_item","pos = " + pos);
 
@@ -1946,6 +1947,9 @@ public class SterileActivity extends AppCompatActivity{
 
                         xlist_item_basket.clear();
                         xlist_item_basket = list_item;
+
+                        item_in_basket_pos = pos;
+                        item_in_basket_doc = doc;
 
                         if(is_add_item){
                             Log.d("tog_getAudio","addSterileDetailById = 2" );
@@ -2034,9 +2038,19 @@ public class SterileActivity extends AppCompatActivity{
 
         obj.execute();
     }
+    
+    public void playAudio(String sound){
+        //nMidia.getAudio(sound);
+
+        if(sound.equals("okay")){
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 80);
+        }else{
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 1000);
+        }
+    }
 
     public void show_dialog(String title,String mass,String sound){
-        nMidia.getAudio(sound);
+        playAudio(sound);
         show_dialog(title,mass);
     }
 
@@ -4077,7 +4091,7 @@ public class SterileActivity extends AppCompatActivity{
 //                        JSONObject c = rs.getJSONObject(i);
 //
 //                        if(c.getString("result").equals("A")) {
-//                            nMidia.getAudio("okay");
+//                            playAudio("okay");
 //                            Log.d("tog_timer_php","ส่งต่อ reload_basket (โหลดรายการในเครื่องหลังเพิ่ม)");
 //                            return "reload_basket";
 //                        }else if(c.getString("result").equals("N")){
