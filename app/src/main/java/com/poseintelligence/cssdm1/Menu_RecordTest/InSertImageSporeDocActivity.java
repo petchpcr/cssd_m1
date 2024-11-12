@@ -182,16 +182,21 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
     }
 
+    boolean edit_pic = false;
     @Override
     protected void onResume() {
         super.onResume();
-        CheckSaveATP();
 
-        ShowATP();
+        if(!edit_pic){
+            CheckSaveATP();
 
-        ShowDetail();
+            ShowATP();
 
-        ShowRound();
+            ShowDetail();
+
+            ShowRound();
+        }
+
     }
 
     private void byIntent(){
@@ -354,6 +359,33 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             }
         });
 
+        images1.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (IsActive.equals("1")){
+                    edit_pic = true;
+                    Spinner_data = pg_spinner.getSelectedItemPosition();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                                PackageManager.PERMISSION_DENIED ||
+                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                                        PackageManager.PERMISSION_DENIED){
+                            String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                            requestPermissions(permission, PERMISSION_CODE);
+                        }
+                        else{
+                            openCamere();
+                        }
+                    }
+                    else {
+                        openCamere();
+                    }
+                }
+
+                return false;
+            }
+        });
+
         images2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -376,6 +408,33 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     open_pic("2");
                 }
 
+            }
+        });
+
+        images2.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (IsActive.equals("1")){
+                    edit_pic = true;
+                    Spinner_data = pg_spinner.getSelectedItemPosition();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                        if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                                PackageManager.PERMISSION_DENIED ||
+                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                                        PackageManager.PERMISSION_DENIED){
+                            String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                            requestPermissions(permission, PERMISSION_CODE);
+                        }
+                        else{
+                            openCamere1();
+                        }
+                    }
+                    else {
+                        openCamere1();
+                    }
+                }
+
+                return false;
             }
         });
 
@@ -944,7 +1003,6 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         });
     }
 
-
     private void openCamere() {
         if (!pg_spinner.getSelectedItem().equals("-")) {
             ContentValues values = new ContentValues();
@@ -1015,7 +1073,14 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
 //                images2.setImageURI(image_uri2);
             }
+
             pg_spinner.setSelection(Spinner_data);
+
+            if(edit_pic){
+                edit_pic = false;
+                uploadImage();
+//                uploadTextImage();
+            }
         }
 
     }

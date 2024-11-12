@@ -12,75 +12,134 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="@color/colorTitleBlue">
+            android:layout_height="wrap_content"
+            android:background="@color/colorTitleBlue"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <ImageView
-                android:id="@+id/backpage"
-                android:layout_width="30dp"
-                android:layout_height="35dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/ic_keyboard_arrow_left_black">
-
-            </ImageView>
-
-            <Button
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="13dp"
-                android:layout_marginTop="35dp"
-                android:layout_toEndOf="@+id/backpage"
-                android:background="@drawable/calendar_64" />
-
-            <TextView
-                android:id="@+id/txt_date"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="10dp"
-                android:layout_toEndOf="@+id/backpage"
-                android:background="@drawable/rectangle"
-                android:gravity="center_horizontal|center_vertical"
-                android:textAlignment="center"
-                android:textSize="18sp" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="85dp"
-                android:text="กระบวนการ :"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
+                <ImageView
+                    android:id="@+id/backpage"
+                    android:layout_width="30dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/ic_keyboard_arrow_left_black">
 
-            <Spinner
-                android:id="@+id/pg_spinner"
-                style="@style/spinner_style_register"
-                android:layout_width="225dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="125dp"
-                android:layout_marginTop="85dp"
-                android:paddingStart="15dp"></Spinner>
+                </ImageView>
 
-            <Button
-                android:id="@+id/bt_list"
-                android:layout_width="120dp"
-                android:layout_height="40dp"
-                android:layout_marginLeft="270dp"
-                android:layout_marginTop="65dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/txt_edit_graywhite"
-                android:scaleType="fitCenter"
-                android:text="ค้นหา"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:visibility="gone" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        </RelativeLayout>
+                    <Button
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="13dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/calendar_64" />
+
+                    <TextView
+                        android:id="@+id/txt_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/rectangle"
+                        android:gravity="center_horizontal|center_vertical"
+                        android:textAlignment="center"
+                        android:textSize="18sp" />
+
+                    <Button
+                        android:id="@+id/bt_list"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="270dp"
+                        android:layout_marginTop="65dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/txt_edit_graywhite"
+                        android:scaleType="fitCenter"
+                        android:text="ค้นหา"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="กระบวนการ :"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <Spinner
+                    android:id="@+id/pg_spinner"
+                    style="@style/spinner_style_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingStart="15dp"></Spinner>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_weight="0"
+                    android:text="เครื่อง :" />
+
+                <Spinner
+                    android:id="@+id/mac_spinner"
+                    style="@style/spinner_style_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingStart="15dp"
+                    android:layout_weight="4" />
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:layout_weight="0"
+                    android:layout_marginStart="10dp"
+                    android:text="รอบ :" />
+
+                <Spinner
+                    android:id="@+id/round_spinner"
+                    style="@style/spinner_style_register"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:paddingStart="15dp"
+                    android:layout_weight="5" />
+            </LinearLayout>
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/rq_listdoc"
