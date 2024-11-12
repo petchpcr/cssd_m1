@@ -118,7 +118,7 @@ public class SterileActivity extends AppCompatActivity{
     String typeID="";
 
     private iAudio nMidia;
-    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+    ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_RING, 100);
 
     ArrayList<ModelMachine> list = new ArrayList<>();
     ListBoxMachineAdapter list_mac_adapter;
@@ -152,6 +152,7 @@ public class SterileActivity extends AppCompatActivity{
     public Boolean  SR_IsUsedBasket_M1 = false;
 
     Boolean SR_IsTestProgramRunRound_M1 = false;
+    boolean SR_IsProgramTestSplitRound = false;
 
     Handler handler  = new Handler();
     Runnable runnable = new Runnable() {
@@ -204,6 +205,7 @@ public class SterileActivity extends AppCompatActivity{
     protected void onDestroy() {
         Log.d("tog_lcycle","onDestroy");
         super.onDestroy();
+//        check_active_machine_handler.removeCallbacks(check_active_machine_runnable);
     }
 
     int emtpyPos = 0;
@@ -240,6 +242,7 @@ public class SterileActivity extends AppCompatActivity{
         // -----------------------------------------------------------------------
         // Sound
         nMidia = new iAudio(this);
+
     }
 
     @Override
@@ -254,6 +257,7 @@ public class SterileActivity extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
         Log.d("tog_lcycle","onResume");
+        time_cnt_back = 0;
         if(time_cnt>=0){
             check_active_machine();
             check_basket();
@@ -279,6 +283,7 @@ public class SterileActivity extends AppCompatActivity{
 
         SR_IsUsedBasket_M1 = ((CssdProject) getApplication()).isSR_IsUsedBasket_M1();
         SR_IsTestProgramRunRound_M1 = ((CssdProject) getApplication()).isSR_IsTestProgramRunRound_M1();
+        SR_IsProgramTestSplitRound = ((CssdProject) getApplication()).isSR_IsProgramTestSplitRound();
         Log.d("tog_SR_RunRound_M1","SR_IsTestProgramRunRound_M1 = "+SR_IsTestProgramRunRound_M1);
 
         SR_IsEditRound = ((CssdProject) getApplication()).isSR_IsEditRound();
@@ -458,7 +463,6 @@ public class SterileActivity extends AppCompatActivity{
         get_machine("null");
 
         is_set_test_machine();
-
         box_item_detail = (LinearLayout) findViewById(R.id.box_item_detail);
         box_item_detail2 = (LinearLayout) findViewById(R.id.box_item_detail2);
         lv_itemdetail = (ListView) findViewById(R.id.lv_itemdetail);
@@ -522,7 +526,7 @@ public class SterileActivity extends AppCompatActivity{
             list_basket.setVisibility(View.GONE);
             list_item_basket.setVisibility(View.GONE);
             textViewBasketH.setVisibility(View.GONE);
-
+            SR_IsUsedBasket_M1 = false;
         }else{
             Log.d("tog_tag_get_basket","1");
 
@@ -750,8 +754,12 @@ public class SterileActivity extends AppCompatActivity{
 
                     }else{
                         if(mac_id.equals(mac_empty_id)){
-                            list.get(list.size()-emtpyPos).setIsActive("0");
-                            mac_id_non_approve = list.size()-emtpyPos;
+                            Log.d("tog_mac_empty_id","emtpyPos = "+emtpyPos);
+                            if(emtpyPos>0){
+                                list.get(list.size()-emtpyPos).setIsActive("0");
+                                mac_id_non_approve = list.size()-emtpyPos;
+                            }
+
                             reload_basket();
                         }else{
                             for (int i = 0; i < rs.length(); i++) {
@@ -2043,7 +2051,8 @@ public class SterileActivity extends AppCompatActivity{
         //nMidia.getAudio(sound);
 
         if(sound.equals("okay")){
-            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 80);
+//            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 80);
+            toneG.startTone(ToneGenerator.TONE_CDMA_SOFT_ERROR_LITE, 1000);
         }else{
             toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 1000);
         }
@@ -3019,12 +3028,26 @@ public class SterileActivity extends AppCompatActivity{
                         if(c.getString("result").equals("A")) {
                             if(isset==1){
                                 if(SR_IsTestProgramRunRound_M1){
-                                    createSterile(c.getString("process_id"), MachineID, c.getString("type_id"),"1");
-                                }else{
                                     createSterile(c.getString("process_id"), MachineID, c.getString("type_id"),"0");
+                                }else{
+                                    createSterile(c.getString("process_id"), MachineID, c.getString("type_id"),"1");
                                 }
                             }else{
-                                change_doc_program(c.getString("process_id"), list.get(list_mac_adapter.select_mac_pos).getDocNo());
+
+                                if(SR_IsProgramTestSplitRound){
+                                    alert_builder.setMessage("ไม่อนุญาตให้เปลี่ยน โปรแกรมหรือรอบ บนอุปกรณ์นี้\nโปรดแจ้ง Admin");
+                                    alert_builder.setCancelable(false);
+                                    alert_builder.setPositiveButton("ตกลง",new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {alert.dismiss();}
+                                    });
+
+                                    alert = alert_builder.create();
+
+                                    alert.show();
+                                }else{
+                                    change_doc_program(c.getString("process_id"), list.get(list_mac_adapter.select_mac_pos).getDocNo());
+                                }
+
                             }
                         }else{
                             show_dialog("Warning","ไม่พบโปรแกรมทดสอบ");
@@ -3292,6 +3315,12 @@ public class SterileActivity extends AppCompatActivity{
                             break;
                         default:
                             Log.d("tog_dispatchcase","I = ");
+
+                            if(test_machine){
+                                show_dialog("Warning","โปรแกรมทดสอบไม่สามารถเพิ่มตะกร้าหรือรายการได้");
+                                return false;
+                            }
+
                             if(list_basket_adapter.select_basket_pos>=0){
                                 add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
                             }else{
