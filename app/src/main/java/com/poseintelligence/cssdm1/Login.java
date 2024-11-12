@@ -8,9 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
@@ -100,6 +103,7 @@ public class Login extends AppCompatActivity {
 
     int siri_api_login_checj_param = 0;
     String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=888e92d7-dc65-4f49-8eab-2fbbc1b10dc4&prompt=login&redirect_uri=http://172.29.61.150:9015/cssd_siriraj/";
+//    String S_ReDirect = "https://google.com";
 
 //    String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=8e1ef250-a884-4095-8de0-19ba84bcfb26&prompt=login&redirect_uri=http://172.29.38.151:9015/cssd_siriraj/";
     @Override
@@ -139,6 +143,7 @@ public class Login extends AppCompatActivity {
         }catch (Exception e){
             Log.d("tog_ccs","e = "+e );
         }
+
 
         Log.d("tog_ccs_c","ComponentName "+Login.this );
 
@@ -303,12 +308,20 @@ public class Login extends AppCompatActivity {
     boolean Is_onLogin = false;
     ProgressDialog dialogonLogin;
 
+    boolean LoginAdIsFuck = true;
     private void byWidget() {
 //        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
 //        spinner_building = (Spinner) findViewById(R.id.spinner_building);
         uname = (EditText) findViewById(R.id.txt_username);
         pword = (EditText) findViewById(R.id.txt_password);
+
+        if(LoginAdIsFuck){
+            TextView txt_pword = (TextView) findViewById(R.id.textView2);
+            txt_pword.setVisibility(View.GONE);
+            pword.setVisibility(View.GONE);
+        }
+
         submit = (ImageView) findViewById(R.id.button_login);
         button_qr_login = (ImageView) findViewById(R.id.button_qr_login);
         building_name = (TextView) findViewById(R.id.building_name);
@@ -342,6 +355,10 @@ public class Login extends AppCompatActivity {
 
             Log.d("paramNames","loadUrl --- "+S_ReDirect);
             wb.setWebViewClient(new WebViewClient() {
+
+                public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                    handler.proceed();
+                }
 
                 public void onPageFinished(WebView view, String url){
 
@@ -398,6 +415,7 @@ public class Login extends AppCompatActivity {
         }
     }
 
+    int ttt=0;
     private void byEvent(){
             uname.setText("");
             pword.setText("");
@@ -429,7 +447,12 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-
+//                    ttt++;
+//                    if((ttt%2)==0){
+//                        toneG.startTone(ToneGenerator.TONE_CDMA_SOFT_ERROR_LITE, 1000);
+//                    }else{
+//                        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 2000);
+//                    }
                     dep_device();
 
                     if (!pword.getText().toString().equals("")) {
@@ -445,7 +468,16 @@ public class Login extends AppCompatActivity {
                         }
 
                     }else {
-                        Toast.makeText(Login.this, "กรุณากรอกข้อมูลให้ครบถ้วน", Toast.LENGTH_SHORT).show();
+                        if(LoginAdIsFuck){
+                            if (!uname.getText().toString().equals("")) {
+                                onLogin("IsUseQrEmCodeLogin",uname.getText().toString());
+                            }else {
+                                Toast.makeText(Login.this, "กรุณากรอกข้อมูลให้ครบถ้วน", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(Login.this, "กรุณากรอกข้อมูลให้ครบถ้วน", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
                 } catch (Exception e) {
@@ -1239,6 +1271,15 @@ public class Login extends AppCompatActivity {
                                 ((CssdProject) getApplication()).setST_SoundAndroidVersion9(c.getBoolean("ST_SoundAndroidVersion9"));
 
                             }
+
+                            if(!c.isNull("PA_IsPayCountNumber")){
+                                ((CssdProject) getApplication()).setPA_IsPayCountNumber(c.getBoolean("PA_IsPayCountNumber"));
+                            }
+
+                            if(!c.isNull("PA_IsScanPaySoundNotOK")){
+                                ((CssdProject) getApplication()).setPA_IsScanPaySoundNotOK(c.getBoolean("PA_IsScanPaySoundNotOK"));
+                            }
+
                             Log.d("tog_LoadConfig","isNull = "+c.isNull("PA_IsNotificationPopupExpiringScan"));
                             if(!c.isNull("PA_IsNotificationPopupExpiringScan")){
                                 ((CssdProject) getApplication()).setPA_IsNotificationPopupExpiringScan(c.getBoolean("PA_IsNotificationPopupExpiringScan"));
@@ -1277,6 +1318,12 @@ public class Login extends AppCompatActivity {
                                 ((CssdProject) getApplication()).setSR_IsTestProgramRunRound_M1(c.getBoolean("SR_IsTestProgramRunRound_M1"));
                             }else{
                                 ((CssdProject) getApplication()).setSR_IsTestProgramRunRound_M1(false);
+                            }
+
+                            if(!c.isNull("SR_IsProgramTestSplitRound")){
+                                ((CssdProject) getApplication()).setSR_IsProgramTestSplitRound(c.getBoolean("SR_IsProgramTestSplitRound"));
+                            }else{
+                                ((CssdProject) getApplication()).setSR_IsProgramTestSplitRound(false);
                             }
 
 //                            if(!c.isNull("SR_IsCheckItemInMachine")){
