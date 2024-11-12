@@ -23,12 +23,12 @@ public class CssdProject extends Application {
     public static boolean siri_api_login = false;
     public static boolean ldap_login = false;
 
-    public static String D_DATABASE="1";
+//    public static String D_DATABASE="1";
     public static String Project = "SIPH";
 
 //    public static boolean siri_api_login = true;
 
-//    public static String D_DATABASE="1";
+    public static String D_DATABASE="1";
 //    public static String Project = "RM9";
 //    public static boolean ldap_login = true;
 
@@ -129,11 +129,15 @@ public class CssdProject extends Application {
     boolean SR_IsCheckItemInMachine = false;
     boolean SS_IsMatchBasketAndType = false;
 
+    boolean PA_IsPayCountNumber = false;
+    boolean PA_IsScanPaySoundNotOK = false;
+
     boolean SR_IsUsedLot = false;
 
     int ST_LoginTimeOut = -1;
 
     boolean SR_IsTestProgramRunRound_M1 = false;
+    boolean SR_IsProgramTestSplitRound = false;
 
     String MD_URL = "";
 
@@ -708,6 +712,22 @@ public class CssdProject extends Application {
         this.ST_SoundAndroidVersion9 = ST_SoundAndroidVersion9;
     }
 
+    public boolean isPA_IsPayCountNumber() {
+        return PA_IsPayCountNumber;
+    }
+
+    public void setPA_IsPayCountNumber(boolean PA_IsPayCountNumber) {
+        this.PA_IsPayCountNumber = PA_IsPayCountNumber;
+    }
+
+    public boolean isPA_IsScanPaySoundNotOK() {
+        return PA_IsScanPaySoundNotOK;
+    }
+
+    public void setPA_IsScanPaySoundNotOK(boolean PA_IsScanPaySoundNotOK) {
+        this.PA_IsScanPaySoundNotOK = PA_IsScanPaySoundNotOK;
+    }
+
     public boolean isPA_IsNotificationPopupExpiringScan() {
         return PA_IsNotificationPopupExpiringScan;
     }
@@ -762,6 +782,14 @@ public class CssdProject extends Application {
 
     public void setSR_IsTestProgramRunRound_M1(boolean SR_IsTestProgramRunRound_M1) {
         this.SR_IsTestProgramRunRound_M1 = SR_IsTestProgramRunRound_M1;
+    }
+
+    public boolean isSR_IsProgramTestSplitRound() {
+        return SR_IsProgramTestSplitRound;
+    }
+
+    public void setSR_IsProgramTestSplitRound(boolean SR_IsProgramTestSplitRound) {
+        this.SR_IsProgramTestSplitRound = SR_IsProgramTestSplitRound;
     }
 
     public String getMD_URL() {

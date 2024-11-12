@@ -402,7 +402,8 @@
             android:gravity="center"
             android:text="TextView"
             android:textColor="@color/colorAccent"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone" />
 
         <Switch
             android:id="@+id/switch_opt"
