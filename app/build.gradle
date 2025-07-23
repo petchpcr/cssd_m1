@@ -43,6 +43,7 @@ android {
 
 dependencies {
 
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -52,12 +53,12 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1'
+    // implementation 'com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1'
+    implementation 'com.github.miteshpithadiya:SearchableSpinner:master'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
     implementation 'com.github.IslamKhSh:CardSlider:1.0.1'
-    implementation 'com.kyanogen.signatureview:signature-view:1.2'
 
     implementation 'com.sunmi:printerlibrary:1.0.21'
     implementation 'com.google.zxing:core:3.5.0'
