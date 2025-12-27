@@ -57,6 +57,7 @@
         android:roundIcon="@mipmap/ic_launcher_background"
         android:supportsRtl="true"
         android:theme="@style/Theme.CssdM1"
+        android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".Menu_Dispensing.CheckQR_Approve"

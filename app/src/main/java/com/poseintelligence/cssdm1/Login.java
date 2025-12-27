@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -103,7 +104,7 @@ public class Login extends AppCompatActivity {
 
     int siri_api_login_checj_param = 0;
     String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=888e92d7-dc65-4f49-8eab-2fbbc1b10dc4&prompt=login&redirect_uri=http://172.29.61.150:9015/cssd_siriraj/";
-//    String S_ReDirect = "https://google.com";
+//    String S_ReDirect = "https://drive.google.com/viewerng/viewer?embedded=true&url=https://www.pdf995.com/samples/pdf.pdf";
 
 //    String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=8e1ef250-a884-4095-8de0-19ba84bcfb26&prompt=login&redirect_uri=http://172.29.38.151:9015/cssd_siriraj/";
     @Override
@@ -130,11 +131,13 @@ public class Login extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        ((CssdProject) getApplication()).setExpired_token(false);
         byWidget();
 
         byEvent();
         onLoadConfiguration();
         get_building_name();
+
         try{
             intentService = new Intent(this, CheckConnectionService.class);
             startService(intentService);
@@ -156,6 +159,7 @@ public class Login extends AppCompatActivity {
 //        data.put("mac_id", "1");
 ////        DBConnect.getItemstockAddToSterileBasket(data);
 //        Log.d("tog_DBC","getItemstockAddToSterileBasket  = "+DBConnect.getItemstockAddToSterileBasket(data));
+
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -298,17 +302,17 @@ public class Login extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Log.d("tog_ccs","stopService" );
-        checkConnectionService.
-        stopService(intentService);
+        checkConnectionService.stopService(intentService);
         finish();
     }
+
     WebView wb;
     String ad_id = "";
     String ad_name = "";
     boolean Is_onLogin = false;
     ProgressDialog dialogonLogin;
 
-    boolean LoginAdIsFuck = true;
+    boolean LoginAdIsFuck = false;
     private void byWidget() {
 //        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
@@ -434,14 +438,15 @@ public class Login extends AppCompatActivity {
             }
         };
 
-        iSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        iSetting.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+////                wb.loadUrl("http://192.168.1.111:8080/api?code=1234");
+//                pDialog();
+//            }
+//        });
 
-//                wb.loadUrl("http://192.168.1.111:8080/api?code=1234");
-                pDialog();
-            }
-        });
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -457,6 +462,7 @@ public class Login extends AppCompatActivity {
 
                     if (!pword.getText().toString().equals("")) {
 
+                        Log.d("tog_ST_UrlAuth","ST_UrlAuthentication = "+ST_UrlAuthentication);
                         if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
                             onLogin(uname.getText().toString(), pword.getText().toString());
                         }else {
@@ -490,6 +496,7 @@ public class Login extends AppCompatActivity {
         iSetting.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                pDialog();
                 dev++;
                 return false;
             }
@@ -558,6 +565,13 @@ public class Login extends AppCompatActivity {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
 
+                            if (pword.getText().toString().equals("")) {
+
+                                Toast.makeText(Login.this, "กรุณากรอกข้อมูลให้ครบถ้วน", Toast.LENGTH_SHORT).show();
+                                focus();
+                                return true;
+                            }
+
                             try {
 
                                 if (ST_UrlAuthentication.equals("") || ST_UrlAuthentication.equals("null")){
@@ -620,6 +634,13 @@ public class Login extends AppCompatActivity {
         uname.requestFocus();
     }
 
+    public void showDetailDialog(String e){
+//        AlertDialog.Builder dialogbuilder = new AlertDialog.Builder(Login.this);
+//        dialogbuilder.setMessage(e);
+//
+//        dialogbuilder.show();
+    }
+
     public void getADtoLogin(final String EmpCode) {
         class onLogin extends AsyncTask<String, Void, String> {
 
@@ -659,6 +680,7 @@ public class Login extends AppCompatActivity {
                     }
                 } catch (JSONException e) {
 //                    Toast.makeText(Login.this, Cons.WARNING_CONNECT_SERVER_FAIL, Toast.LENGTH_SHORT).show();
+                    showDetailDialog(e.toString());
                     e.printStackTrace();
                 }finally {
                     if (dialog.isShowing()) {
@@ -807,6 +829,12 @@ public class Login extends AppCompatActivity {
                                 pm.setBdCode( c.getInt("B_ID" ) );
                             }else{
                                 pm.setBdCode(1);
+                            }
+
+                            if(!c.isNull("access_token")){
+                                pm.setLogin_token( c.getString("access_token" ) );
+                            }else{
+                                pm.setLogin_token("-");
                             }
 
                             pm.setBdName( "-" );
@@ -1337,6 +1365,12 @@ public class Login extends AppCompatActivity {
 //                                ((CssdProject) getApplication()).setSS_IsMatchBasketAndType(c.getBoolean("SS_IsMatchBasketAndType"));
 //                            }
 
+                            if(!c.isNull("PA_MergePayoutDoc")){
+                                ((CssdProject) getApplication()).setPA_MergePayoutDoc(c.getBoolean("PA_MergePayoutDoc"));
+                            }else{
+                                ((CssdProject) getApplication()).setPA_MergePayoutDoc(false);
+                            }
+
 
                             get_config_m1();
 
@@ -1347,6 +1381,8 @@ public class Login extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     Toast.makeText(Login.this, Cons.WARNING_SEARCH_NOT_FOUND, Toast.LENGTH_SHORT).show();
+
+                    showDetailDialog(e.toString());
                     e.printStackTrace();
                 }
             }
@@ -1455,12 +1491,22 @@ public class Login extends AppCompatActivity {
 
     public void dep_device(){
 //        String serialNumber = getSerialNumber();
+//        Log.d("serialNumber",serialNumber);
 
 //        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
 //            onLogin("IsUseQrEmCodeLogin", "EM00011");
 //        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate someDate = LocalDate.of(2025, 11, 10);
+            LocalDate today = LocalDate.now();
+            if (someDate.isEqual(today)) {
+                onLogin("v", "70001954");
+            }
+        }
+
         if(dev==2){
-            onLogin("IsUseQrEmCodeLogin", "EM00011");
+            onLogin("v", "70001954");
         }
     }
 

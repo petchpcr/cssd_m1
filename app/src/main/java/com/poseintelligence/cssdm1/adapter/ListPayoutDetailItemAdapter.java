@@ -2,15 +2,18 @@ package com.poseintelligence.cssdm1.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.model.ModelPayoutDetails;
@@ -50,12 +53,20 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
         final TextView txt_qty = (TextView) view.findViewById(R.id.txt_qty);
         final EditText txt_enter_qty = (EditText) view.findViewById(R.id.txt_enter_qty);
 
-        final RelativeLayout relativeLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout);
+        final LinearLayout lLayout = (LinearLayout) view.findViewById(R.id.ll);
+
+
+        final TextView txt_item_code2 = (TextView) view.findViewById(R.id.txt_item_code2);
+        final TextView txt_QtyUrgent = (TextView) view.findViewById(R.id.txt_QtyUrgent);
 
         final String ID = DATA_MODEL.get(position).getID();
         txt_no.setText(DATA_MODEL.get(position).getNo());
         txt_item_code.setText(DATA_MODEL.get(position).getItemcode());
         txt_item_name.setText(DATA_MODEL.get(position).getItemname());
+
+
+        txt_item_code2.setText(DATA_MODEL.get(position).getItemcode());
+        txt_QtyUrgent.setText(DATA_MODEL.get(position).getQtyUrgent());
 
         final int STOCK_QTY = Integer.valueOf( DATA_MODEL.get(position).getStock_Qty() ).intValue();
         final int QTY = Integer.valueOf( DATA_MODEL.get(position).getQty() ).intValue();
@@ -66,6 +77,19 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
             txt_request_qty.setVisibility(View.INVISIBLE);
         }else {
             txt_request_qty.setVisibility(View.VISIBLE);
+        }
+
+        if (((CssdProject) context.getApplication()).Project().equals("SiPH")){
+            txt_item_code.setVisibility(View.GONE);
+            txt_item_code2.setVisibility(View.VISIBLE);
+
+            if(DATA_MODEL.get(position).getQtyUrgent().equals("0")){
+                txt_QtyUrgent.setVisibility(View.GONE);
+            }else{
+                txt_QtyUrgent.setVisibility(View.VISIBLE);
+                txt_QtyUrgent.setText("ด่วน : " + DATA_MODEL.get(position).getQtyUrgent() + " SET");
+                lLayout.setBackgroundColor(Color.parseColor("#EF9A9A"));
+            }
         }
 
         if(DATA_MODEL.get(position).getIsWasting().equals("1")){
@@ -100,10 +124,10 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
                     txt_enter_qty.setText(DATA_MODEL.get(position).getPay_Qty());
 
                     if(DATA_MODEL.get(position).getBalance().equals("0")){
-                        relativeLayout.setBackgroundResource(R.drawable.rectangle_gray);
+                        lLayout.setBackgroundResource(R.drawable.rectangle_gray);
                     }
 
-                    relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    lLayout.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
                             ((DispensingActivity) context).openDialogPayoutDetailSub(ID,  txt_item_code.getText().toString(), txt_item_name.getText().toString());
@@ -111,7 +135,7 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
                         }
                     });
 
-                    relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    lLayout.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
 
                             //System.out.println("onClick");
@@ -136,10 +160,10 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
                     txt_enter_qty.setText(DATA_MODEL.get(position).getPay_Qty());
 
                     if(DATA_MODEL.get(position).getBalance().equals("0")){
-                        relativeLayout.setBackgroundResource(R.drawable.rectangle_gray);
+                        lLayout.setBackgroundResource(R.drawable.rectangle_gray);
                     }
 
-                    relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                    lLayout.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
                             ((DispensingActivity) context).openDialogPayoutDetailSub(ID,  txt_item_code.getText().toString(), txt_item_name.getText().toString());
@@ -147,7 +171,7 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
                         }
                     });
 
-                    relativeLayout.setOnClickListener(new View.OnClickListener() {
+                    lLayout.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View v) {
 
                             //System.out.println("onClick");
@@ -235,7 +259,7 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
                     }
                 });
 
-                relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                lLayout.setOnLongClickListener(new View.OnLongClickListener() {
                     public boolean onLongClick(View v) {
                         ((DispensingActivity) context).callDialogRemove(ID);
                         return false;
@@ -255,10 +279,13 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
             txt_enter_qty.setText(DATA_MODEL.get(position).getPay_Qty());
 
             if(DATA_MODEL.get(position).getBalance().equals("0")){
-                relativeLayout.setBackgroundResource(R.drawable.rectangle_gray);
+                lLayout.setBackgroundResource(R.drawable.rectangle_gray);
+                if (((CssdProject) context.getApplication()).Project().equals("SiPH")){
+                    lLayout.setBackgroundResource(R.drawable.rectangle_pay_item_green);
+                }
             }
 
-            relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            lLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     ((DispensingActivity) context).openDialogPayoutDetailSub(ID,  txt_item_code.getText().toString(), txt_item_name.getText().toString());
@@ -266,7 +293,7 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
                 }
             });
 
-            relativeLayout.setOnClickListener(new View.OnClickListener() {
+            lLayout.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
                     //System.out.println("onClick");

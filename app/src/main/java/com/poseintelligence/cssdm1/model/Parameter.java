@@ -10,6 +10,7 @@ public class Parameter {
     private int BdCode;
     private String BdName;
     private boolean IsSU;
+    private String login_token;
 
     public int getUserid() { return userid; }
     public void setUserid(int userid) {
@@ -64,5 +65,13 @@ public class Parameter {
     }
     public void setIsSU(boolean IsSU) {
         this.IsSU = IsSU;
+    }
+
+    public String getLogin_token() {
+        return login_token;
+    }
+
+    public void setLogin_token(String login_token) {
+        this.login_token = login_token;
     }
 }

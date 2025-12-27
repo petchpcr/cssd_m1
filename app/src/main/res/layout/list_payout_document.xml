@@ -6,115 +6,145 @@
     android:orientation="horizontal"
     android:padding="2dp">
 
-        <RelativeLayout
-            android:id="@+id/relativeLayout"
+        <LinearLayout
+            android:id="@+id/ll_bg"
             android:layout_width="match_parent"
-            android:layout_height="83dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
             android:background="@drawable/rectangle"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/txt_no"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/textView56"
-                    android:layout_alignTop="@+id/txt_status"
-                    android:layout_marginLeft="5dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="1."
-                    android:textColor="@color/list_text_color"
-                    android:textSize="16dp"></TextView>
-
-                <TextView
-                    android:id="@+id/txt_department"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/txt_status"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toStartOf="@+id/txt_status"
-                    android:layout_toEndOf="@+id/txt_no"
-                    android:gravity="center_vertical"
-                    android:maxLines="2"
-                    android:text="department"
-                    android:textColor="@color/list_text_color"
-                    android:textSize="16dp"></TextView>
-
-                <TextView
-                    android:id="@+id/txt_doc_no"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/txt_department"
-
-                    android:layout_marginStart="6dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="PA1910-00001"
-                    android:textColor="#0000FF"
-                    android:textSize="14dp"></TextView>
-
-                <TextView
-                    android:id="@+id/txt_doc_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_below="@+id/txt_doc_no"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="22-10-2019"
-                    android:textColor="#555555"
-                    android:textSize="12dp"></TextView>
-
-                <TextView
-                    android:id="@+id/txt_ref_doc_no"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_alignBottom="@+id/txt_doc_date"
-                    android:layout_marginStart="4dp"
-                    android:layout_toEndOf="@+id/txt_doc_date"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text="Ref"
-                    android:textColor="#555555"
-                    android:textSize="12dp"></TextView>
-
-                <TextView
-                    android:id="@+id/txt_doc_date_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="18dp"
-                    android:layout_alignBottom="@+id/txt_ref_doc_no"
-                    android:layout_marginStart="4dp"
-                    android:layout_toEndOf="@+id/txt_ref_doc_no"
-                    android:gravity="center_vertical"
-                    android:maxLines="1"
-                    android:text=""
-                    android:textColor="#555555"
-                    android:textSize="12dp"
-                    android:visibility="gone"></TextView>
-
-
-                <TextView
-                    android:id="@+id/txt_status"
-                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="2dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:background="@drawable/text_standard"
-                    android:gravity="center|center_vertical"
-                    android:maxLines="2"
-                    android:selectAllOnFocus="true"
-                    android:text="รอจ่าย"
-                    android:textColor="@color/colorGray"
-                    android:textSize="14dp"></TextView>
+                    android:layout_weight="0"
+                    android:orientation="vertical">
 
-        </RelativeLayout>
+                        <CheckBox
+                            android:id="@+id/chk_group"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0"
+                            android:gravity="top" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="4dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="34dp"
+                            android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_no"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text="1."
+                                    android:textColor="@color/list_text_color"
+                                    android:textSize="16dp"></TextView>
+
+                                <TextView
+                                    android:id="@+id/txt_department"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="2"
+                                    android:text="department"
+                                    android:textColor="@color/list_text_color"
+                                    android:textSize="16dp"></TextView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginBottom="2dp"
+                            android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_doc_no"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text="PA1910-00001"
+                                    android:textColor="#0000FF"
+                                    android:textSize="14dp"></TextView>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_doc_date"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="18dp"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text="22-10-2019"
+                                    android:textColor="#555555"
+                                    android:textSize="12dp"></TextView>
+
+                                <TextView
+                                    android:id="@+id/txt_ref_doc_no"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="18dp"
+                                    android:layout_marginStart="4dp"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text="Ref"
+                                    android:textColor="#555555"
+                                    android:textSize="12dp"></TextView>
+
+                                <TextView
+                                    android:id="@+id/txt_doc_date_time"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="18dp"
+                                    android:layout_marginStart="4dp"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text=""
+                                    android:textColor="#555555"
+                                    android:textSize="12dp"
+                                    android:visibility="gone"></TextView>
+                        </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0"
+                    android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_status"
+                            android:layout_width="80dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="2dp"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@drawable/text_standard"
+                            android:gravity="center|center_vertical"
+                            android:maxLines="2"
+                            android:selectAllOnFocus="true"
+                            android:text="รอจ่าย"
+                            android:textColor="@color/colorGray"
+                            android:textSize="14dp"></TextView>
+                </LinearLayout>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/txt_department_id"

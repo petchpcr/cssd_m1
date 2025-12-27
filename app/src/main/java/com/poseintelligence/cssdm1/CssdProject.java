@@ -15,23 +15,36 @@ import java.util.ArrayList;
 
 public class CssdProject extends Application {
 
-    private AppCompatActivity xActivity;
+    private static Context appContext;
+
+    public static Context getAppContext() {
+        return appContext;
+    }
+
+    private static AppCompatActivity xActivity;
 
     public static boolean Is_de_bug = false;
-//    public static boolean Is_de_bug = true;
     public static int isNonActiveTime = 0;
     public static boolean siri_api_login = false;
-    public static boolean ldap_login = false;
+//    public static boolean ldap_login = false;
 
+    //  SIRIRAJ
 //    public static String D_DATABASE="1";
-    public static String Project = "SIPH";
-
+//    public static String Project = "SIH";
 //    public static boolean siri_api_login = true;
 
+    //  SIRIRAJ PIYA
     public static String D_DATABASE="1";
+    public static String Project = "SiPH";
+    public static boolean ldap_login = true;
+
+
+    //  PARAM9
+//    public static String D_DATABASE="1";
 //    public static String Project = "RM9";
 //    public static boolean ldap_login = true;
 
+    //RAMA
 //    public static String D_DATABASE="1";
 //    public static String Project = "RAMA";
 
@@ -40,6 +53,9 @@ public class CssdProject extends Application {
 
 //    public static String D_DATABASE="0";
 //    public static String Project = "BGH";
+
+
+    public static boolean expired_token = false;
 
     private String OrgName;
     private String xUrl;
@@ -131,6 +147,7 @@ public class CssdProject extends Application {
 
     boolean PA_IsPayCountNumber = false;
     boolean PA_IsScanPaySoundNotOK = false;
+    boolean PA_MergePayoutDoc = false;
 
     boolean SR_IsUsedLot = false;
 
@@ -157,7 +174,7 @@ public class CssdProject extends Application {
         this.PA_IsWastingPayout = PA_IsWastingPayout;
     }
 
-    public AppCompatActivity getxActivity() { return xActivity; }
+    public static AppCompatActivity getxActivity() { return xActivity; }
     public void setxActivity(AppCompatActivity xActivity) {
         this.xActivity = xActivity;
     }
@@ -174,6 +191,7 @@ public class CssdProject extends Application {
     public void setPm(Parameter pm) {
         this.pm = pm;
     }
+
 
     public ArrayList<ConfigM1> getcM1(){ return cM1; }
     public void setcM1(ArrayList<ConfigM1> cM1) {
@@ -744,6 +762,14 @@ public class CssdProject extends Application {
         this.PA_IsUsedPayOkSound = PA_IsUsedPayOkSound;
     }
 
+    public boolean isPA_MergePayoutDoc() {
+        return PA_MergePayoutDoc;
+    }
+
+    public void setPA_MergePayoutDoc(boolean PA_MergePayoutDoc) {
+        this.PA_MergePayoutDoc = PA_MergePayoutDoc;
+    }
+
     public int getST_LoginTimeOut() {
         return ST_LoginTimeOut;
     }
@@ -806,10 +832,21 @@ public class CssdProject extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        appContext = getApplicationContext();
         init();
     }
 
     private void init(){
         SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
+
     }
+
+    public static boolean isExpired_token() {
+        return expired_token;
+    }
+
+    public static void setExpired_token(boolean expired_token) {
+        CssdProject.expired_token = expired_token;
+    }
+
 }

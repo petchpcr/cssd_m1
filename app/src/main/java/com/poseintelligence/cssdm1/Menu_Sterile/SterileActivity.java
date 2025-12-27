@@ -2078,6 +2078,15 @@ public class SterileActivity extends AppCompatActivity{
         alert_builder.setTitle("");
         alert_builder.setMessage(mass);
 
+        alert_builder.setCancelable(false);
+        alert_builder.setNegativeButton(
+                "ตกลง",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        alert.dismiss();
+                    }
+                });
+
         alert = alert_builder.create();
 
         alert.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -2251,6 +2260,8 @@ public class SterileActivity extends AppCompatActivity{
                 data.put("p_SterileProgramID", p_SterileProgramID);
                 data.put("docno", docno);
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("Istest_machine", test_machine?"1":"0");
+
                 String result = httpConnect.sendPostRequest(getUrl+ "change_doc_program.php", data);
 
                 Log.d("tog_change_doc_program","data = "+data);
@@ -2784,6 +2795,7 @@ public class SterileActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
+                Log.d("tog_sterile_process","data = "+data);
                 Log.d("tog_sterile_process","result = "+result);
 
                 return result;
@@ -2792,7 +2804,7 @@ public class SterileActivity extends AppCompatActivity{
         }
 
         get_doc_in_mac obj = new get_doc_in_mac();
-        obj.execute(mass_onkey);
+        obj.execute(emp_code);
     }
 
     public void set_loder(String emp_code,boolean startMachine,String mac_id,String Doc_no){
@@ -3034,19 +3046,19 @@ public class SterileActivity extends AppCompatActivity{
                                 }
                             }else{
 
-                                if(SR_IsProgramTestSplitRound){
-                                    alert_builder.setMessage("ไม่อนุญาตให้เปลี่ยน โปรแกรมหรือรอบ บนอุปกรณ์นี้\nโปรดแจ้ง Admin");
-                                    alert_builder.setCancelable(false);
-                                    alert_builder.setPositiveButton("ตกลง",new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {alert.dismiss();}
-                                    });
-
-                                    alert = alert_builder.create();
-
-                                    alert.show();
-                                }else{
+//                                if(SR_IsProgramTestSplitRound){
+//                                    alert_builder.setMessage("ไม่อนุญาตให้เปลี่ยน โปรแกรมหรือรอบ บนอุปกรณ์นี้\nโปรดแจ้ง Admin");
+//                                    alert_builder.setCancelable(false);
+//                                    alert_builder.setPositiveButton("ตกลง",new DialogInterface.OnClickListener() {
+//                                        public void onClick(DialogInterface dialog, int which) {alert.dismiss();}
+//                                    });
+//
+//                                    alert = alert_builder.create();
+//
+//                                    alert.show();
+//                                }else{
                                     change_doc_program(c.getString("process_id"), list.get(list_mac_adapter.select_mac_pos).getDocNo());
-                                }
+//                                }
 
                             }
                         }else{
@@ -3150,10 +3162,14 @@ public class SterileActivity extends AppCompatActivity{
                                     set_test_program(mass_onkey.substring(1),data[1],1);
                                 }else{
                                     set_program(mass_onkey.substring(1),data[1],1);
+//                                    set_program("1",data[1],1);
                                 }
                                 break;
                             case wait_scan_employee :
+
+                                Log.d("mass_onkey","mass_onkey = "+mass_onkey);
                                 get_loder(mass_onkey,data[1]);
+//                                get_loder("em00001",data[1]);
 //                                set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
                                 break;
                             case wait_scan_type :
@@ -3298,6 +3314,18 @@ public class SterileActivity extends AppCompatActivity{
                                     }else{
                                         set_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
                                     }
+                                }
+                            }
+
+                            break;
+                        case "p":
+
+                            if(list_mac_adapter.select_mac_pos>=0&&(list_mac_adapter.select_mac_pos!=list.size()-emtpyPos)){
+                                if(test_machine){
+                                    set_test_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
+                                }else{
+//                                    set_program(mass_onkey.substring(1),list.get(list_mac_adapter.select_mac_pos).getMachineID(),0);
+                                    show_dialog("Warning","ไม่สามารถเปลี่ยนโปรแกรมทดสอบได้");
                                 }
                             }
 
@@ -3595,7 +3623,7 @@ public class SterileActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
-                Log.d("tog_basket","check_basket result = "+result);
+//                Log.d("tog_basket","check_basket result = "+result);
 
                 return result;
             }
@@ -3704,8 +3732,8 @@ public class SterileActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
 
-                Log.d("tog_get_item","check_item_in_basket data = " + data);
-                Log.d("tog_get_item","check_item_in_basket result = " + result);
+//                Log.d("tog_get_item","check_item_in_basket data = " + data);
+//                Log.d("tog_get_item","check_item_in_basket result = " + result);
                 return result;
             }
 

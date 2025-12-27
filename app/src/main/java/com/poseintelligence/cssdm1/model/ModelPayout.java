@@ -1,5 +1,9 @@
 package com.poseintelligence.cssdm1.model;
 
+import android.graphics.Color;
+
+import com.poseintelligence.cssdm1.CssdProject;
+
 public class ModelPayout {
     String Department_ID;
     String DepName;
@@ -11,16 +15,21 @@ public class ModelPayout {
     String IsStatus;
     String Payout_Status;
     String IsWeb = "0";
+    String IsGroupPayout = "0";
     String DocDateTime;
     String Payout_Status_ID;
     String DocDateSend;
     boolean boo_Payout_Status;
+    boolean Is_Check_Doc;
+
+    String IsUrgent;
+    String QtyUrgent;
 
     String PayQty,Count_Qty, Desc, RefDocNo, IsSpecial = "0";
 
     int index = 0;
 
-    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb, String DocDateTime, String Payout_Status_ID, boolean boo_Payout_Status, String DocDateSend, int index) {
+    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb,String DocDateTime, String Payout_Status_ID, boolean boo_Payout_Status, String DocDateSend, int index) {
         Department_ID = department_ID;
         DepName = depName;
         DocNo = docNo;
@@ -41,7 +50,7 @@ public class ModelPayout {
         this.index = index;
     }
 
-    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb, String DocDateTime, String DocDateSend, int index) {
+    public ModelPayout(String department_ID, String depName, String docNo, String createDate, String qty, String payQty, String count_Qty, String isStatus, String payout_Status, String desc, String refDocNo, String IsSpecial, String IsWeb,String DocDateTime, String DocDateSend, int index) {
         Department_ID = department_ID;
         DepName = depName;
         DocNo = docNo;
@@ -120,11 +129,11 @@ public class ModelPayout {
         //System.out.println("RefDocNo = " + RefDocNo);
 
         String prefix = "";
-
         if(IsSpecial){
             prefix = "S";
         }else if(IsWeb.equals("1")){
             prefix = "W";
+            if( CssdProject.Project.equals("SiPH")){prefix = "เบิก";}
         }else if(IsWeb.equals("2")){
             prefix = "B";
         }else if(IsWeb.equals("0") && RefDocNo != null && !RefDocNo.trim().equals("")){
@@ -133,7 +142,40 @@ public class ModelPayout {
             prefix = "M";
         }
 
+        if (IsGroupPayout.equals("1")) {
+            try {
+                if(RefDocNo.substring(0,1).equals("S")){
+                    prefix = "R";
+                }else{
+                    if(IsWeb.equals("1")){
+                        prefix = "W";
+
+                        if( CssdProject.Project.equals("SiPH")){prefix = "เบิก";}
+                    }else{
+                        prefix = "GROUP";
+                    }
+
+                }
+            }catch (Exception e){
+
+            }
+        }
+
+//        if(IsSpecial){
+//            prefix = "S";
+//        }else if(IsWeb.equals("1")){
+//            prefix = "W";
+//        }else if(IsWeb.equals("2")){
+//            prefix = "B";
+//        }else if(IsWeb.equals("0") && RefDocNo != null && !RefDocNo.trim().equals("")){
+//            prefix = "R";
+//        }else{
+//            prefix = "M";
+//        }
+
         //System.out.println(Department_ID);
+
+
 
         return ( (Department_ID != null && Department_ID.equals("-1")) ? "สร้างใบจ่ายรวมแผนก" : DepName ) + " (" + prefix + ")";
 
@@ -144,10 +186,12 @@ public class ModelPayout {
 
         String prefix = "";
 
-        if(this.IsSpecial.equals("1")){
+        if(IsSpecial.equals("1")){
             prefix = "S";
         }else if(IsWeb.equals("1")){
             prefix = "W";
+
+            if( CssdProject.Project.equals("SiPH")){prefix = "เบิก";}
         }else if(IsWeb.equals("2")){
             prefix = "B";
         }else if(IsWeb.equals("0") && RefDocNo != null && !RefDocNo.trim().equals("")){
@@ -155,6 +199,37 @@ public class ModelPayout {
         }else{
             prefix = "M";
         }
+
+        if (IsGroupPayout.equals("1")) {
+            try {
+                if(RefDocNo.substring(0,1).equals("S")){
+                    prefix = "R";
+                }else{
+                    if(IsWeb.equals("1")){
+                        prefix = "W";
+
+                        if( CssdProject.Project.equals("SiPH")){prefix = "เบิก";}
+                    }else{
+                        prefix = "GROUP";
+                    }
+
+                }
+            }catch (Exception e){
+
+            }
+        }
+
+//        if(this.IsSpecial.equals("1")){
+//            prefix = "S";
+//        }else if(IsWeb.equals("1")){
+//            prefix = "W";
+//        }else if(IsWeb.equals("2")){
+//            prefix = "B";
+//        }else if(IsWeb.equals("0") && RefDocNo != null && !RefDocNo.trim().equals("")){
+//            prefix = "R";
+//        }else{
+//            prefix = "M";
+//        }
 
         return ( (Department_ID != null && Department_ID.equals("-1")) ? "สร้างใบจ่ายรวมแผนก (เอกสารชั่วคราว)" : DepName ) + " (" + prefix + ")";
 
@@ -257,5 +332,29 @@ public class ModelPayout {
 
     public void setBoo_Payout_Status(boolean boo_Payout_Status) {
         this.boo_Payout_Status = boo_Payout_Status;
+    }
+
+    public String getIsGroupPayout() {
+        return IsGroupPayout;
+    }
+
+    public void setIsGroupPayout(String isGroupPayout) {
+        IsGroupPayout = isGroupPayout;
+    }
+
+    public boolean isIs_Check_Doc() {
+        return Is_Check_Doc;
+    }
+
+    public void setIs_Check_Doc(boolean is_Check_Doc) {
+        Is_Check_Doc = is_Check_Doc;
+    }
+
+    public String getIsUrgent() {
+        return IsUrgent;
+    }
+
+    public void setIsUrgent(String isUrgent) {
+        IsUrgent = isUrgent;
     }
 }

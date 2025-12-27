@@ -41,11 +41,14 @@ public class CheckConnectionService extends Service {
 
     private IBinder mBinder = new MyBinder();
 
+    int lost_connect_time = 0;
+    boolean is_show_wait_connecting=false;
+
     @Override
     public void onCreate()
     {
         Log.d("tog_ccs","onCreate" );
-        check_connecting();
+        looper();
     }
 
     @Override
@@ -55,16 +58,26 @@ public class CheckConnectionService extends Service {
         Log.d("tog_ccs","onDestroy" );
     }
 
-    private void show_wait_connecting(){
+    private void check_connecting(){
+        Log.d("tog_wait_con","on show_wait_connecting");
         ConnectivityManager conMgr =  (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = conMgr.getActiveNetworkInfo();
+//        Log.d("tog_wait_netInfo","netInfo = "+netInfo);
         if (netInfo == null){
-            if(mActivity == null){
-                Intent x = new Intent(this, WaitConnectDialog.class);
-                x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(x);
+            if(lost_connect_time>5){
+                if(mActivity == null && !is_show_wait_connecting){
+                    is_show_wait_connecting = true;
+                    Log.d("tog_wait_con","mActivity = null");
+                    Intent x = new Intent(this, WaitConnectDialog.class);
+                    x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(x);
+                }
             }
+            lost_connect_time++;
+
         }else{
+            lost_connect_time=0;
+            is_show_wait_connecting = false;
             if(mActivity != null){
                 mActivity.fin();
                 mActivity = null;
@@ -80,19 +93,28 @@ public class CheckConnectionService extends Service {
                 }
             }
 
+            Log.d("tog_http_F","isExpired_token= "+((CssdProject) getApplication()).isExpired_token());
+            if(((CssdProject) getApplication()).isExpired_token()){
+                ((CssdProject) getApplication()).setExpired_token(false);
+                Intent intent = new Intent(this,Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+
         }
 
+//        Log.d("tog_http_F","expired_token check");
 //        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
 //        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
 //        Log.d("topActivity", "CURRENT Activity ::" + taskInfo.get(0).topActivity.getClassName());
 
     }
 
-    private void check_connecting(){
+    private void looper(){
         runnable = new Runnable() {
             @Override
             public void run() {
-                show_wait_connecting();
+                check_connecting();
                 handler.postDelayed(runnable, 1000);
 //                handler.removeCallbacks(runnable);
 

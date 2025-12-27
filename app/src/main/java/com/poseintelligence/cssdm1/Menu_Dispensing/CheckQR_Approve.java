@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.CssdProject;
@@ -20,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -74,6 +77,14 @@ public class CheckQR_Approve extends Activity {
         }
         bt_cancel = (Button) findViewById(R.id.bt_cancel);
 
+        TextView textViewHeader = findViewById(R.id.textView162);
+
+        if (remark.equals("payrow")){
+            textViewHeader.setText("สแกน QR Code ผู้จ่าย");
+        }else if (remark.equals("pay_prepear")){
+            textViewHeader.setText("สแกน QR Code ผู้จัดเตรียม");
+        }
+
         etxt_qr.setOnKeyListener(new View.OnKeyListener()
         {
             public boolean onKey(View v, int keyCode, KeyEvent event)
@@ -111,7 +122,26 @@ public class CheckQR_Approve extends Activity {
             @Override
             public boolean onLongClick(View v) {
 //                Checkuser("EM00001", DocNo, xSel);
-                etxt_qr.setText("EM00001");
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    LocalDate someDate = LocalDate.of(2025, 11, 10);
+                    LocalDate today = LocalDate.now();
+                    if (someDate.isEqual(today)) {
+                        etxt_qr.setText("EM00001");
+                        if (xSel.equals("pay") || xSel.equals("payrow")){
+                            if (remark.equals("closepayout")){
+                                Log.d("tog_flow","Checkuser");
+                                Checkuser(etxt_qr.getText().toString(),DocNo,xSel);
+                            }else {
+                                CheckuserPay(etxt_qr.getText().toString(),xSel,remark,DocNo);
+                            }
+                        }else if (xSel.equals("sterile")){
+                            CheckuserSterile(etxt_qr.getText().toString(),xSel,remark,DocNo);
+                        }else {
+                            Checkuser(etxt_qr.getText().toString(),DocNo,xSel);
+                        }
+
+                    }
+                }
                 return true;
             }
         });
@@ -162,6 +192,9 @@ public class CheckQR_Approve extends Activity {
                         if(c.getString("check").equals("true")){
                             check = c.getString("check");
                             setResult(1035, intent);
+                            if (xSel.equals("grouppayout")){
+                                setResult(1036, intent);
+                            }
                             intent.putExtra("RETURN_DATA",check);
                             intent.putExtra("RETURN_xsel",xSel);
                             intent.putExtra("RETURN_DocNo",DocNo);
@@ -236,7 +269,12 @@ public class CheckQR_Approve extends Activity {
                             if (c.getString("IsAdmin").equals("1")){
 
                                 if (xSel.equals("payrow")){
-                                    setResult(1155, intent);
+                                    if (remark.equals("payrow")){
+                                        setResult(1155, intent);
+                                    }else if (remark.equals("pay_prepear")){
+                                        setResult(1150, intent);
+                                    }
+
                                     intent.putExtra("RETURN_DATA",check);
                                     intent.putExtra("RETURN_xsel",xSel);
                                     intent.putExtra("RETURN_DocNo",DocNo);

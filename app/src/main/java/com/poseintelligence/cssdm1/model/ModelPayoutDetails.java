@@ -12,7 +12,8 @@ public class ModelPayoutDetails {
             Balance,
             RefDocNo,
             Program,
-            IsReceiveNotSterile;
+            IsReceiveNotSterile,
+            QtyUrgent;
 
     int index = 0;
 
@@ -32,6 +33,7 @@ public class ModelPayoutDetails {
         this.Program = Program;
         this.IsReceiveNotSterile = IsReceiveNotSterile;
         this.index = index;
+        this.QtyUrgent = "0";
     }
 
     public String getIsReceiveNotSterile() { return IsReceiveNotSterile;
@@ -155,5 +157,13 @@ public class ModelPayoutDetails {
 
     public void setStock_Qty(String stock_Qty) {
         Stock_Qty = stock_Qty;
+    }
+
+    public String getQtyUrgent() {
+        return QtyUrgent;
+    }
+
+    public void setQtyUrgent(String qtyUrgent) {
+        QtyUrgent = qtyUrgent;
     }
 }

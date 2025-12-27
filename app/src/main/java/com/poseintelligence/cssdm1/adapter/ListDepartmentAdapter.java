@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.model.ModelDepartment;
@@ -70,6 +71,19 @@ public class ListDepartmentAdapter extends ArrayAdapter<ModelDepartment> {
         } else {
 //            view.setBackgroundColor(Color.parseColor("#FFFFFF"));
             relativeLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
+
+
+
+        if (((CssdProject) context.getApplication()).Project().equals("SiPH")){
+
+            if(list.get(position).getIsUrgent().equals("1")){
+                relativeLayout.setBackgroundColor(Color.parseColor("#EF9A9A"));
+            }else{
+                if(list.get(position).getIsWeb().equals("1")){
+                    relativeLayout.setBackgroundColor(Color.parseColor("#FFE082"));
+                }
+            }
         }
 
 

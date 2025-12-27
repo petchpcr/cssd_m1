@@ -46,6 +46,8 @@ import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ModelReceiveInDetail;
 import com.squareup.picasso.Picasso;
+
+import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -58,6 +60,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class InSertImageSporeDocActivity extends AppCompatActivity {
@@ -147,8 +150,17 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     String image_str2="null";
     String image_str1="null";
     String CssdTest_std;
+    String SterileName;
+
+    String SterileTypeID;
+    String sterileprogramID;
 
     android.hardware.Camera camera;
+
+    boolean go_finish = false;
+
+    boolean req_pic = true;
+    boolean req_result = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +191,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         byIntent();
 
         init();
+
+        byconfig();
 
     }
 
@@ -214,6 +228,10 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         Page = intent.getStringExtra("page");
         Username = intent.getStringExtra("Username");
         CssdTest_std = intent.getStringExtra("CssdTest_std");
+
+        SterileName = intent.getStringExtra("SterileName");
+        SterileTypeID = intent.getStringExtra("SterileTypeID");
+        sterileprogramID = intent.getStringExtra("sterileprogramID");
     }
 
     public void init() {
@@ -774,6 +792,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         pg_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Log.d("tog_byconfig","setOnItemSelectedListener = "+position);
+//                if (array_spinner_id.get(pg_spinner.getSelectedItem()).equals("10")){
                 if (pg_spinner.getSelectedItem().equals("TOSI")){
                     testremark.setVisibility(View.VISIBLE);
                     testremark1.setVisibility(View.VISIBLE);
@@ -781,6 +802,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     testremark1.setVisibility(View.GONE);
                     testremark.setVisibility(View.GONE);
                 }
+
             }
 
             @Override
@@ -935,7 +957,25 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                                                 Toast.makeText(InSertImageSporeDocActivity.this, "เลือกผลการทดสอบ", Toast.LENGTH_SHORT).show();
                                             }
                                         } else {
-                                            Toast.makeText(InSertImageSporeDocActivity.this, "เลือกรูปภาพก่อนบันทึกเอกสาร", Toast.LENGTH_SHORT).show();
+                                            if(!req_pic || testno.isChecked()){
+                                                if (testno.isChecked() || testyes.isChecked()) {
+                                                    String Remark = "";
+                                                    if (remark.getText().toString().equals("")) {
+                                                        Remark = "";
+                                                    } else {
+                                                        Remark = remark.getText().toString();
+                                                    }
+                                                    Log.d("tog_program_m1","SaveDoc = "+pg_spinner.getSelectedItem()+"---"+array_spinner_id.get(pg_spinner.getSelectedItem()));
+
+                                                    SaveDoc(DocNo, array_spinner_id.get(pg_spinner.getSelectedItem()), "", "", checkpass, Remark, testremark.getText().toString(),EmpCode);
+                                                    go_finish = true;
+                                                } else {
+                                                    Toast.makeText(InSertImageSporeDocActivity.this, "เลือกผลการทดสอบ", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }else{
+                                                Toast.makeText(InSertImageSporeDocActivity.this, "เลือกรูปภาพก่อนบันทึกเอกสาร", Toast.LENGTH_SHORT).show();
+                                            }
+
                                         }
                                     }
                                 });
@@ -1001,6 +1041,56 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    String test_pro_select = "0";
+    public void byconfig(){
+
+        if (Page.equals("1")){
+            if(((CssdProject) getApplication()).Project().equals("SiPH")||((CssdProject) getApplication()).Project().equals("SIH")){
+                req_pic = true;
+
+                if(sterileprogramID.equals("9")){
+                    req_pic = false;
+                    test_pro_select = "3";
+                }
+
+                if(sterileprogramID.equals("10")){
+                    test_pro_select = "2";
+                }
+
+                if(SterileTypeID.equals("1")){
+                    test_pro_select = "1";
+                }
+
+                if(SterileTypeID.equals("2")){
+                    test_pro_select = "6";
+                }
+
+                if(SterileTypeID.equals("3")){
+                    test_pro_select = "7";
+                }
+
+
+//            if(!test_pro_select.equals("0")){
+//                int pos = 0;
+//                for(Map.Entry<String, String> e : array_spinner_id.entrySet()) {
+//                    String key = e.getKey();
+//                    String value = e.getValue();
+//
+//                    Log.d("tog_byconfig","pg_spinner = "+value+" --- "+key);
+//                    if(value.equals(test_pro_select)){
+//                        pg_spinner.setSelection(pos);
+//                        break;
+//                    }
+//                    pos++;
+//                }
+//            }
+
+            }
+        }
+
+
     }
 
     private void openCamere() {
@@ -1132,6 +1222,10 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 }finally {
                     if (dialog.isShowing()) {
                         dialog.dismiss();
+                    }
+
+                    if(go_finish){
+                        finish();
                     }
                 }
             }
@@ -1414,6 +1508,22 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     adapter_spinner = new ArrayAdapter<String>(InSertImageSporeDocActivity.this, android.R.layout.simple_spinner_dropdown_item, list_sp);
                     adapter_spinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     pg_spinner.setAdapter(adapter_spinner);
+
+                    if(!test_pro_select.equals("0")){
+                        int pos = 0;
+                        for(Map.Entry<String, String> e : array_spinner_id.entrySet()) {
+                            String key = e.getKey();
+                            String value = e.getValue();
+
+                            Log.d("tog_byconfig","pg_spinner = "+pos+" --- "+value+" --- "+key);
+                            if(value.equals(test_pro_select)){
+                                pg_spinner.setSelection(list_sp.indexOf(key));
+                                break;
+                            }
+                            pos++;
+                        }
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -1571,6 +1681,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                         pg_spinner.setEnabled(false);
                         testyes.setEnabled(false);
                         testno.setEnabled(false);
+
 
                     }
                 } catch (JSONException e) {

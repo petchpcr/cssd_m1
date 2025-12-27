@@ -10,8 +10,10 @@ public class ModelDisplayDoc1_1 {
     String ID;
     int index;
 
+    String SterileTypeID;
+    String sterileprogramID;
 
-    public ModelDisplayDoc1_1(String DocNo, String SterileName, String SterileMachineID, String SterileRoundNumber, String TestProgramName, String IsActive, String ID) {
+    public ModelDisplayDoc1_1(String DocNo, String SterileName, String SterileMachineID, String SterileRoundNumber, String TestProgramName, String IsActive, String ID,String SterileTypeID,String sterileprogramID) {
         this.DocNo = DocNo;
         this.SterileName = SterileName;
         this.SterileMachineID = SterileMachineID;
@@ -19,6 +21,9 @@ public class ModelDisplayDoc1_1 {
         this.TestProgramName = TestProgramName;
         this.IsActive = IsActive;
         this.ID = ID;
+
+        this.SterileTypeID = SterileTypeID;
+        this.sterileprogramID = sterileprogramID;
     }
 
     public String getID() {
@@ -84,5 +89,13 @@ public class ModelDisplayDoc1_1 {
     public void setIndex(int index) {
         this.index = index;
 
+    }
+
+    public String getSterileTypeID() {
+        return SterileTypeID;
+    }
+
+    public String getSterileprogramID() {
+        return sterileprogramID;
     }
 }

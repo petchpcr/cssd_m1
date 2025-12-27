@@ -5,7 +5,9 @@ public class ModelDepartment {
     String ID;
     String DepName;
     String DepName2;
+    String IsWeb;
     String IsCancel;
+    String IsUrgent;
 
     public ModelDepartment(String ID, String DepName) {
         this.ID = ID;
@@ -16,6 +18,14 @@ public class ModelDepartment {
         this.ID = ID;
         this.DepName = DepName;
         this.DepName2 = DepName2;
+        IsCancel = isCancel;
+    }
+
+    public ModelDepartment(String ID, String DepName, String DepName2, String IsWeb, String isCancel) {
+        this.ID = ID;
+        this.DepName = DepName;
+        this.DepName2 = DepName2;
+        this.IsWeb = IsWeb;
         IsCancel = isCancel;
     }
 
@@ -43,6 +53,14 @@ public class ModelDepartment {
         this.DepName2 = DepName2;
     }
 
+    public String getIsWeb() {
+        return IsWeb;
+    }
+
+    public void setIsWeb(String isWeb) {
+        IsWeb = isWeb;
+    }
+
     public String getIsCancel() {
         return IsCancel;
     }
@@ -51,4 +69,11 @@ public class ModelDepartment {
         IsCancel = isCancel;
     }
 
+    public String getIsUrgent() {
+        return IsUrgent;
+    }
+
+    public void setIsUrgent(String isUrgent) {
+        IsUrgent = isUrgent;
+    }
 }

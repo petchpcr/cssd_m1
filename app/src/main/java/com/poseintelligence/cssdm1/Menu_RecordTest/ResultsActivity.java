@@ -453,7 +453,9 @@ public class ResultsActivity extends AppCompatActivity {
                                                 c.getString("SterileRoundNumber"),
                                                 c.getString("TestProgramName"),
                                                 c.getString("IsActive"),
-                                                c.getString("ID")
+                                                c.getString("ID"),
+                                                c.getString("SterileTypeID"),
+                                                c.getString("sterileprogramID")
                                         )
                                 );
                             }
@@ -474,6 +476,9 @@ public class ResultsActivity extends AppCompatActivity {
                                 intent.putExtra("ID", Model_RQ.get(position).getID());
                                 intent.putExtra("page", page = "1");
                                 intent.putExtra("EmpCode", EmpCode);
+                                intent.putExtra("SterileName", Model_RQ.get(position).getSterileName());
+                                intent.putExtra("SterileTypeID", Model_RQ.get(position).getSterileTypeID());
+                                intent.putExtra("sterileprogramID", Model_RQ.get(position).getSterileprogramID());
 //                            Log.d("KFLHDL",EmpCode);
                                 intent.putExtra("B_ID", B_ID);
                                 intent.putExtra("Username", Username);
