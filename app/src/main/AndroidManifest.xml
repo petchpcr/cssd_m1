@@ -69,7 +69,7 @@
             android:theme="@style/myDialog" />
 
         <service
-            android:name=".core.connect.CheckConnectionService"
+            android:name=".core.connect.RunningBackgroundService"
             android:exported="false" />
 
         <activity

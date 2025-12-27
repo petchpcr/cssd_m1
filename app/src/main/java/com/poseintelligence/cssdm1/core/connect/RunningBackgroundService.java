@@ -1,36 +1,25 @@
 package com.poseintelligence.cssdm1.core.connect;
 
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.app.KeyguardManager;
-import android.app.ProgressDialog;
+import android.app.NotificationManager;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
 import android.util.Log;
-import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 import com.poseintelligence.cssdm1.CssdProject;
 import com.poseintelligence.cssdm1.Login;
-import com.poseintelligence.cssdm1.MainMenu;
-import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.WaitConnectDialog;
 
-import java.util.List;
-
-public class CheckConnectionService extends Service {
+public class RunningBackgroundService extends Service {
 
     public static WaitConnectDialog mActivity;
 
@@ -138,10 +127,10 @@ public class CheckConnectionService extends Service {
     }
 
     public class MyBinder extends Binder {
-        public CheckConnectionService getService() {
+        public RunningBackgroundService getService() {
             Log.d("tog_ccs","MyBinder" );
 
-            return CheckConnectionService.this;
+            return RunningBackgroundService.this;
         }
     }
 

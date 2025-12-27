@@ -1,13 +1,10 @@
 package com.poseintelligence.cssdm1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
-import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
-import com.poseintelligence.cssdm1.core.connect.CheckConnectionService;
+import com.poseintelligence.cssdm1.core.connect.RunningBackgroundService;
 
 public class WaitConnectDialog extends Activity {
     String Connecting = "กำลังทำการเชื่อมต่อ";
@@ -16,7 +13,7 @@ public class WaitConnectDialog extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_connect_dialog);
 
-        CheckConnectionService.mActivity = WaitConnectDialog.this;
+        RunningBackgroundService.mActivity = WaitConnectDialog.this;
 
         ProgressDialog wait_dialog = new ProgressDialog(WaitConnectDialog.this);
         wait_dialog.setCancelable(false);
