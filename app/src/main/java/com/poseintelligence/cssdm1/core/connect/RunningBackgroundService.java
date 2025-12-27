@@ -37,6 +37,7 @@ public class RunningBackgroundService extends Service {
     public void onCreate()
     {
         Log.d("tog_ccs","onCreate" );
+        ((CssdProject) getApplication()).counting_token = 1;
         looper();
     }
 
@@ -106,9 +107,22 @@ public class RunningBackgroundService extends Service {
                 check_connecting();
                 handler.postDelayed(runnable, 1000);
 //                handler.removeCallbacks(runnable);
-
                 if(((CssdProject) getApplication()).getST_LoginTimeOut()>=0){
                     ((CssdProject) getApplication()).isNonActiveTime++;
+                }
+
+                if(is_login){
+                    ((CssdProject) getApplication()).counting_token++;
+                }else{
+                    ((CssdProject) getApplication()).counting_token = 1;
+                }
+
+                Log.d("tog_http_t","counting_token= "+((CssdProject) getApplication()).counting_token);
+                Log.d("tog_http_t","counting_token= "+((CssdProject) getApplication()).start_noti_token_expire);
+//
+                if(((CssdProject) getApplication()).counting_token==((CssdProject) getApplication()).start_noti_token_expire){
+                    sendNotification(((CssdProject) getApplication()).counting_token);
+                    ((CssdProject) getApplication()).start_noti_token_expire = ((CssdProject) getApplication()).start_noti_token_expire + ((CssdProject) getApplication()).re_noti_token_expire;
                 }
             }
         };
@@ -132,6 +146,25 @@ public class RunningBackgroundService extends Service {
 
             return RunningBackgroundService.this;
         }
+    }
+
+    private void sendNotification(int notificationId) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CssdProject.CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_r_grey) // Use a proper icon
+                .setContentTitle("Token close expire")
+                .setContentText("โทเคนของคุณกำลังจะหมดอายุ โปรดเข้าสู่ระบบอีกครั้ง")
+                .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true); // Dismisses the notification when tapped
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) {
+            // A unique ID for the notification (allows updates or dismissal later)
+            manager.notify(notificationId, builder.build());
+        }
+
+        Intent x = new Intent(this, WaitConnectDialog.class);
+        x.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(x);
     }
 
 }

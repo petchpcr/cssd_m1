@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.drawable.ColorDrawable;
-import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -40,8 +39,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.poseintelligence.cssdm1.core.connect.CheckConnectionService;
-import com.poseintelligence.cssdm1.core.connect.DBConnect;
+import com.poseintelligence.cssdm1.core.connect.RunningBackgroundService;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.connect.HTTPPostRaw;
 import com.poseintelligence.cssdm1.core.string.Cons;
@@ -64,7 +62,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class Login extends AppCompatActivity {
-    CheckConnectionService checkConnectionService;
+    RunningBackgroundService runingBackgoundService;
     boolean mServiceBound = true;
     Intent intentService;
 
@@ -139,7 +137,7 @@ public class Login extends AppCompatActivity {
         get_building_name();
 
         try{
-            intentService = new Intent(this, CheckConnectionService.class);
+            intentService = new Intent(this, RunningBackgroundService.class);
             startService(intentService);
             bindService(intentService, mServiceConnection, Context.BIND_AUTO_CREATE);
             Log.d("tog_ccs","bindService" );
@@ -171,9 +169,9 @@ public class Login extends AppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            CheckConnectionService.MyBinder myBinder = (CheckConnectionService.MyBinder) service;
-            checkConnectionService = myBinder.getService();
-            checkConnectionService.is_login = false;
+            RunningBackgroundService.MyBinder myBinder = (RunningBackgroundService.MyBinder) service;
+            runingBackgoundService = myBinder.getService();
+            runingBackgoundService.is_login = false;
             mServiceBound = true;
         }
     };
@@ -302,7 +300,7 @@ public class Login extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Log.d("tog_ccs","stopService" );
-        checkConnectionService.stopService(intentService);
+        runingBackgoundService.stopService(intentService);
         finish();
     }
 
@@ -1498,7 +1496,7 @@ public class Login extends AppCompatActivity {
 //        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2025, 11, 10);
+            LocalDate someDate = LocalDate.of(2025, 12, 27);
             LocalDate today = LocalDate.now();
             if (someDate.isEqual(today)) {
                 onLogin("v", "70001954");
@@ -1570,7 +1568,11 @@ public class Login extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                checkConnectionService.is_login = true;
+                runingBackgoundService.is_login = true;
+
+                ((CssdProject) getApplication()).counting_token = 1;
+                ((CssdProject) getApplication()).start_noti_token_expire = ((CssdProject) getApplication())._noti_token_expire;
+
                 ((CssdProject) getApplication()).setcM1( config_m1 );
                 Intent intent = new Intent(Login.this,MainMenu.class);
                 startActivity(intent);

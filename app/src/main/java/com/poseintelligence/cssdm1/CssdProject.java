@@ -1,8 +1,11 @@
 package com.poseintelligence.cssdm1;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -838,7 +841,7 @@ public class CssdProject extends Application {
 
     private void init(){
         SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
-
+        createNotificationChannel();
     }
 
     public static boolean isExpired_token() {
@@ -847,6 +850,29 @@ public class CssdProject extends Application {
 
     public static void setExpired_token(boolean expired_token) {
         CssdProject.expired_token = expired_token;
+    }
+
+
+    public static int counting_token = 1;
+    public static int start_noti_token_expire = (7*60*60)+(45*60);
+    public static int _noti_token_expire = (7*60*60)+(45*60);
+//    public static int start_noti_token_expire = 15;
+    public static int re_noti_token_expire = 5*60;
+
+    public static final String CHANNEL_ID = "CssdNotificationChannel";
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "My Channel Name";
+            String description = "Channel description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
 }
