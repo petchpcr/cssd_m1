@@ -109,6 +109,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         getSupportActionBar().hide();
         if (android.os.Build.VERSION.SDK_INT > 9)
         {
@@ -456,7 +457,7 @@ public class Login extends AppCompatActivity {
 //                    }else{
 //                        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 2000);
 //                    }
-                    dep_device();
+                    debug_device();
 
                     if (!pword.getText().toString().equals("")) {
 
@@ -1370,6 +1371,29 @@ public class Login extends AppCompatActivity {
                             }
 
 
+                            if(!c.isNull("MD_StartNotiTokenExpire")){
+                                ((CssdProject) getApplication()).start_noti_token_expire = c.getInt("MD_StartNotiTokenExpire");
+                            }else{
+                                ((CssdProject) getApplication()).start_noti_token_expire = -1;
+                            }
+
+                            if(!c.isNull("MD_TryNotiTokenExpire")){
+                                ((CssdProject) getApplication()).try_noti_token_expire = c.getInt("MD_TryNotiTokenExpire");
+                            }else{
+                                ((CssdProject) getApplication()).try_noti_token_expire = 1;
+                            }
+
+                            if(!c.isNull("MD_RepeatNotiTokenExpire")){
+                                ((CssdProject) getApplication()).repeat_noti_token_expire = c.getInt("MD_RepeatNotiTokenExpire");
+                            }else{
+                                ((CssdProject) getApplication()).repeat_noti_token_expire = 0;
+                            }
+
+//                            ((CssdProject) getApplication()).start_noti_token_expire = 15;
+//                            ((CssdProject) getApplication()).try_noti_token_expire = 5;
+//                            ((CssdProject) getApplication()).repeat_noti_token_expire = 4;
+
+
                             get_config_m1();
 
                         }else{
@@ -1487,7 +1511,7 @@ public class Login extends AppCompatActivity {
         return serialNumber;
     }
 
-    public void dep_device(){
+    public void debug_device(){
 //        String serialNumber = getSerialNumber();
 //        Log.d("serialNumber",serialNumber);
 
@@ -1496,14 +1520,14 @@ public class Login extends AppCompatActivity {
 //        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2025, 12, 27);
+            LocalDate someDate = LocalDate.of(2026, 01, 9);
             LocalDate today = LocalDate.now();
             if (someDate.isEqual(today)) {
                 onLogin("v", "70001954");
             }
         }
 
-        if(dev==2){
+        if(dev==4){
             onLogin("v", "70001954");
         }
     }
@@ -1571,7 +1595,8 @@ public class Login extends AppCompatActivity {
                 runingBackgoundService.is_login = true;
 
                 ((CssdProject) getApplication()).counting_token = 1;
-                ((CssdProject) getApplication()).start_noti_token_expire = ((CssdProject) getApplication())._noti_token_expire;
+                ((CssdProject) getApplication()).repeat_noti_token_expire_time = 0;
+                ((CssdProject) getApplication()).time_noti_token_expire = ((CssdProject) getApplication()).start_noti_token_expire;
 
                 ((CssdProject) getApplication()).setcM1( config_m1 );
                 Intent intent = new Intent(Login.this,MainMenu.class);

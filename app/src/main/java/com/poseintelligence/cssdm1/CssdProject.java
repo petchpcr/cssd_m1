@@ -4,12 +4,12 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.poseintelligence.cssdm1.model.ConfigM1;
 import com.poseintelligence.cssdm1.model.Parameter;
 import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
@@ -837,6 +837,9 @@ public class CssdProject extends Application {
         super.onCreate();
         appContext = getApplicationContext();
         init();
+
+
+        createNotificationChannel();
     }
 
     private void init(){
@@ -854,10 +857,13 @@ public class CssdProject extends Application {
 
 
     public static int counting_token = 1;
-    public static int start_noti_token_expire = (7*60*60)+(45*60);
-    public static int _noti_token_expire = (7*60*60)+(45*60);
-//    public static int start_noti_token_expire = 15;
-    public static int re_noti_token_expire = 5*60;
+    public static int time_noti_token_expire = 60;
+//    public static int _noti_token_expire = (7*60*60)+(45*60);
+    public static int start_noti_token_expire = 15;
+    public static int try_noti_token_expire = 60;
+
+    public static int repeat_noti_token_expire_time = 0;
+    public static int repeat_noti_token_expire = 3;
 
     public static final String CHANNEL_ID = "CssdNotificationChannel";
     private void createNotificationChannel() {
