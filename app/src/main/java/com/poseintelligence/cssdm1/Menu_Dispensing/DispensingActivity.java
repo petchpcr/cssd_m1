@@ -14,6 +14,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -66,6 +67,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -2376,27 +2378,13 @@ public class DispensingActivity extends AppCompatActivity {
                                 }
 
                                 //handler_dept.removeCallbacks(runnable_dept);
-                                switch_opt.setChecked(false);
-                                Block_1.setVisibility(View.GONE);
-                                Block_2.setVisibility(View.GONE);
-                                Block_group_doc.setVisibility(View.INVISIBLE);
-                                Block_3.setVisibility(View.VISIBLE);
-                                Block_4.setVisibility(View.VISIBLE);
-                                switch_opt.setVisibility(View.VISIBLE);
-                                imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
                                 if (Model_Pay.size() > 0) {
                                     title_3.setText(DocNo + " / " + Model_Pay.get(0).getDepName() + " (M)");
                                 } else {
                                     title_3.setText(DocNo + " / " + DepName + " (M)");
                                 }
 
-                                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params1.width = Is_imageCreate ? 255 : 505;
-                                params1.setMargins(0, 0, 15, 0);
-                                linear_layout_search.setLayoutParams(params1);
-                                LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params2.width = 250;
-                                imageCreate.setLayoutParams(params2);
+                                block3_Visible();
                                 // Display Payout Detail
 //                                displayPayoutDetail(DocNo, false);
 
@@ -3261,26 +3249,11 @@ public class DispensingActivity extends AppCompatActivity {
                         RefDocNo = "";
                         RefDocNoSend = "";
 
-                        switch_opt.setChecked(false);
-
                         title_3.setText(DocNo + " / " + DepName+" (GROUP)");
                         displayPayoutDetail(DocNo, true);
 
                         //handler_dept.removeCallbacks(runnable_dept);
-                        Block_1.setVisibility(View.GONE);
-                        Block_2.setVisibility(View.GONE);
-                        Block_group_doc.setVisibility(View.INVISIBLE);
-                        Block_3.setVisibility(View.VISIBLE);
-                        Block_4.setVisibility(View.VISIBLE);
-                        switch_opt.setVisibility(View.VISIBLE);
-                        imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
-                        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params1.width = Is_imageCreate ? 255 : 505;
-                        params1.setMargins(0, 0, 15, 0);
-                        linear_layout_search.setLayoutParams(params1);
-                        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                        params2.width = 250;
-                        imageCreate.setLayoutParams(params2);
+                        block3_Visible();
 
                         if (RefDocNo.equals("")) {
                             txt_doc_type.setVisibility(View.INVISIBLE);
@@ -3536,6 +3509,8 @@ public class DispensingActivity extends AppCompatActivity {
 
                         if(!c.isNull("IsUrgent")){
                             _dept.setIsUrgent(c.getString("IsUrgent"));
+                        }else{
+                            _dept.setIsUrgent("0");
                         }
 
                         list.add(_dept);
@@ -3580,7 +3555,7 @@ public class DispensingActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
 
-                data.put("p_used_in_payout", "p");
+//                data.put("p_used_in_payout", "p");
                 data.put("p_type", Is_department_or);
                 if (pDepName != null && !pDepName.trim().equals("")) {
                     data.put("pDepName", pDepName);
@@ -3860,6 +3835,7 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
     private void displayPay(final String p_department_id, final String p_docno, final String p_zone) {
 
+        Log.d("tog_displayPay", "displayPay DocNo = " + p_docno);
         if (p_department_id == null && p_docno == null) {
             return;
         }
@@ -3954,26 +3930,11 @@ public class DispensingActivity extends AppCompatActivity {
                             RefDocNo = Model_Pay.get(position).getRefDocNo();
                             RefDocNoSend = Model_Pay.get(position).getDocDateSend();
 
-                            switch_opt.setChecked(false);
-
                             title_3.setText(DocNo + " / " + Model_Pay.get(position).getDepNameByPayItem());
                             displayPayoutDetail(DocNo, true);
 
                             //handler_dept.removeCallbacks(runnable_dept);
-                            Block_1.setVisibility(View.GONE);
-                            Block_2.setVisibility(View.GONE);
-                            Block_group_doc.setVisibility(View.INVISIBLE);
-                            Block_3.setVisibility(View.VISIBLE);
-                            Block_4.setVisibility(View.VISIBLE);
-                            switch_opt.setVisibility(View.VISIBLE);
-                            imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
-                            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            params1.width = Is_imageCreate ? 255 : 505;
-                            params1.setMargins(0, 0, 15, 0);
-                            linear_layout_search.setLayoutParams(params1);
-                            LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                            params2.width = 250;
-                            imageCreate.setLayoutParams(params2);
+                            block3_Visible();
 
                             if (RefDocNo.equals("")) {
                                 txt_doc_type.setVisibility(View.INVISIBLE);
@@ -3996,6 +3957,7 @@ public class DispensingActivity extends AppCompatActivity {
                         }
                     });
 
+                    Log.d("tog_displayPay", "displayPay DocNo = " + DocNo);
                     // Set Select Index
                     if (DocNo != null) {
                         Iterator li = Model_Pay.iterator();
@@ -5243,7 +5205,6 @@ public class DispensingActivity extends AppCompatActivity {
         ru.execute();
     }
 
-
     public void checkToRemovePayout(String p_docno) {
 
         class Check extends AsyncTask<String, Void, String> {
@@ -5679,6 +5640,24 @@ public class DispensingActivity extends AppCompatActivity {
         checkStatusDocno ru = new checkStatusDocno();
 
         ru.execute();
+    }
+
+    public void block3_Visible()  {
+        switch_opt.setChecked(false);
+        Block_1.setVisibility(View.GONE);
+        Block_2.setVisibility(View.GONE);
+        Block_group_doc.setVisibility(View.INVISIBLE);
+        Block_3.setVisibility(View.VISIBLE);
+        Block_4.setVisibility(View.VISIBLE);
+        switch_opt.setVisibility(View.VISIBLE);
+        imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params1.width = Is_imageCreate ? 255 : 505;
+        params1.setMargins(0, 0, 15, 0);
+        linear_layout_search.setLayoutParams(params1);
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params2.width = 250;
+        imageCreate.setLayoutParams(params2);
     }
 }
 
