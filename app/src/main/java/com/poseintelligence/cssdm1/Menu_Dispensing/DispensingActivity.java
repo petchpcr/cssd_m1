@@ -3555,7 +3555,7 @@ public class DispensingActivity extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
 
-//                data.put("p_used_in_payout", "p");
+                data.put("p_used_in_payout", "p");
                 data.put("p_type", Is_department_or);
                 if (pDepName != null && !pDepName.trim().equals("")) {
                     data.put("pDepName", pDepName);
@@ -3957,7 +3957,7 @@ public class DispensingActivity extends AppCompatActivity {
                         }
                     });
 
-                    Log.d("tog_displayPay", "displayPay DocNo = " + DocNo);
+//                    Log.d("tog_displayPay", "displayPay DocNo = " + DocNo);
                     // Set Select Index
                     if (DocNo != null) {
                         Iterator li = Model_Pay.iterator();
@@ -3967,6 +3967,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                             ModelPayout m = (ModelPayout) li.next();
 
+                            Log.d("tog_displayPay", m.getDocNo() +" == " + DocNo + " ----- "+m.getDocNo().equals(DocNo));
                             if (m.getDocNo().equals(DocNo)) {
                                 ((ListPayoutDocumentAdapter) adapter).setSelection(i);
                                 break;
@@ -5408,6 +5409,15 @@ public class DispensingActivity extends AppCompatActivity {
                         return false;
                     }
 
+
+                    if (Block_2.getVisibility() == View.VISIBLE) {
+                        if(mass.length()>18){
+                            get_payout_from_case_number(mass);
+                            return false;
+                        }
+
+                    }
+
                     if (Block_1.getVisibility() == View.GONE) {
                         checkInput(mass);
                     }
@@ -5425,7 +5435,6 @@ public class DispensingActivity extends AppCompatActivity {
             if(unicodeChar!=0){
                 mass_usage_code=mass_usage_code+(char)unicodeChar;
             }
-
             Log.d("tog_dispatchKey","keyCode = "+keyCode);
             Log.d("tog_dispatchKey","mass_onkey = "+mass_usage_code);
 
@@ -5638,6 +5647,106 @@ public class DispensingActivity extends AppCompatActivity {
         }
 
         checkStatusDocno ru = new checkStatusDocno();
+
+        ru.execute();
+    }
+
+    public void get_payout_from_case_number(final String case_number) {
+
+        class get_payout_from_case_number extends AsyncTask<String, Void, String> {
+            // variable
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+
+                try {
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    boolean notfound = true;
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+                            String _DocNo = c.getString("DocNo");
+                            Iterator li = Model_Pay.iterator();
+                            while (li.hasNext()) {
+
+                                ModelPayout m = (ModelPayout) li.next();
+
+                                Log.d("tog_displayPay", m.getDocNo() +" == " + _DocNo + " ----- "+m.getDocNo().equals(DocNo));
+                                if (m.getDocNo().equals(_DocNo)) {
+                                    notfound = false;
+                                    DocNo = m.getDocNo();
+                                    RefDocNo = m.getRefDocNo();
+                                    RefDocNoSend = m.getDocDateSend();
+
+                                    title_3.setText(DocNo + " / " + m.getDepNameByPayItem());
+                                    displayPayoutDetail(DocNo, true);
+
+                                    //handler_dept.removeCallbacks(runnable_dept);
+                                    block3_Visible();
+
+                                    if (RefDocNo.equals("")) {
+                                        txt_doc_type.setVisibility(View.INVISIBLE);
+                                    } else {
+                                        txt_doc_type.setVisibility(View.VISIBLE);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+
+                    if(notfound){
+                        if (MD_IsUsedSoundScanQR) {
+                            if (ST_SoundAndroidVersion9) {
+                                speakText("no");
+                            } else {
+                                nMidia.getAudio("no");
+                            }
+                        }
+                        Toast.makeText(DispensingActivity.this, "ไม่พบเอกสาร. !!", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    focus();
+                }
+
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+                data.put("p_user", ((CssdProject) getApplication()).I_CustomerId + "");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    data.put("case_number", Base64.getEncoder().encodeToString(case_number.getBytes()));
+                }
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+
+                String result = null;
+
+                try {
+                    result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "get_payout_from_case_number.php", data);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Log.d("tog_pay_case_number", "result = " + result);
+                Log.d("tog_pay_case_number", "result = " + result);
+                return result;
+            }
+        }
+
+        get_payout_from_case_number ru = new get_payout_from_case_number();
 
         ru.execute();
     }
