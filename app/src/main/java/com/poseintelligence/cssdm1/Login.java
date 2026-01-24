@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -29,6 +31,7 @@ import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -80,7 +83,6 @@ public class Login extends AppCompatActivity {
     private View.OnClickListener clickInLinearLayout;
 
     private String TAG_RESULTS = "result";
-    private JSONArray rs = null;
     private HTTPConnect http = new HTTPConnect();
 
     ArrayList<ConfigM1> config_m1 = new ArrayList<>();
@@ -134,8 +136,8 @@ public class Login extends AppCompatActivity {
         byWidget();
 
         byEvent();
-        onLoadConfiguration();
         get_building_name();
+        onLoadConfiguration();
 
         try{
             intentService = new Intent(this, RunningBackgroundService.class);
@@ -669,7 +671,7 @@ public class Login extends AppCompatActivity {
                 boolean t = true;
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
@@ -745,7 +747,7 @@ public class Login extends AppCompatActivity {
                         onLogin("", uname);
                         t = false;
                     }
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+//                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 //
 //                    for (int i = 0; i < rs.length(); i++) {
 //                        JSONObject c = rs.getJSONObject(i);
@@ -814,7 +816,7 @@ public class Login extends AppCompatActivity {
 
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
@@ -923,7 +925,7 @@ public class Login extends AppCompatActivity {
 
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
@@ -998,7 +1000,7 @@ public class Login extends AppCompatActivity {
                 try {
 
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
@@ -1092,7 +1094,7 @@ public class Login extends AppCompatActivity {
 
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
                         if (c.getString("result").equals("A")) {
@@ -1119,6 +1121,8 @@ public class Login extends AppCompatActivity {
             @Override
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("B_ID", ((CssdProject) getApplication()).Building_ID);
 //                Log.d("OOOO",getUrl + "cssd_display_config_M1.php?"+data);
                 String result = http.sendPostRequest(getUrl + "cssd_display_config_M1.php", data);
 //                Log.d("OOOO",result);
@@ -1155,7 +1159,7 @@ public class Login extends AppCompatActivity {
                 String Message="";
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
                         if (c.getString("result").equals("A")) {
@@ -1201,7 +1205,7 @@ public class Login extends AppCompatActivity {
                 super.onPostExecute(s);
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
@@ -1416,6 +1420,7 @@ public class Login extends AppCompatActivity {
             protected String doInBackground(String... params) {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("B_ID", ((CssdProject) getApplication()).Building_ID);
 
                 String result = http.sendPostRequest(getUrl + "cssd_select_configurations.php", data);
 
@@ -1433,6 +1438,8 @@ public class Login extends AppCompatActivity {
     }
 
     public void get_building_name() {
+
+        Log.d("tog_building_name","(CssdProject) getApplication()).Building_ID = "+((CssdProject) getApplication()).Building_ID);
         class get_building_name extends AsyncTask<String, Void, String> {
 
             @Override
@@ -1443,22 +1450,41 @@ public class Login extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
+                String _building_name ="-";
+
                 try {
                     JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+                    JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
+                    if(rs.length()>1){
+                        if(((CssdProject) getApplication()).Building_ID.equals("-")){
+                            Building_ID_Dialog(rs);
+                        }else{
+                            for (int i = 0; i < rs.length(); i++) {
+                                JSONObject c = rs.getJSONObject(i);
+                                if(((CssdProject) getApplication()).Building_ID.equals(c.getString("B_ID"))){
+                                    _building_name = c.getString("building_name");
+                                }
+                            }
+                        }
 
-                        ((CssdProject) getApplication()).setOrgName(c.getString("building_name"));
-
-                        building_name.setText(c.getString("building_name"));
+                    }else{
+                        for (int i = 0; i < rs.length(); i++) {
+                            JSONObject c = rs.getJSONObject(i);
+                            ((CssdProject) getApplication()).Building_ID = "1";
+                            _building_name = c.getString("building_name");
+                        }
                     }
+
 
                 } catch (JSONException e) {
 //                    Toast.makeText(Login.this, Cons.WARNING_SEARCH_NOT_FOUND, Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
+
+
+                ((CssdProject) getApplication()).setOrgName(_building_name);
+                building_name.setText(_building_name);
 
             }
 
@@ -1523,10 +1549,11 @@ public class Login extends AppCompatActivity {
 //        }
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 01, 9);
+            LocalDate someDate = LocalDate.of(2026, 02, 11);
             LocalDate today = LocalDate.now();
             if (someDate.isEqual(today)) {
-                onLogin("v", "70001954");
+                onLogin("user1", "111");
+//                onLogin("v", "70001954");
             }
         }
 
@@ -1551,7 +1578,7 @@ public class Login extends AppCompatActivity {
                 if(!s.equals("Error Registering")){
                     try {
                         JSONObject jsonObj = new JSONObject(s);
-                        rs = jsonObj.getJSONArray(TAG_RESULTS);
+                        JSONArray rs = jsonObj.getJSONArray(TAG_RESULTS);
 
                         for (int i = 0; i < rs.length(); i++) {
                             JSONObject c = rs.getJSONObject(i);
@@ -1625,5 +1652,50 @@ public class Login extends AppCompatActivity {
         ru.execute();
     }
 
+    public void Building_ID_Dialog(JSONArray rs_b){
+
+        Log.d("Building_ID_Dialog","rs_b = "+rs_b);
+        AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_select_building, null);
+        builder.setView(view);
+        LinearLayout ll_bt = (LinearLayout) view.findViewById(R.id.ll_bt);
+        builder.setCancelable(false);
+
+        try {
+            for (int i = 0; i < rs_b.length(); i++) {
+                JSONObject c  = rs_b.getJSONObject(i);
+                Button b1 = new Button(this);
+                b1.setText(c.getString("building_name"));
+                b1.setTextColor(Color.WHITE);
+                b1.setTextSize(16);
+                b1.setTypeface(null, Typeface.BOLD);
+                String b_id = c.getString("B_ID");
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ((CssdProject) getApplication()).Building_ID = b_id;
+                        finish();
+                        startActivity(getIntent());
+                    }
+                });
+
+                b1.setBackgroundResource(R.drawable.rectangle_selete_building_purple);
+                if((i%2)==0){
+                    b1.setBackgroundResource(R.drawable.rectangle_selete_building_pink);
+                }
+                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+                params1.setMargins(0, 2, 0, 8);
+                b1.setPadding(0,10,0,10);
+
+                b1.setLayoutParams( params1 );
+                ll_bt.addView(b1);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        builder.show();
+    }
 
 }

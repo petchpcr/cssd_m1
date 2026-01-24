@@ -1,5 +1,7 @@
 package com.poseintelligence.cssdm1.model;
 
+import com.poseintelligence.cssdm1.CssdProject;
+
 public class Parameter {
     private int userid;
     private String Name;
@@ -46,8 +48,8 @@ public class Parameter {
     }
     public void setEmName(String EmName) { this.EmName = EmName; }
 
-    public int getBdCode() {
-        return BdCode;
+    public String getBdCode() {
+        return CssdProject.Building_ID;
     }
     public void setBdCode(int BdCode) {
         this.BdCode = BdCode;
