@@ -191,7 +191,7 @@ public class SterileActivity extends AppCompatActivity{
                     time_cnt_back++;
                 }
 
-                check_active_machine_handler.postDelayed(check_active_machine_runnable, 3000);
+//                check_active_machine_handler.postDelayed(check_active_machine_runnable, 3000);
             }else{
                 Intent intent = new Intent(SterileActivity.this, MainMenu.class);
                 startActivity(intent);
@@ -3747,22 +3747,22 @@ public class SterileActivity extends AppCompatActivity{
         }
     }
 
-    public void set_timerE(){
-
-        timerE.setText("End : "+timer_format.format(new Date()));
-        t_e = Double.parseDouble(cal_sc_format.format(new Date()));
-        String t_e_s = Double.toString(t_e-t_s);
-        if(t_e_s.length()>5){
-            t_e_s = t_e_s.substring(0,5);
-        }
-
-        timerT.setText("Total : "+t_e_s);
-
-        if(t_s>0){
-            timerS.setVisibility(View.VISIBLE);
-            timerE.setVisibility(View.VISIBLE);
-            timerT.setVisibility(View.VISIBLE);
-        }
-
-    }
+//    public void set_timerE(){
+//
+//        timerE.setText("End : "+timer_format.format(new Date()));
+//        t_e = Double.parseDouble(cal_sc_format.format(new Date()));
+//        String t_e_s = Double.toString(t_e-t_s);
+//        if(t_e_s.length()>5){
+//            t_e_s = t_e_s.substring(0,5);
+//        }
+//
+//        timerT.setText("Total : "+t_e_s);
+//
+//        if(t_s>0){
+//            timerS.setVisibility(View.VISIBLE);
+//            timerE.setVisibility(View.VISIBLE);
+//            timerT.setVisibility(View.VISIBLE);
+//        }
+//
+//    }
 }

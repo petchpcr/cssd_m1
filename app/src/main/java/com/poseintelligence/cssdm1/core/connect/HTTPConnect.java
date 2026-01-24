@@ -47,7 +47,10 @@ public class HTTPConnect  {
             Parameter pm = CssdProject.getPm();
 
             if(pm!=null){
-                int B_ID = CssdProject.getPm().getBdCode();
+                String B_ID = CssdProject.getPm().getBdCode();
+                if(!CssdProject.isuse_BID){
+                    B_ID = "0";
+                }
                 postDataParams.put("B_ID", B_ID+"");
                 String login_token = CssdProject.getPm().getLogin_token();
                 postDataParams.put("token", login_token);
@@ -184,7 +187,7 @@ public class HTTPConnect  {
             Parameter pm = CssdProject.getPm();
 
             if(pm!=null){
-                int B_ID = CssdProject.getPm().getBdCode();
+                String B_ID = CssdProject.getPm().getBdCode();
                 postDataParams.put("B_ID", B_ID+"");
             }
 

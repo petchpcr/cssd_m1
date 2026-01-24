@@ -3587,6 +3587,7 @@ public class DispensingActivity extends AppCompatActivity {
                 }
 
 
+                Log.d("tog_focus", "data = " + data);
                 Log.d("tog_focus", "result = " + result);
                 return result;
             }
