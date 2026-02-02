@@ -1387,11 +1387,11 @@ public class SterileActivity extends AppCompatActivity{
 
     public void add_item_to_basket(String basket_id,String usage_code){
         if(stack_scan){
-            if(box_item_detail.getVisibility()==View.GONE){
-
-                show_detail(true);
-            }
-            stack_add_item_to_basket(basket_id,usage_code);
+//            if(box_item_detail.getVisibility()==View.GONE){
+//
+//                show_detail(true);
+//            }
+//            stack_add_item_to_basket(basket_id,usage_code);
         }else{
             normal_add_item_to_basket(basket_id,usage_code);
         }
@@ -1537,159 +1537,159 @@ public class SterileActivity extends AppCompatActivity{
 
     ArrayAdapter<itemAdapter> lv_itemdetail_adapter;
 
-    public void stack_add_item_to_basket(String basket_id, String usage_code){
-        list_usagecode_to_add.remove(usage_code);
-        list_usagecode_to_add.add(0,usage_code);
-        usagecode_to_add.put(usage_code,"loading...");
-        list_usagecode_all.clear();
-        list_usagecode_all.addAll(list_usagecode_to_false);
-        list_usagecode_all.addAll(list_usagecode_to_add);
-        lv_itemdetail_adapter.notifyDataSetChanged();
-
-        class add_item extends AsyncTask<String, Void, String> {
-
-            // variable
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-//                loadind_dialog_show();
-            }
-
-            @Override
-            protected void onPostExecute(String result) {
-                super.onPostExecute(result);
-
-                try {
-                    JSONObject jsonObj = new JSONObject(result);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
-                        if (c.getString("result").equals("A")) {
-                            usagecode_to_add.put(usage_code,"เพิ่มสำเร็จ");
-                            list_usagecode_to_add.remove(usage_code);
-                            list_usagecode_to_add.add(usage_code);
-                            continue;
-                        }else if (c.getString("result").equals("D")){
-                            if(c.getString("basket_id").equals("---")){
-                                boolean sDocNo = true;
-                                if(list_mac_adapter.select_mac_pos != 0){
-                                    if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
-                                        if(c.getString("sDocNo").equals(list.get(list_mac_adapter.select_mac_pos).getDocNo())){
-//                                            show_dialog("Warning","รายการซ้ำ","repeat_scan");
-                                            usagecode_to_add.put(usage_code,"รายการซ้ำ");
-                                            sDocNo = false;
-                                        }
-                                    }
-                                }
-
-                                if(sDocNo){
-
-//                                    show_dialog("Warning","รายการอยู่ในเอกสารอื่น ("+c.getString("sDocNo")+")","no");
-                                    usagecode_to_add.put(usage_code,"อยู่ในเอกสาร "+c.getString("sDocNo"));
-                                }
-
-                            }else{
-                                if(c.getString("basket_id").equals(basket_id)){
-//                                    show_dialog("Warning","รายการซ้ำ","repeat_scan");
-                                    usagecode_to_add.put(usage_code,"รายการซ้ำ");
-                                }else{
-//                                    show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
-                                    usagecode_to_add.put(usage_code,"รายการนี้อยู่ในตะกร้าอื่น");
-                                }
-                            }
-
-                        }else if(c.getString("result").equals("T")){
-//                            show_dialog("Warning","ไม่สามารถเพิ่มได้","no");
-                            usagecode_to_add.put(usage_code,"ไม่สามารถเพิ่มได้");
-                        }else if(c.getString("result").equals("M")){
-//                            show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้","no");
-                            usagecode_to_add.put(usage_code,"บางรายการไม่สามารถเข้าเครื่องได้");
-                        }else if(c.getString("result").equals("N")){
-//                            show_dialog("Warning",c.getString("Message"),"no");
-                            usagecode_to_add.put(usage_code,c.getString("Message"));
-                        }else{
-//                            show_dialog("Warning","ไม่พบรายการ","no_item_found");
-                            usagecode_to_add.put(usage_code,"ไม่พบรายการ");
-                        }
-
-                        playAudio("no");
-                        x_vibrator.vibrate(500);
-                        list_usagecode_to_add.remove(usage_code);
-                        list_usagecode_to_false.remove(usage_code);
-                        list_usagecode_to_false.add(usage_code);
-                    }
-                    list_usagecode_all.clear();
-                    list_usagecode_all.addAll(list_usagecode_to_false);
-                    list_usagecode_all.addAll(list_usagecode_to_add);
-                    scan_qty.setText("("+list_usagecode_all.size()+")");
-//                    loadind_dialog_dismis();
-                    lv_itemdetail_adapter.notifyDataSetChanged();
-
-                    bt_add_colse.setEnabled(false);
-                    boolean is_loaded = true;
-                    for(int i =0;i<list_usagecode_to_add.size();i++){
-                        if(usagecode_to_add.get(list_usagecode_to_add.get(i)).equals("loading...")){
-                            is_loaded = false;
-                            break;
-                        }
-                    }
-
-                    if(list_usagecode_to_add.size()<=0){
-                        bt_add_colse.setEnabled(true);
-                    }
-
-                    if(is_loaded){
-                        bt_add_colse.setEnabled(true);
-                    }
-
-//                    if(list_usagecode_to_false.size()<=0 &&is_loaded){
-//                        show_detail(false);
+//    public void stack_add_item_to_basket(String basket_id, String usage_code){
+//        list_usagecode_to_add.remove(usage_code);
+//        list_usagecode_to_add.add(0,usage_code);
+//        usagecode_to_add.put(usage_code,"loading...");
+//        list_usagecode_all.clear();
+//        list_usagecode_all.addAll(list_usagecode_to_false);
+//        list_usagecode_all.addAll(list_usagecode_to_add);
+//        lv_itemdetail_adapter.notifyDataSetChanged();
+//
+//        class add_item extends AsyncTask<String, Void, String> {
+//
+//            // variable
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+////                loadind_dialog_show();
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String result) {
+//                super.onPostExecute(result);
+//
+//                try {
+//                    JSONObject jsonObj = new JSONObject(result);
+//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+//                    for (int i = 0; i < rs.length(); i++) {
+//                        JSONObject c = rs.getJSONObject(i);
+//                        if (c.getString("result").equals("A")) {
+//                            usagecode_to_add.put(usage_code,"เพิ่มสำเร็จ");
+//                            list_usagecode_to_add.remove(usage_code);
+//                            list_usagecode_to_add.add(usage_code);
+//                            continue;
+//                        }else if (c.getString("result").equals("D")){
+//                            if(c.getString("basket_id").equals("---")){
+//                                boolean sDocNo = true;
+//                                if(list_mac_adapter.select_mac_pos != 0){
+//                                    if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+//                                        if(c.getString("sDocNo").equals(list.get(list_mac_adapter.select_mac_pos).getDocNo())){
+////                                            show_dialog("Warning","รายการซ้ำ","repeat_scan");
+//                                            usagecode_to_add.put(usage_code,"รายการซ้ำ");
+//                                            sDocNo = false;
+//                                        }
+//                                    }
+//                                }
+//
+//                                if(sDocNo){
+//
+////                                    show_dialog("Warning","รายการอยู่ในเอกสารอื่น ("+c.getString("sDocNo")+")","no");
+//                                    usagecode_to_add.put(usage_code,"อยู่ในเอกสาร "+c.getString("sDocNo"));
+//                                }
+//
+//                            }else{
+//                                if(c.getString("basket_id").equals(basket_id)){
+////                                    show_dialog("Warning","รายการซ้ำ","repeat_scan");
+//                                    usagecode_to_add.put(usage_code,"รายการซ้ำ");
+//                                }else{
+////                                    show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
+//                                    usagecode_to_add.put(usage_code,"รายการนี้อยู่ในตะกร้าอื่น");
+//                                }
+//                            }
+//
+//                        }else if(c.getString("result").equals("T")){
+////                            show_dialog("Warning","ไม่สามารถเพิ่มได้","no");
+//                            usagecode_to_add.put(usage_code,"ไม่สามารถเพิ่มได้");
+//                        }else if(c.getString("result").equals("M")){
+////                            show_dialog("Warning","บางรายการไม่สามารถเข้าเครื่องได้","no");
+//                            usagecode_to_add.put(usage_code,"บางรายการไม่สามารถเข้าเครื่องได้");
+//                        }else if(c.getString("result").equals("N")){
+////                            show_dialog("Warning",c.getString("Message"),"no");
+//                            usagecode_to_add.put(usage_code,c.getString("Message"));
+//                        }else{
+////                            show_dialog("Warning","ไม่พบรายการ","no_item_found");
+//                            usagecode_to_add.put(usage_code,"ไม่พบรายการ");
+//                        }
+//
+//                        playAudio("no");
+//                        x_vibrator.vibrate(500);
+//                        list_usagecode_to_add.remove(usage_code);
+//                        list_usagecode_to_false.remove(usage_code);
+//                        list_usagecode_to_false.add(usage_code);
 //                    }
-
-                } catch (JSONException e) {
-                    show_log_error("add_item_to_basket.php Error = "+e);
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                HashMap<String, String> data = new HashMap<String, String>();
-
-                data.put("basket_id", basket_id);
-                data.put("usage_code", usage_code);
-                data.put("p_DB", p_DB);
-
-                Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
-
-                if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
-                    data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
-                    data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
-                }else{
-                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
-                }
-
-                String result = null;
-
-                try {
-                    result = httpConnect.sendPostRequest(getUrl + "add_item_to_basket.php", data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                Log.d("tog_add_item","data = " + data);
-                Log.d("tog_add_item","result = " + result);
-
-                return result;
-            }
-
-            // =========================================================================================
-        }
-
-        add_item obj = new add_item();
-
-        obj.execute();
-    }
+//                    list_usagecode_all.clear();
+//                    list_usagecode_all.addAll(list_usagecode_to_false);
+//                    list_usagecode_all.addAll(list_usagecode_to_add);
+//                    scan_qty.setText("("+list_usagecode_all.size()+")");
+////                    loadind_dialog_dismis();
+//                    lv_itemdetail_adapter.notifyDataSetChanged();
+//
+//                    bt_add_colse.setEnabled(false);
+//                    boolean is_loaded = true;
+//                    for(int i =0;i<list_usagecode_to_add.size();i++){
+//                        if(usagecode_to_add.get(list_usagecode_to_add.get(i)).equals("loading...")){
+//                            is_loaded = false;
+//                            break;
+//                        }
+//                    }
+//
+//                    if(list_usagecode_to_add.size()<=0){
+//                        bt_add_colse.setEnabled(true);
+//                    }
+//
+//                    if(is_loaded){
+//                        bt_add_colse.setEnabled(true);
+//                    }
+//
+////                    if(list_usagecode_to_false.size()<=0 &&is_loaded){
+////                        show_detail(false);
+////                    }
+//
+//                } catch (JSONException e) {
+//                    show_log_error("add_item_to_basket.php Error = "+e);
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            protected String doInBackground(String... params) {
+//                HashMap<String, String> data = new HashMap<String, String>();
+//
+//                data.put("basket_id", basket_id);
+//                data.put("usage_code", usage_code);
+//                data.put("p_DB", p_DB);
+//
+//                Log.d("tog_add_item","getDocNo = " + list.get(list_mac_adapter.select_mac_pos).getDocNo());
+//
+//                if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+//                    data.put("program_id", list.get(list_mac_adapter.select_mac_pos).getTypeID());
+//                    data.put("mac_id", list.get(list_mac_adapter.select_mac_pos).getMachineID());
+//                }else{
+//                    data.put("program_id", xlist_basket.get(list_basket_adapter.select_basket_pos).getTypeProcessID());
+//                }
+//
+//                String result = null;
+//
+//                try {
+//                    result = httpConnect.sendPostRequest(getUrl + "add_item_to_basket.php", data);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//                Log.d("tog_add_item","data = " + data);
+//                Log.d("tog_add_item","result = " + result);
+//
+//                return result;
+//            }
+//
+//            // =========================================================================================
+//        }
+//
+//        add_item obj = new add_item();
+//
+//        obj.execute();
+//    }
 
     public void startMachine(String p_doc_no,String p_SterileMachineID) {
 

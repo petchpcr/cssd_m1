@@ -28,34 +28,43 @@ public class CssdProject extends Application {
 
     public static boolean Is_de_bug = false;
     public static int isNonActiveTime = 0;
-    public static boolean siri_api_login = false;
+//    public static boolean siri_api_login = false;
 //    public static boolean ldap_login = false;
 
     //  SIRIRAJ
 //    public static String D_DATABASE="1";
 //    public static String Project = "SIH";
 //    public static boolean siri_api_login = true;
+//    public static boolean ldap_login = false;
 
     //  SIRIRAJ PIYA
-    public static String D_DATABASE="1";
-    public static String Project = "SiPH";
-    public static boolean ldap_login = true;
+//    public static String D_DATABASE="1";
+//    public static String Project = "SiPH";
+//    public static boolean ldap_login = true;
+//    public static boolean siri_api_login = false;
 
 
     //  PARAM9
 //    public static String D_DATABASE="1";
 //    public static String Project = "RM9";
 //    public static boolean ldap_login = true;
+//    public static boolean siri_api_login = false;
 
     //RAMA
-//    public static String D_DATABASE="1";
-//    public static String Project = "RAMA";
+    public static String D_DATABASE="1";
+    public static String Project = "RAMA";
+    public static boolean ldap_login = false;
+    public static boolean siri_api_login = false;
 
 //    public static String D_DATABASE="0";
 //    public static String Project = "VCH";
+//    public static boolean ldap_login = false;
+//    public static boolean siri_api_login = false;
 
 //    public static String D_DATABASE="0";
 //    public static String Project = "BGH";
+//    public static boolean ldap_login = false;
+//    public static boolean siri_api_login = false;
 
 
     public static boolean expired_token = false;
