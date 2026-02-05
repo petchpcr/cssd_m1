@@ -1,0 +1,224 @@
+================================================================================
+JAVA SOURCE: Menu_Dispensing/DispensingActivity.java [30 Files]
+================================================================================
+- cssd_check_duplicate.php
+- cssd_check_fifo.php
+- cssd_check_expiring.php
+- cssd_check_status_item_topay.php
+- cssd_check_item_stock_by_item_code.php
+- cssd_add_payout_detail_usage.php
+- cssd_remove_payout_detail_usage.php
+- cssd_update_payout.php
+- cssd_select_print_round_paydocno.php
+- cssd_insert_dental_interface.php
+- Itemstock/get_usageCode_spinner_itemstock_pay.php
+- cssd_group_doc_payout.php
+- cssd_update_printcount_payout.php
+- cssd_select_user_pay_round.php
+- cssd_select_zone.php
+- cssd_select_department_new.php
+- cssd_select_department.php
+- cssd_display_payouts.php
+- cssd_check_count_usage_borrow_not_retrun.php
+- cssd_display_payout_detail_by_item.php
+- cssd_update_payout_detail_qty.php
+- cssd_remove_payout_detail_id.php
+- cssd_display_payout_detail_sub.php
+- cssd_delete_detail_payout_on_change.php
+- chk_qr/check_qr.php
+- cssd_remove_payout.php
+- cssd_select_count_payout_detail.php
+- cssd_check_status_docno_pay.php
+- get_payout_from_case_number.php
+
+================================================================================
+JAVA SOURCE: Menu_Sterile/SterileActivity.java [20 Files]
+================================================================================
+- get_sterilemachine.php
+- get_sterilebasket.php
+- cssd_update_sterile_finish_time_json.php
+- delete_item_in_basket.php
+- cssd_remove_sterile_details_json.php
+- add_item_to_basket.php
+- cssd_update_sterile_start_time_json.php
+- cssd_add_sterile_detail_by_id.php
+- get_item_in_sterile_basket.php
+- cssd_create_sterile_json.php
+- change_doc_program.php
+- get_test_program.php
+- change_test_program.php
+- api_inventory/cssd_select_lot.php
+- change_doc_round.php
+- get_sterile_doc.php
+- check_qr.php
+- check_sterile_type.php
+- get_sterile_process.php
+- get_sterile_processtest.php
+- delete_basket_from_mac.php
+
+================================================================================
+JAVA SOURCE: Menu_Receive/ReceiveActivity.java [31 Files]
+================================================================================
+- cssd_select_department_by_send_sterile.php
+- cssd_getdep_usage_code.php
+- cssd_check_usage_for_remove_by_qr.php
+- cssd_update_send_sterile_empolyee.php
+- cssd_add_send_sterile_detail_by_qr.php
+- cssd_select_department_by_search.php
+- cssd_update_send_sterile_complete.php
+- cssd_update_item_stock.php
+- cssd_update_payout_by_send_sterile.php
+- cssd_update_dep_item_by_send_sterile.php
+- cssd_select_user.php
+- cssd_select_count_send_sterile_detail.php
+- cssd_delete_send_sterile_details.php
+- cssd_remove_send_sterile.php
+- cssd_update_send_sterile_remark.php
+- cssd_display_send_sterile.php
+- cssd_display_send_sterile_detail.php
+- cssd_select_item_stock_by_send_sterile.php
+- getitemdetail_sendsterile.php
+- cssd_delete_send_sterile_detail.php
+- updateremark_sendsterile_ems.php
+- cssd_update_send_sterile_new.php
+- cssd_update_send_sterile.php
+- cssd_check_status_docno.php
+- cssd_display_usage_count_new.php
+- cssd_display_usage_count.php
+- washtag/cssd_select_basket_send.php
+- washtag/insert_item_in_washtag.php
+- washtag/resterile_from_washtag.php
+- washtag/cssd_get_basket_detail.php
+- washtag/remove_item_in_washtag_by_ssID.php
+
+================================================================================
+JAVA SOURCE: Menu_Receive/SearchItem_SendSterile.java [4 Files]
+================================================================================
+- cssd_select_department_by_send_sterile.php
+- cssd_display_item_by_send_sterile.php
+- cssd_add_send_sterile_detail.php
+- cssd_add_wash_detail_un_reuse.php
+
+================================================================================
+JAVA SOURCE: Menu_Receive/dialog_Load_Img.java [1 File]
+================================================================================
+- cssd_show_detail_item_send.php
+
+================================================================================
+JAVA SOURCE: Menu_Receive/dialog_Load_Img_Remark.java [1 File]
+================================================================================
+- cssd_show_detail_item_send.php
+
+================================================================================
+JAVA SOURCE: Menu_Receive/dialog_check_usage_count.java [1 File]
+================================================================================
+- cssd_set_status_ems.php
+
+================================================================================
+JAVA SOURCE: Menu_Return/ReturnActivity.java [2 Files]
+================================================================================
+- cssd_select_item_stock.php
+- cssd_update_item_stock_to_cssd.php
+
+================================================================================
+JAVA SOURCE: Menu_Remark/RemarkActivity.java [3 Files]
+================================================================================
+- cssd_display_docno_remark.php
+- cssd_image/Delete_pic.php
+- cssd_image/UploadImage_remark.php
+
+================================================================================
+JAVA SOURCE: Menu_Remark/RemarkActivity.java (Dialog) [1 File]
+================================================================================
+- cssd_image/Delete_pic_Muti.php
+
+================================================================================
+JAVA SOURCE: Menu_Remark/dialog_remark_sendsterile.java [6 Files]
+================================================================================
+- cssd_check_remark_send.php
+- cssd_save_remark_send.php
+- cssd_delete_remark_send.php
+- cssd_display_detail_remark.php
+- cssd_display_remark_type.php
+- cssd_check_statusdocno.php
+
+================================================================================
+JAVA SOURCE: Menu_Signature_Department/SignatureDepartmentActivity.java [2 Files]
+================================================================================
+- cssd_display_payout_signature.php
+- sendsterile/get_department_sendsterile.php
+
+================================================================================
+JAVA SOURCE: Menu_Signature_Department/SignatureDepartmentDetailActivity.java [1 File]
+================================================================================
+- cssd_display_payout_detail_by_item_ipdopd.php
+
+================================================================================
+JAVA SOURCE: Menu_Signature_Department/SignaturePadAtivity.java [1 File]
+================================================================================
+- cssd_image/UploadImage_Signature.php
+
+================================================================================
+JAVA SOURCE: Menu_RecordTest/InSertImageSporeDocActivity.java [8 Files]
+================================================================================
+- savespore_doc.php
+- cssd_image/UploadImageTestresult.php
+- cssd_image/UploadImage_Text.php
+- cssd_display_program_m1_cssd_test.php
+- cssd_display_detail_test.php
+- cssd_display_round_mac.php
+- cssd_display_detail_test_1.php
+- cssd_select_count_atp.php
+
+================================================================================
+JAVA SOURCE: Menu_RecordTest/ResultsActivity.java [2 Files]
+================================================================================
+- get_machine_resulttest.php
+- cssd_display_spore_doc.php
+
+================================================================================
+JAVA SOURCE: Menu_RecordTest/ATPDocnoActivity.java [1 File]
+================================================================================
+- savespore_doc1.php
+
+================================================================================
+JAVA SOURCE: Menu_RecordTest/InSertImageSporeDocActivity.java (Extra) [4 Files]
+================================================================================
+- cssd_display_detail_test.php
+- cssd_display_round_mac.php
+- cssd_display_detail_test_1.php
+- cssd_select_count_atp.php
+
+================================================================================
+JAVA SOURCE: Menu_MachineTest/MachineTestActivity.java [1 File]
+================================================================================
+- check_machine/get_machine_data.php
+
+================================================================================
+JAVA SOURCE: Menu_MachineTest/MachineTestDetailActivity.java [1 File]
+================================================================================
+- check_machine/set_machine_data.php
+
+================================================================================
+JAVA SOURCE: Menu_Re_Pay_NonUsage/ReceivePayNonUsageActivity.java [15 Files]
+================================================================================
+- cssd_display_payouts.php
+- cssd_select_department.php
+- cssd_display_payout_detail.php
+- cssd_update_item_stock_receive.php
+- cssd_check_before_update_payout.php
+- cssd_add_receive_detail_code.php
+- cssd_add_payout_detail_code.php
+- cssd_delete_item_stock_receive_detail.php
+- cssd_delete_payout_detail.php
+- cssd_update_item_stock_receive_detail.php
+- cssd_update_payout_detail_non_usage.php
+- cssd_delete_item_stock_receive.php
+- cssd_delete_payout.php
+- cssd_update_payout_by_receive_non_usage.php
+- cssd_display_itemstock_receive_detail.php
+
+================================================================================
+JAVA SOURCE: Menu_BasketWashing/dialog_delete_pic_remark.java [1 File]
+================================================================================
+- cssd_image/Delete_pic_Muti.php
