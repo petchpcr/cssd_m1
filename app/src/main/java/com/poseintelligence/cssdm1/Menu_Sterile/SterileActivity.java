@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -1420,26 +1421,37 @@ public class SterileActivity extends AppCompatActivity{
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
-
-                            if(list_mac_adapter.select_mac_pos != 0){
+                            Log.d("tog_add_item","A select_mac_pos "+ list_mac_adapter.select_mac_pos);
+//                            if(list_mac_adapter.select_mac_pos != 0){
+                            if(list_mac_adapter.select_mac_pos >= 0){
                                 if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
+
+                                    Log.d("tog_add_item","call = addSterileDetailById("+
+                                            list.get(list_mac_adapter.select_mac_pos).getDocNo()+","+
+                                            c.getString("w_id")+","+
+                                            basket_id
+                                    );
+
                                     addSterileDetailById(
                                             list.get(list_mac_adapter.select_mac_pos).getDocNo(),
                                             c.getString("w_id")+",",
                                             basket_id
                                     );
                                 }else{
+                                    Log.d("tog_add_item","call = reload_basket 1");
                                     reload_basket();
 //                                    playAudio("okay");
                                 }
                             }else{
+                                Log.d("tog_add_item","call = reload_basket 2");
                                 reload_basket();
 //                                playAudio("okay");
                             }
                         }else if (c.getString("result").equals("D")){
                             if(c.getString("basket_id").equals("---")){
                                 boolean sDocNo = true;
-                                if(list_mac_adapter.select_mac_pos != 0){
+//                                if(list_mac_adapter.select_mac_pos != 0){
+                                if(list_mac_adapter.select_mac_pos >= 0){
                                     if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                                         if(c.getString("sDocNo").equals(list.get(list_mac_adapter.select_mac_pos).getDocNo())){
                                             show_dialog("Warning","รายการซ้ำ","repeat_scan");
@@ -3128,7 +3140,6 @@ public class SterileActivity extends AppCompatActivity{
 //                show_dialog("w","ยกเลิกการสร้างเอกสาร");
                 switch (for_scan){
                     case wait_scan_program :
-
                         show_dialog("w","ยกเลิกการสร้างเอกสาร");
                         break;
                     case wait_scan_employee :
@@ -3169,7 +3180,6 @@ public class SterileActivity extends AppCompatActivity{
 
                                 Log.d("mass_onkey","mass_onkey = "+mass_onkey);
                                 get_loder(mass_onkey,data[1]);
-//                                get_loder("em00001",data[1]);
 //                                set_loder(mass_onkey, Boolean.parseBoolean(data[1]),data[2],data[3]);
                                 break;
                             case wait_scan_type :
@@ -3270,7 +3280,7 @@ public class SterileActivity extends AppCompatActivity{
                         case "b":
                             if(SR_IsUsedBasket_M1){
                                 for(int i=0;i<xlist_basket.size();i++){
-                                    if(xlist_basket.get(i).getBasketCode().equals(mass_onkey)){
+                                    if(xlist_basket.get(i).getBasketCode().toLowerCase().equals(mass_onkey)){
 
                                         basket_pos_non_approve=i;
                                         Log.d("tog_add_basket","basket_pos_non_approve = "+basket_pos_non_approve);
@@ -3348,6 +3358,9 @@ public class SterileActivity extends AppCompatActivity{
                                 show_dialog("Warning","โปรแกรมทดสอบไม่สามารถเพิ่มตะกร้าหรือรายการได้");
                                 return false;
                             }
+
+                            Log.d("tog_add_item","dispatchcase select_basket_pos "+ list_basket_adapter.select_basket_pos);
+                            Log.d("tog_add_item","dispatchcase select_mac_pos "+ list_mac_adapter.select_mac_pos);
 
                             if(list_basket_adapter.select_basket_pos>=0){
                                 add_item_to_basket(xlist_basket.get(list_basket_adapter.select_basket_pos).getID(),mass_onkey);
