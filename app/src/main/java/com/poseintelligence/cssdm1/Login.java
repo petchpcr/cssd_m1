@@ -313,6 +313,9 @@ public class Login extends AppCompatActivity {
 
     boolean LoginAdIsFuck = false;
     private void byWidget() {
+        TextView v = findViewById(R.id.v);
+        v.setText("v 1.0.3(1) "+((CssdProject) getApplication()).Project());
+
 //        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
 //        spinner_building = (Spinner) findViewById(R.id.spinner_building);

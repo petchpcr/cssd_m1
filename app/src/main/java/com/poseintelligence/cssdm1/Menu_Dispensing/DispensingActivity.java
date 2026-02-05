@@ -2958,6 +2958,7 @@ public class DispensingActivity extends AppCompatActivity {
                     data.put("p_is_create_receive_department", PA_IsCreateReceiveDepartment ? "0" : "0");
                 }
 
+                data.put("p_device", "M1");
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
                 data.put("p_Recipient", String.valueOf(spn_usr_receive.getSelectedItemPosition() - 1));
 
