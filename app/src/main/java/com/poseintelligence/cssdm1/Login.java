@@ -48,6 +48,7 @@ import com.poseintelligence.cssdm1.core.connect.HTTPPostRaw;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
 import com.poseintelligence.cssdm1.model.Parameter;
+import com.poseintelligence.cssdm1.utils.MD5HashGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -316,7 +317,7 @@ public class Login extends AppCompatActivity {
     boolean LoginAdIsFuck = false;
     private void byWidget() {
         TextView v = findViewById(R.id.v);
-        v.setText("v 1.0.3(1) "+((CssdProject) getApplication()).Project());
+        v.setText("v "+((CssdProject) getApplication()).version()+" "+((CssdProject) getApplication()).Project());
 
 //        textView3 = (TextView) findViewById(R.id.textView3);
         iSetting = (ImageView) findViewById(R.id.iSetting);
@@ -796,8 +797,6 @@ public class Login extends AppCompatActivity {
     public void onLogin(final String uname, final String pword) {
         class onLogin extends AsyncTask<String, Void, String> {
 
-
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -887,6 +886,7 @@ public class Login extends AppCompatActivity {
                     data.put("EmpCodeLDAP", pword);
                 }else{
                     data.put("uname", uname);
+//                    data.put("pword", MD5HashGenerator.generateMD5(pword));
                     data.put("pword", pword);
                 }
                 Log.d("tog_login","data = "+data);
@@ -1540,28 +1540,6 @@ public class Login extends AppCompatActivity {
         return serialNumber;
     }
 
-    public void debug_device(){
-//        String serialNumber = getSerialNumber();
-//        Log.d("serialNumber",serialNumber);
-
-//        if(serialNumber.equals("LB10P14E20479")||serialNumber.equals("L203P85U01743")){
-//            onLogin("IsUseQrEmCodeLogin", "EM00011");
-//        }
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 02, 11);
-            LocalDate today = LocalDate.now();
-            if (someDate.isEqual(today)) {
-                onLogin("user1", "111");
-//                onLogin("v", "70001954");
-            }
-        }
-
-        if(dev==4){
-            onLogin("v", "70001954");
-        }
-    }
-
     public void getConfigurationMenu(String userid) {
 
         class ConfigurationMenu extends AsyncTask<String, Void, String> {
@@ -1685,7 +1663,12 @@ public class Login extends AppCompatActivity {
                     b1.setBackgroundResource(R.drawable.rectangle_selete_building_pink);
                 }
                 LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                params1.setMargins(0, 2, 0, 8);
+
+                params1.setMargins(0, 80, 0, 8);
+                if(i==0){
+                    params1.setMargins(0, 8, 0, 8);
+                }
+
                 b1.setPadding(0,10,0,10);
 
                 b1.setLayoutParams( params1 );
@@ -1698,4 +1681,19 @@ public class Login extends AppCompatActivity {
         builder.show();
     }
 
+    public void debug_device(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate someDate = LocalDate.of(2026, 03, 15);
+            LocalDate today = LocalDate.now();
+            if (someDate.isEqual(today)) {
+                onLogin("user1", "111");
+//                onLogin("v", "70001954");
+//                onLogin("EM00437", "1");
+            }
+        }
+
+        if(dev==4){
+            onLogin("v", "70001954");
+        }
+    }
 }
