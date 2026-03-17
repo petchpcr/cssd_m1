@@ -120,6 +120,23 @@
                                     android:visibility="gone"></TextView>
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/txt_hn_case"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:maxLines="1"
+                                    android:text="hn case"
+                                    android:textColor="@color/colorRed"
+                                    android:textSize="10sp"></TextView>
+
+                        </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -130,7 +147,7 @@
 
                         <TextView
                             android:id="@+id/txt_status"
-                            android:layout_width="80dp"
+                            android:layout_width="65dp"
                             android:layout_height="match_parent"
                             android:layout_marginStart="2dp"
                             android:layout_marginTop="4dp"

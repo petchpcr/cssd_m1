@@ -72,6 +72,8 @@ public class ListPayoutDocumentAdapter extends ArrayAdapter<ModelPayout> {
         final TextView txt_doc_date_time = (TextView) view.findViewById(R.id.txt_doc_date_time);
         final CheckBox chk_group = (CheckBox) view.findViewById(R.id.chk_group);
 
+        final TextView HnCaseNumber = view.findViewById(R.id.txt_hn_case);
+
         if (position == selectedPos) {
             // your color for selected item
             view.setBackgroundColor(Color.parseColor("#FAD7A0"));
@@ -112,6 +114,13 @@ public class ListPayoutDocumentAdapter extends ArrayAdapter<ModelPayout> {
                 }
             }
         });
+
+        if(DATA_MODEL.get(position).getHnCaseNumber().equals("")){
+            HnCaseNumber.setVisibility(View.GONE);
+        }else{
+            HnCaseNumber.setText(DATA_MODEL.get(position).getHnCaseNumber());
+            HnCaseNumber.setVisibility(View.VISIBLE);
+        }
 
         if(Type.equals("0")){
 
