@@ -49,6 +49,7 @@ import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.adapter.ListDepartmentAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailItemAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDetailSubAdapter;
+import com.poseintelligence.cssdm1.adapter.ListPayoutDocInDialogAdapter;
 import com.poseintelligence.cssdm1.adapter.ListPayoutDocumentAdapter;
 import com.poseintelligence.cssdm1.core.CustomExceptionHandler;
 import com.poseintelligence.cssdm1.core.audio.iAudio;
@@ -84,7 +85,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private List<ModelDepartment> Model_Department;
     private List<ModelPayout> Model_Pay;
-    private List<ModelPayoutDetails> Model_Payout_Detail_item = new ArrayList<>();;
+    private List<ModelPayoutDetails> Model_Payout_Detail_item = new ArrayList<>();
     private List<ModelPayoutDetailSub> Model_Payout_Detail_Sub;
 
     private ArrayList<String> ar_list_user_receive_id = new ArrayList<String>();
@@ -393,6 +394,10 @@ public class DispensingActivity extends AppCompatActivity {
             }
         });
 
+        if (!((CssdProject) getApplication()).Project().equals("SiPH")&&!((CssdProject) getApplication()).Project().equals("SIH")) {
+            txt_p_prepare_code.setVisibility(View.GONE);
+        }
+
         spn_usr_receive = (SearchableSpinner) findViewById(R.id.spn_usr_receive);
         spn_usr_receive.setTitle("เลือกผู้รับ");//lang
         spn_usr_receive.setPositiveButton("");//lang
@@ -404,7 +409,6 @@ public class DispensingActivity extends AppCompatActivity {
         if (!((CssdProject) getApplication()).Project().equals("SiPH")&&!((CssdProject) getApplication()).Project().equals("SIH")&&!((CssdProject) getApplication()).Project().equals("RM9")) {
             switch_department_or.setVisibility(View.GONE);
             text_switch_department_or.setVisibility(View.GONE);
-            Is_department_or = "1";
         }
 
     }
@@ -2784,13 +2788,24 @@ public class DispensingActivity extends AppCompatActivity {
     private void getQRPay(final String msg, final String type) {
         Log.d("tog_getQRPay", "d_id = " + txt_p_approve_code);
 
-        if (d_id == "") {
-            _getQRPay("pay_prepear", type);
-        }else if (d_id_2 == "") {
-            _getQRPay("payrow", type);
+        if (((CssdProject) getApplication()).Project().equals("RAMA")) {
+            d_id = d_id_2;
+            if (d_id == "") {
+                _getQRPay("payrow", type);
+            }else{
+                select_dept(DepIndex);
+            }
         }else{
-            select_dept(DepIndex);
+            if (d_id == "") {
+                _getQRPay("pay_prepear", type);
+            }else if (d_id_2 == "") {
+                _getQRPay("payrow", type);
+            }else{
+                select_dept(DepIndex);
+            }
         }
+
+
     }
 
     private void getQRPayGroup(final String msg, final String type, final String type_user){
@@ -3469,7 +3484,7 @@ public class DispensingActivity extends AppCompatActivity {
     // Display Department
     // ------------------------------------------------------------------
 
-    public void displayDepartment(final String pDepName, final int depIndex, final String p_zone) {
+    public void displayDepartment(final String pDepName, final int selete_depID, final String p_zone) {
 
         Log.d("tog_RemovePayout", "displayDepartment");
         Log.d("tog_focus", "displayDepartment");
@@ -3556,6 +3571,18 @@ public class DispensingActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
 
+                    if(selete_depID>0){
+                        for (int i = 0; i < Model_Department.size(); i++) {
+
+                            Log.d("tog_dep", "selete_depID = " + selete_depID);
+                            Log.d("tog_dep", "ID = " + Model_Department.get(i).getID());
+                            if (Model_Department.get(i).getID().equals(selete_depID+"")) {
+                                DepIndex = i;
+                                getQRPay("payrow", "0");
+                            }
+                        }
+                    }
+
                     if (dialog.isShowing()) {
                         dialog.dismiss();
                     }
@@ -3570,7 +3597,18 @@ public class DispensingActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
 
                 data.put("p_used_in_payout", "p");
-                data.put("p_type", Is_department_or);
+//                if(switch_department_or.getVisibility() == View.VISIBLE){
+//                    data.put("p_type", Is_department_or);
+//                }else{
+//                    data.put("p_type", "1");
+//                }
+
+                if(switch_department_or.getVisibility() == View.VISIBLE){
+                    if(Is_department_or.equals("0")){
+                        data.put("p_type", Is_department_or);
+                    }
+                }
+
                 if (pDepName != null && !pDepName.trim().equals("")) {
                     data.put("pDepName", pDepName);
                 }
@@ -3726,6 +3764,15 @@ public class DispensingActivity extends AppCompatActivity {
 
                             if(!c.isNull("IsUrgent")){
                                 _doc.setIsUrgent(c.getString("IsUrgent"));
+                            }
+
+                            if(!c.isNull("HnCaseNumber")){
+                                byte[] HnCaseNumberBytes = android.util.Base64.decode(c.getString("HnCaseNumber"), android.util.Base64.DEFAULT);
+                                Log.d("tog_HnCaseNumber", "HnCaseNumberBytes" + HnCaseNumberBytes);
+                                String HnCaseNumber = new String(HnCaseNumberBytes, java.nio.charset.StandardCharsets.UTF_8);
+                                Log.d("tog_HnCaseNumber", "HnCaseNumber" + HnCaseNumber);
+                                _doc.setHnCaseNumber(HnCaseNumber);
+
                             }
 
                             list.add(_doc);
@@ -3910,6 +3957,17 @@ public class DispensingActivity extends AppCompatActivity {
 
                             if(!c.isNull("IsUrgent")){
                                 _doc.setIsUrgent(c.getString("IsUrgent"));
+                            }
+
+                            if(!c.isNull("HnCaseNumber")){
+                                try {
+                                    byte[] HnCaseNumberBytes = android.util.Base64.decode(c.getString("HnCaseNumber"), android.util.Base64.DEFAULT);
+                                    String HnCaseNumber = new String(HnCaseNumberBytes, java.nio.charset.StandardCharsets.UTF_8);
+                                    _doc.setHnCaseNumber(HnCaseNumber);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
                             }
 
                             list.add(_doc);
@@ -5716,6 +5774,9 @@ public class DispensingActivity extends AppCompatActivity {
         }
         Toast.makeText(DispensingActivity.this, "ไม่พบเอกสาร. !!", Toast.LENGTH_SHORT).show();
     }
+
+    ArrayList<ModelPayout> list_payout_case_number = new ArrayList<>();
+
     public void get_payout_from_case_number(final String case_number) {
 
         class get_payout_from_case_number extends AsyncTask<String, Void, String> {
@@ -5723,6 +5784,9 @@ public class DispensingActivity extends AppCompatActivity {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                if(switch_department_or.getVisibility() == View.VISIBLE){
+                    switch_department_or.setChecked(true);
+                }
             }
 
             @Override
@@ -5736,40 +5800,55 @@ public class DispensingActivity extends AppCompatActivity {
                     for (int j = 0; j < rs.length(); j++) {
                         JSONObject c = rs.getJSONObject(j);
 
-                        boolean notfound = true;
+                        if(c.getString("result").equals("A")){
 
-                        if (c.getString("result").equals("A")) {
-                            case_number_doc_no = c.getString("DocNo");
-                            String _DeptID = c.getString("DeptID");
-
-                            if (Block_1.getVisibility() == View.VISIBLE) {
-
-                                for (int i = 0; i < Model_Department.size(); i++) {
-
-                                    Log.d("top_dep", "ID = " + Model_Department.get(i).getID());
-                                    if (Model_Department.get(i).getID().equals(_DeptID)) {
-                                        DepIndex = i;
-                                        notfound = false;
-                                        getQRPay("payrow", "0");
-                                    }
-                                }
-
-
-                            }else{
-                                notfound = false;
-                                go_to_doc_case_number();
-                            }
+                            list_payout_case_number.add(
+                                    new ModelPayout(
+                                            c.getString("DocNo"),
+                                            c.getString("createDate"),
+                                            c.getString("DeptID"),
+                                            c.getString("depName")
+                                    )
+                            );
 
                         }
+//
+//                         if (c.getString("result").equals("A")) {
+//                             case_number_doc_no = c.getString("DocNo");
+//                             String _DeptID = c.getString("DeptID");
+//
+//                             if (Block_1.getVisibility() == View.VISIBLE) {
+//                                 for (int i = 0; i < Model_Department.size(); i++) {
+//
+//                                     Log.d("top_dep", "ID = " + Model_Department.get(i).getID());
+//                                     if (Model_Department.get(i).getID().equals(_DeptID)) {
+//                                         DepIndex = i;
+//                                         notfound = false;
+//                                         getQRPay("payrow", "0");
+//                                     }
+//                                 }
+//                             }else{
+//                                 notfound = false;
+//                                 go_to_doc_case_number();
+//                             }
+//
+//                         }
 
-                        if(notfound){
-                            doc_case_number_notfound();
-                        }
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
+                    if(list_payout_case_number.size() <= 0){
+                        doc_case_number_notfound();
+                    }else{
+                        if(list_payout_case_number.size() > 1){
+                            show_selete_payout_from_case_number_list();
+                        }else{
+                            selete_payout_from_case_number(list_payout_case_number.get(0).getDocNo(), list_payout_case_number.get(0).getDepartment_ID());
+                        }
+                    }
+                    
                     focus();
                 }
 
@@ -5780,7 +5859,7 @@ public class DispensingActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_user", ((CssdProject) getApplication()).I_CustomerId + "");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    data.put("case_number", Base64.getEncoder().encodeToString(case_number.getBytes()));
+                    data.put("case_number", Base64.getEncoder().encodeToString(case_number.toUpperCase().getBytes()));
                 }
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
@@ -5801,6 +5880,75 @@ public class DispensingActivity extends AppCompatActivity {
         get_payout_from_case_number ru = new get_payout_from_case_number();
 
         ru.execute();
+    }
+
+    public void selete_payout_from_case_number(String _case_number_doc_no,String _DeptID){
+        case_number_doc_no = _case_number_doc_no;
+        list_payout_case_number.clear();
+
+        displayDepartment(null, Integer.parseInt(_DeptID), ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+
+//        if (Block_1.getVisibility() == View.VISIBLE) {
+//            for (int i = 0; i < Model_Department.size(); i++) {
+//
+//                Log.d("top_dep", "ID = " + Model_Department.get(i).getID());
+//                if (Model_Department.get(i).getID().equals(_DeptID)) {
+//                    DepIndex = i;
+//                    getQRPay("payrow", "0");
+//                }
+//            }
+//        }else{
+//            go_to_doc_case_number();
+//        }
+    }
+
+    public void show_selete_payout_from_case_number_list(){
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("เลือกเอกสาร");
+
+        final ArrayAdapter<ModelPayout> adapter = new ListPayoutDocInDialogAdapter(DispensingActivity.this, list_payout_case_number);
+
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int pos) {
+                String selectedPayoutDocno = list_payout_case_number.get(pos).getDocNo();
+                String selectedDeptId = list_payout_case_number.get(pos).getDepartment_ID();
+                block1_Visible_from_case_number(selectedPayoutDocno, selectedDeptId);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                list_payout_case_number.clear();
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void block1_Visible_from_case_number(String selectedCaseNumber,String selectedDeptId)  {
+
+        switch_opt.setChecked(false);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        linear_layout_search.setLayoutParams(params);
+        DocNo = null;
+        RefDocNo = null;
+
+        scan_log_listItems.clear();
+
+        Block_1.setVisibility(View.VISIBLE);
+        Block_2.setVisibility(View.GONE);
+        Block_group_doc.setVisibility(View.INVISIBLE);
+        Block_3.setVisibility(View.GONE);
+        Block_4.setVisibility(View.GONE);
+        switch_opt.setVisibility(View.GONE);
+        imageCreate.setVisibility(View.GONE);
+
+        selete_payout_from_case_number(selectedCaseNumber, selectedDeptId);
     }
 
     public void block3_Visible()  {

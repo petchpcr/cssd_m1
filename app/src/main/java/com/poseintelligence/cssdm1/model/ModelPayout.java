@@ -22,8 +22,10 @@ public class ModelPayout {
     boolean boo_Payout_Status;
     boolean Is_Check_Doc;
 
-    String IsUrgent;
+    String IsUrgent = "0";
     String QtyUrgent;
+
+    String HnCaseNumber = "";
 
     String PayQty,Count_Qty, Desc, RefDocNo, IsSpecial = "0";
 
@@ -67,6 +69,13 @@ public class ModelPayout {
         this.DocDateTime = DocDateTime;
         this.index = index;
         this.DocDateSend = DocDateSend;
+    }
+
+    public ModelPayout(String docNo, String createDate,String department_ID, String depName) {
+        Department_ID = department_ID;
+        DepName = depName;
+        DocNo = docNo;
+        CreateDate = createDate;
     }
 
     public String getDocDateTime() {
@@ -357,4 +366,8 @@ public class ModelPayout {
     public void setIsUrgent(String isUrgent) {
         IsUrgent = isUrgent;
     }
+
+    public String getHnCaseNumber() {return HnCaseNumber;}
+
+    public void setHnCaseNumber(String hnCaseNumber) {HnCaseNumber = hnCaseNumber;}
 }
