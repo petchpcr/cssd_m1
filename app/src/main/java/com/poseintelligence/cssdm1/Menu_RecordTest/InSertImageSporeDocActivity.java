@@ -1047,7 +1047,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     public void byconfig(){
 
         if (Page.equals("1")){
-            if(((CssdProject) getApplication()).Project().equals("SiPH")||((CssdProject) getApplication()).Project().equals("SIH")){
+            if(((CssdProject) getApplication()).Project().equals("SIH")){
                 req_pic = true;
 
                 if(sterileprogramID.equals("9")){
@@ -1515,6 +1515,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                             String key = e.getKey();
                             String value = e.getValue();
 
+                            Log.d("tog_byconfig","test_pro_select = "+test_pro_select);
                             Log.d("tog_byconfig","pg_spinner = "+pos+" --- "+value+" --- "+key);
                             if(value.equals(test_pro_select)){
                                 pg_spinner.setSelection(list_sp.indexOf(key));
