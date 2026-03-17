@@ -22,8 +22,10 @@ public class ModelPayout {
     boolean boo_Payout_Status;
     boolean Is_Check_Doc;
 
-    String IsUrgent;
+    String IsUrgent = "0";
     String QtyUrgent;
+
+    String HnCaseNumber = "";
 
     String PayQty,Count_Qty, Desc, RefDocNo, IsSpecial = "0";
 
@@ -357,4 +359,8 @@ public class ModelPayout {
     public void setIsUrgent(String isUrgent) {
         IsUrgent = isUrgent;
     }
+
+    public String getHnCaseNumber() {return HnCaseNumber;}
+
+    public void setHnCaseNumber(String hnCaseNumber) {HnCaseNumber = hnCaseNumber;}
 }

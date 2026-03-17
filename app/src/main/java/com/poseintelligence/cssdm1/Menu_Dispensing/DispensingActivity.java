@@ -84,7 +84,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private List<ModelDepartment> Model_Department;
     private List<ModelPayout> Model_Pay;
-    private List<ModelPayoutDetails> Model_Payout_Detail_item = new ArrayList<>();;
+    private List<ModelPayoutDetails> Model_Payout_Detail_item = new ArrayList<>();
     private List<ModelPayoutDetailSub> Model_Payout_Detail_Sub;
 
     private ArrayList<String> ar_list_user_receive_id = new ArrayList<String>();
@@ -392,6 +392,10 @@ public class DispensingActivity extends AppCompatActivity {
                 _getQRPay("pay_prepear", "0");
             }
         });
+
+        if (!((CssdProject) getApplication()).Project().equals("SiPH")&&!((CssdProject) getApplication()).Project().equals("SIH")) {
+            txt_p_prepare_code.setVisibility(View.GONE);
+        }
 
         spn_usr_receive = (SearchableSpinner) findViewById(R.id.spn_usr_receive);
         spn_usr_receive.setTitle("เลือกผู้รับ");//lang
@@ -712,6 +716,12 @@ public class DispensingActivity extends AppCompatActivity {
                                         Toast.makeText(DispensingActivity.this, "ไม่พบแผนก !!", Toast.LENGTH_SHORT).show();
                                     }
 
+                                    txt_search_department.setText("");
+                                    return false;
+                                }
+
+                                if(S_Code.length()>18){
+                                    get_payout_from_case_number(S_Code);
                                     txt_search_department.setText("");
                                     return false;
                                 }
@@ -2777,13 +2787,24 @@ public class DispensingActivity extends AppCompatActivity {
     private void getQRPay(final String msg, final String type) {
         Log.d("tog_getQRPay", "d_id = " + txt_p_approve_code);
 
-        if (d_id == "") {
-            _getQRPay("pay_prepear", type);
-        }else if (d_id_2 == "") {
-            _getQRPay("payrow", type);
+        if (((CssdProject) getApplication()).Project().equals("RAMA")) {
+            d_id = d_id_2;
+            if (d_id == "") {
+                _getQRPay("payrow", type);
+            }else{
+                select_dept(DepIndex);
+            }
         }else{
-            select_dept(DepIndex);
+            if (d_id == "") {
+                _getQRPay("pay_prepear", type);
+            }else if (d_id_2 == "") {
+                _getQRPay("payrow", type);
+            }else{
+                select_dept(DepIndex);
+            }
         }
+
+
     }
 
     private void getQRPayGroup(final String msg, final String type, final String type_user){
@@ -3504,9 +3525,15 @@ public class DispensingActivity extends AppCompatActivity {
                                 c.getString("xID"),
                                 c.getString("xDepName"),
                                 c.getString("xDepName2"),
-                                c.getString("IsWeb"),
+                                "0",
                                 "0"
                         );
+
+                        if(!c.isNull("IsWeb")){
+                            _dept.setIsWeb(c.getString("IsWeb"));
+                        }else{
+                            _dept.setIsWeb("0");
+                        }
 
                         if(!c.isNull("IsUrgent")){
                             _dept.setIsUrgent(c.getString("IsUrgent"));
@@ -3557,7 +3584,16 @@ public class DispensingActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
 
                 data.put("p_used_in_payout", "p");
-                data.put("p_type", Is_department_or);
+//                if(switch_department_or.getVisibility() == View.VISIBLE){
+//                    data.put("p_type", Is_department_or);
+//                }else{
+//                    data.put("p_type", "1");
+//                }
+
+                if(switch_department_or.getVisibility() == View.VISIBLE){
+                    data.put("p_type", Is_department_or);
+                }
+
                 if (pDepName != null && !pDepName.trim().equals("")) {
                     data.put("pDepName", pDepName);
                 }
@@ -3713,6 +3749,10 @@ public class DispensingActivity extends AppCompatActivity {
 
                             if(!c.isNull("IsUrgent")){
                                 _doc.setIsUrgent(c.getString("IsUrgent"));
+                            }
+
+                            if(!c.isNull("HnCaseNumber")){
+                                _doc.setHnCaseNumber(c.getString("HnCaseNumber"));
                             }
 
                             list.add(_doc);
@@ -3899,6 +3939,10 @@ public class DispensingActivity extends AppCompatActivity {
                                 _doc.setIsUrgent(c.getString("IsUrgent"));
                             }
 
+                            if(!c.isNull("HnCaseNumber")){
+                                _doc.setHnCaseNumber(c.getString("HnCaseNumber"));
+                            }
+
                             list.add(_doc);
                         }
                     }
@@ -3977,6 +4021,10 @@ public class DispensingActivity extends AppCompatActivity {
 
                             i++;
                         }
+                    }
+
+                    if(!case_number_doc_no.equals("")){
+                        go_to_doc_case_number();
                     }
 
 
@@ -5653,6 +5701,53 @@ public class DispensingActivity extends AppCompatActivity {
         ru.execute();
     }
 
+    String case_number_doc_no = "";
+    public void go_to_doc_case_number(){
+
+        boolean notfound = true;
+        Iterator li = Model_Pay.iterator();
+        while (li.hasNext()) {
+
+            ModelPayout m = (ModelPayout) li.next();
+
+            Log.d("tog_displayPay", m.getDocNo() +" == " + case_number_doc_no + " ----- "+m.getDocNo().equals(DocNo));
+            if (m.getDocNo().equals(case_number_doc_no)) {
+                notfound = false;
+                DocNo = m.getDocNo();
+                RefDocNo = m.getRefDocNo();
+                RefDocNoSend = m.getDocDateSend();
+
+                title_3.setText(DocNo + " / " + m.getDepNameByPayItem());
+                displayPayoutDetail(DocNo, true);
+
+                //handler_dept.removeCallbacks(runnable_dept);
+                block3_Visible();
+
+                if (RefDocNo.equals("")) {
+                    txt_doc_type.setVisibility(View.INVISIBLE);
+                } else {
+                    txt_doc_type.setVisibility(View.VISIBLE);
+                }
+                break;
+            }
+        }
+        case_number_doc_no = "";
+        if(notfound){
+            doc_case_number_notfound();
+        }
+    }
+
+    public void doc_case_number_notfound() {
+        if (MD_IsUsedSoundScanQR) {
+            if (ST_SoundAndroidVersion9) {
+                speakText("no");
+            } else {
+                nMidia.getAudio("no");
+            }
+        }
+        Toast.makeText(DispensingActivity.this, "ไม่พบเอกสาร. !!", Toast.LENGTH_SHORT).show();
+    }
+
     public void get_payout_from_case_number(final String case_number) {
 
         class get_payout_from_case_number extends AsyncTask<String, Void, String> {
@@ -5670,53 +5765,37 @@ public class DispensingActivity extends AppCompatActivity {
                     JSONObject jsonObj = new JSONObject(s);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
 
-                    boolean notfound = true;
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
+                    for (int j = 0; j < rs.length(); j++) {
+                        JSONObject c = rs.getJSONObject(j);
+
+                        boolean notfound = true;
 
                         if (c.getString("result").equals("A")) {
-                            String _DocNo = c.getString("DocNo");
-                            Iterator li = Model_Pay.iterator();
-                            while (li.hasNext()) {
+                            case_number_doc_no = c.getString("DocNo");
+                            String _DeptID = c.getString("DeptID");
 
-                                ModelPayout m = (ModelPayout) li.next();
+                            if (Block_1.getVisibility() == View.VISIBLE) {
+                                for (int i = 0; i < Model_Department.size(); i++) {
 
-                                Log.d("tog_displayPay", m.getDocNo() +" == " + _DocNo + " ----- "+m.getDocNo().equals(DocNo));
-                                if (m.getDocNo().equals(_DocNo)) {
-                                    notfound = false;
-                                    DocNo = m.getDocNo();
-                                    RefDocNo = m.getRefDocNo();
-                                    RefDocNoSend = m.getDocDateSend();
-
-                                    title_3.setText(DocNo + " / " + m.getDepNameByPayItem());
-                                    displayPayoutDetail(DocNo, true);
-
-                                    //handler_dept.removeCallbacks(runnable_dept);
-                                    block3_Visible();
-
-                                    if (RefDocNo.equals("")) {
-                                        txt_doc_type.setVisibility(View.INVISIBLE);
-                                    } else {
-                                        txt_doc_type.setVisibility(View.VISIBLE);
+                                    Log.d("top_dep", "ID = " + Model_Department.get(i).getID());
+                                    if (Model_Department.get(i).getID().equals(_DeptID)) {
+                                        DepIndex = i;
+                                        notfound = false;
+                                        getQRPay("payrow", "0");
                                     }
-                                    break;
                                 }
+                            }else{
+                                notfound = false;
+                                go_to_doc_case_number();
                             }
+
+                        }
+
+                        if(notfound){
+                            doc_case_number_notfound();
                         }
 
                     }
-
-                    if(notfound){
-                        if (MD_IsUsedSoundScanQR) {
-                            if (ST_SoundAndroidVersion9) {
-                                speakText("no");
-                            } else {
-                                nMidia.getAudio("no");
-                            }
-                        }
-                        Toast.makeText(DispensingActivity.this, "ไม่พบเอกสาร. !!", Toast.LENGTH_SHORT).show();
-                    }
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
@@ -5730,7 +5809,7 @@ public class DispensingActivity extends AppCompatActivity {
                 HashMap<String, String> data = new HashMap<String, String>();
                 data.put("p_user", ((CssdProject) getApplication()).I_CustomerId + "");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    data.put("case_number", Base64.getEncoder().encodeToString(case_number.getBytes()));
+                    data.put("case_number", Base64.getEncoder().encodeToString(case_number.toUpperCase().getBytes()));
                 }
                 data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
 
