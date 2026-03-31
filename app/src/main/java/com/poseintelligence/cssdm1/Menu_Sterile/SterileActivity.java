@@ -54,11 +54,6 @@ import java.util.Date;
 import java.util.HashMap;
 public class SterileActivity extends AppCompatActivity{
 
-    //DEV
-    TextView timerS;
-    TextView timerE;
-    TextView timerT;
-
     private final String TAG_RESULTS = "result";
     private JSONArray rs = null;
     public HTTPConnect httpConnect = new HTTPConnect();
@@ -323,11 +318,6 @@ public class SterileActivity extends AppCompatActivity{
     HashMap<String, String> usagecode_to_add = new HashMap<String, String>();
 
     public void byWidget(){
-
-        //DEV
-        timerS = (TextView) findViewById(R.id.timerS);
-        timerE = (TextView) findViewById(R.id.timerE);
-        timerT = (TextView) findViewById(R.id.timerT);
 
         title_2 = (TextView) findViewById(R.id.title_2);
         list_mac = (RecyclerView) findViewById(R.id.list_mac);
@@ -3208,11 +3198,6 @@ public class SterileActivity extends AppCompatActivity{
         wait_dialog.show();
     }
 
-    double t_s = 0;
-    double t_e = 0;
-
-    SimpleDateFormat timer_format = new SimpleDateFormat("mm:ss.SSS");
-    SimpleDateFormat cal_sc_format = new SimpleDateFormat("ss.SSS");
     @Override
     public boolean dispatchKeyEvent(KeyEvent event)
     {
@@ -3225,8 +3210,6 @@ public class SterileActivity extends AppCompatActivity{
                 onBackPressed();
             }
             else if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                timerS.setText("Start : "+timer_format.format(new Date()));
-                t_s = Double.parseDouble(cal_sc_format.format(new Date()));
                 Log.d("tog_timer_php"," ==================================== start ==================================== ");
                 Log.d("tog_add_basket"," ==================================== start ==================================== ");
                 Log.d("tog_timer_php","สแกนตะกร้า = "+mass_onkey);
@@ -3759,23 +3742,4 @@ public class SterileActivity extends AppCompatActivity{
             obj.execute();
         }
     }
-
-//    public void set_timerE(){
-//
-//        timerE.setText("End : "+timer_format.format(new Date()));
-//        t_e = Double.parseDouble(cal_sc_format.format(new Date()));
-//        String t_e_s = Double.toString(t_e-t_s);
-//        if(t_e_s.length()>5){
-//            t_e_s = t_e_s.substring(0,5);
-//        }
-//
-//        timerT.setText("Total : "+t_e_s);
-//
-//        if(t_s>0){
-//            timerS.setVisibility(View.VISIBLE);
-//            timerE.setVisibility(View.VISIBLE);
-//            timerT.setVisibility(View.VISIBLE);
-//        }
-//
-//    }
 }
