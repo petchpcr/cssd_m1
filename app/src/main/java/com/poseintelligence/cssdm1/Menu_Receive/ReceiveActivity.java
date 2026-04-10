@@ -2059,7 +2059,7 @@ public class ReceiveActivity extends AppCompatActivity {
                 data.put("p_project_id", Integer.toString ( ((CssdProject) getApplication()).getCustomerId()) );
 //                String result = "";
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_update_send_sterile_complete.php", data);
-                Log.d("onSave","data = "+httpConnect.ChkPostDataString(data));
+                Log.d("onSave","data = "+httpConnect.chkPostDataString(data));
                 Log.d("onSave","result = "+result);
                 return result;
             }
@@ -3363,7 +3363,7 @@ public class ReceiveActivity extends AppCompatActivity {
 //                if(((CssdProject) getApplication()).getPm().getEmCode() == 201 || ((CssdProject) getApplication()).getPm().getEmCode() == 211){
 //                    data.put("p_is_used_itemstock_department", "1");
 //                }
-                Log.d("ondeletedetail","data = "+httpConnect.ChkPostDataString(data));
+                Log.d("ondeletedetail","data = "+httpConnect.chkPostDataString(data));
                 String result = httpConnect.sendPostRequest(getUrl + "cssd_delete_send_sterile_detail.php", data);
 //                String result = "";
 

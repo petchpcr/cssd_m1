@@ -1,15 +1,8 @@
 package com.poseintelligence.cssdm1.core.connect;
 
-import static android.os.Build.VERSION_CODES.R;
-
-import android.content.Intent;
 import android.util.Log;
 
-import androidx.core.content.ContextCompat;
-
 import com.poseintelligence.cssdm1.CssdProject;
-import com.poseintelligence.cssdm1.Login;
-import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.model.Parameter;
 
 import java.io.BufferedInputStream;
@@ -88,7 +81,7 @@ public class HTTPConnect  {
 
 
             Log.d("tog_http_F","requestURL = "+requestURL + "?" + getPostDataString(postDataParams));
-            System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
+//            System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
 
             writer.flush();
             writer.close();
@@ -310,7 +303,8 @@ public class HTTPConnect  {
         return result.toString();
     }
 
-    public String ChkPostDataString(HashMap<String, String> params) {
+    public String chkPostDataString(HashMap<String, String> params) {
+
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -321,11 +315,7 @@ public class HTTPConnect  {
 
             try {
                 result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
-            }
-            result.append("=");
-            try {
+                result.append("=");
                 result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
