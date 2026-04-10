@@ -23,7 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -40,6 +39,7 @@ import com.poseintelligence.cssdm1.adapter.ListItemBasketAdapter;
 import com.poseintelligence.cssdm1.core.audio.iAudio;
 import com.poseintelligence.cssdm1.core.connect.DBConnect;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
+//import com.poseintelligence.cssdm1.core.wr_files.ReadWriteFiles;
 import com.poseintelligence.cssdm1.model.BasketTag;
 import com.poseintelligence.cssdm1.model.ItemInBasket;
 import com.poseintelligence.cssdm1.model.ModelMachine;
@@ -48,9 +48,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 public class SterileActivity extends AppCompatActivity{
 
@@ -211,21 +209,6 @@ public class SterileActivity extends AppCompatActivity{
         setContentView(R.layout.activity_sterile);
 
         Log.d("tog_lcycle","onCreate");
-
-
-//        demo_usage.add("I00867-232-00001");
-//        demo_usage.add("I06375-232-00001");
-//        demo_usage.add("I07094-232-00001");
-//        demo_usage.add("I07808-242-00935");
-//        demo_usage.add("I06886-232-00001");
-//        demo_usage.add("I00021-232-00001");
-//        demo_usage.add("I07629-236-00001");
-//        demo_usage.add("I06370-232-00001");
-//        demo_usage.add("I00503-237-00001");
-//        demo_usage.add("I00870-232-00001");
-//        demo_usage.add("I00099-232-00001");
-//        demo_usage.add("I00867-232-00001");
-//        demo_usage.add("I07325-242-47489");
 
         byIntent();
 
@@ -1396,7 +1379,7 @@ public class SterileActivity extends AppCompatActivity{
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-
+                writeLogFile("(add_item 1) == basket_id = "+basket_id+" /// usage_code = "+usage_code);
                 loadind_dialog_show();
             }
 
@@ -1413,9 +1396,12 @@ public class SterileActivity extends AppCompatActivity{
                         if (c.getString("result").equals("A")) {
                             Log.d("tog_add_item","A select_mac_pos "+ list_mac_adapter.select_mac_pos);
 //                            if(list_mac_adapter.select_mac_pos != 0){
+
+                            writeLogFile("(add_item 4) ("+usage_code+") == equals(A)");
                             if(list_mac_adapter.select_mac_pos >= 0){
                                 if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
 
+                                    writeLogFile("(add_item 5) ("+usage_code+") == call = addSterileDetailById p_docno = "+list.get(list_mac_adapter.select_mac_pos).getDocNo()+",p_data = "+c.getString("w_id")+", basket_id = "+basket_id);
                                     Log.d("tog_add_item","call = addSterileDetailById("+
                                             list.get(list_mac_adapter.select_mac_pos).getDocNo()+","+
                                             c.getString("w_id")+","+
@@ -1428,22 +1414,30 @@ public class SterileActivity extends AppCompatActivity{
                                             basket_id
                                     );
                                 }else{
+
+                                    writeLogFile("(add_item 5) ("+usage_code+") == call = reload_basket 1 ");
                                     Log.d("tog_add_item","call = reload_basket 1");
                                     reload_basket();
 //                                    playAudio("okay");
                                 }
                             }else{
+
+                                writeLogFile("(add_item 5) ("+usage_code+") == call = reload_basket 2 ");
                                 Log.d("tog_add_item","call = reload_basket 2");
                                 reload_basket();
 //                                playAudio("okay");
                             }
                         }else if (c.getString("result").equals("D")){
+
+                            writeLogFile("(add_item 4) ("+usage_code+") == equals(D)");
                             if(c.getString("basket_id").equals("---")){
                                 boolean sDocNo = true;
 //                                if(list_mac_adapter.select_mac_pos != 0){
                                 if(list_mac_adapter.select_mac_pos >= 0){
                                     if(!list.get(list_mac_adapter.select_mac_pos).getDocNo().equals("Empty")){
                                         if(c.getString("sDocNo").equals(list.get(list_mac_adapter.select_mac_pos).getDocNo())){
+
+                                            writeLogFile("(add_item 5) ("+basket_id+") ("+usage_code+") == repeat_scan");
                                             show_dialog("Warning","รายการซ้ำ","repeat_scan");
                                             x_vibrator.vibrate(500);
 //                                            show_dialog("Warning","รายการซ้ำ");
@@ -1459,12 +1453,14 @@ public class SterileActivity extends AppCompatActivity{
 
                             }else{
                                 if(c.getString("basket_id").equals(basket_id)){
+                                    writeLogFile("(add_item 5) ("+basket_id+") ("+usage_code+") == repeat_scan");
                                     show_dialog("Warning","รายการซ้ำ","repeat_scan");
                                     x_vibrator.vibrate(500);
 //                                    show_dialog("Warning","รายการซ้ำ");
                                 }else{
 //                                show_dialog("Warning","รายการนี้อยู่ในตะกร้าอื่น","no");
 //                                show_log_error("Usage = "+c.getString("basket_id")+" --- This = "+basket_id);
+                                    writeLogFile("(add_item 5) ("+usage_code+") == move_item_basket");
                                     move_item_basket(c.getString("item_id")+",",c.getString("basket_id"),usage_code);
                                 }
                             }
@@ -1526,6 +1522,10 @@ public class SterileActivity extends AppCompatActivity{
 
                 Log.d("tog_add_item","data = " + data);
                 Log.d("tog_add_item","result = " + result);
+
+                writeLogFile("(add_item 2) ("+usage_code+")  == URL ="+getUrl + "?" + httpConnect.chkPostDataString(data));
+                writeLogFile("(add_item 3) ("+usage_code+") == result = "+result);
+
                 return result;
             }
 
@@ -1768,6 +1768,7 @@ public class SterileActivity extends AppCompatActivity{
             protected void onPreExecute() {
                 super.onPreExecute();
 
+                writeLogFile("(AddSterileDetail 1) p_docno = "+p_docno+",p_data = "+p_data+", basket_id = "+basket_id);
                 loadind_dialog_show();
             }
 
@@ -1784,6 +1785,8 @@ public class SterileActivity extends AppCompatActivity{
                     }
 
                     if(c.getString("result").equals("A")) {
+
+                        writeLogFile("(AddSterileDetail 4) ("+p_docno+") ("+p_data+") == A");
                         playAudio("okay");
 
                         Log.d("tog_loop","addSterileDetailById => reload_basket");
@@ -1833,6 +1836,7 @@ public class SterileActivity extends AppCompatActivity{
 //                    reload_basket();
                 } catch (JSONException e) {
                     show_log_error("cssd_add_sterile_detail_by_id.php Error = "+e);
+                    writeLogFile("(AddSterileDetail 4) ("+p_docno+") ("+p_data+") == JSONException = "+e);
                     e.printStackTrace();
                 }finally{
 
@@ -1865,6 +1869,10 @@ public class SterileActivity extends AppCompatActivity{
                 Log.d("tog_add","result = " + result);
 
                 Log.d("tog_timer_php","รับข้อมูล = cssd_add_sterile_detail_by_id.php");
+
+
+                writeLogFile("(AddSterileDetail 2) ("+p_docno+")("+p_data+")  == URL ="+getUrl + "?" + httpConnect.chkPostDataString(data));
+                writeLogFile("(AddSterileDetail 3) ("+p_docno+")("+p_data+") == result = "+result);
 
                 return result;
             }
@@ -2066,6 +2074,7 @@ public class SterileActivity extends AppCompatActivity{
     }
 
     public void show_dialog(String title,String mass){
+        writeLogFile("(show_dialog) == "+title+" /// "+mass);
         loadind_dialog_dismis();
 
         mac_id_non_approve = list_mac_adapter.select_mac_pos;
@@ -2118,11 +2127,13 @@ public class SterileActivity extends AppCompatActivity{
     }
 
     public void reload_basket(){
+
         int basket_pos = basket_pos_non_approve;
 //        show_basket("",View.GONE);
         Log.d("tog_basket","basket pos = "+basket_pos);
         Log.d("tog_loop","basket pos = "+basket_pos);
 
+        writeLogFile("(reload_basket 1) == basket pos = "+basket_pos);
         if(basket_pos>=0){
             Log.d("tog_basket","getBasketCode = "+xlist_basket.get(basket_pos).getBasketCode());
 
@@ -2131,10 +2142,14 @@ public class SterileActivity extends AppCompatActivity{
 
             Log.d("tog_add_basket","reload_basket = "+xlist_basket.get(basket_pos).getBasketCode());
             Log.d("tog_timer_php","ส่งต่อ get_basket (ดึงข้อมูลตะกร้า)");
+
+            writeLogFile("(reload_basket 2) == getBasketCode = "+xlist_basket.get(basket_pos).getBasketCode());
+
             get_basket(xlist_basket.get(basket_pos).getBasketCode());
         }else{
 
             Log.d("tog_tag_get_basket","4");
+            writeLogFile("(reload_basket 2) == getBasketCode = null");
             get_basket("null");
 
 //            loadind_dialog_dismis();
@@ -3210,6 +3225,8 @@ public class SterileActivity extends AppCompatActivity{
                 onBackPressed();
             }
             else if (keyCode == KeyEvent.KEYCODE_ENTER) {
+
+                writeLogFile("(KEYCODE_ENTER) == mass_onkey = "+mass_onkey);
                 Log.d("tog_timer_php"," ==================================== start ==================================== ");
                 Log.d("tog_add_basket"," ==================================== start ==================================== ");
                 Log.d("tog_timer_php","สแกนตะกร้า = "+mass_onkey);
@@ -3741,5 +3758,13 @@ public class SterileActivity extends AppCompatActivity{
         if(!test_machine){
             obj.execute();
         }
+    }
+
+//    final String filename = new java.text.SimpleDateFormat("yyMMdd").format(new java.util.Date());
+    public void writeLogFile(String content) {
+        Log.d("tog_writeLogFile",content);
+//        String time = new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
+//        String contentWithTime = time + " " + content + "\n";
+//        ReadWriteFiles.writeLogFile(getContentResolver(), filename + ".txt", contentWithTime);
     }
 }
