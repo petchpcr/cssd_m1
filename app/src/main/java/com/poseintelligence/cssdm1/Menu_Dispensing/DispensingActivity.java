@@ -1093,6 +1093,20 @@ public class DispensingActivity extends AppCompatActivity {
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
+
+                        if(c.getString("result").equals("Done")){
+                            AlertDialog dialog = new AlertDialog.Builder(DispensingActivity.this).setMessage("เอกสารนี้ถูกปิดแล้ว !!")
+                                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {dialog.dismiss();}
+                                    }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                        @Override
+                                        public void onDismiss(DialogInterface dialogInterface) {block2_Visible();}
+                                    }).create();
+                            dialog.show();
+                            break;
+                        }
+
                         if(c.getString("result").equals("A")){
                             String usagecode = c.getString("usagecode");
                             if (c.getInt("Cnt") > 0) {
@@ -1730,8 +1744,6 @@ public class DispensingActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObj = new JSONObject(s);
                     rs = jsonObj.getJSONArray(TAG_RESULTS);
-
-                    
 
                     for (int i = 0; i < rs.length(); i++) {
                         JSONObject c = rs.getJSONObject(i);
@@ -2907,27 +2919,7 @@ public class DispensingActivity extends AppCompatActivity {
                         JSONObject c = rs.getJSONObject(i);
 
                         if (c.getString("result").equals("A")) {
-                            DocNo = null;
-                            RefDocNo = null;
-
-                            //handler_dept.removeCallbacks(runnable_dept);
-                            list_payout_detail_item.setAdapter(null);
-                            list_pay.setAdapter(null);
-                            list_department.setAdapter(null);
-                            Block_1.setVisibility(View.GONE);
-                            Block_2.setVisibility(View.VISIBLE);
-                            Block_group_doc.setVisibility(View.INVISIBLE);
-                            Block_3.setVisibility(View.GONE);
-                            Block_4.setVisibility(View.VISIBLE);
-                            switch_opt.setVisibility(View.GONE);
-                            imageCreate.setVisibility(View.GONE);
-                            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                            linear_layout_search.setLayoutParams(params);
-                            displayPay(DepID, null, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
-
-                            spn_usr_receive.setSelection(0);
-
-                            hideKeyboard(DispensingActivity.this);
+                            block2_Visible();
                         }
                     }
 
@@ -5949,6 +5941,30 @@ public class DispensingActivity extends AppCompatActivity {
         imageCreate.setVisibility(View.GONE);
 
         selete_payout_from_case_number(selectedCaseNumber, selectedDeptId);
+    }
+
+    public void block2_Visible()  {
+        DocNo = null;
+        RefDocNo = null;
+
+        //handler_dept.removeCallbacks(runnable_dept);
+        list_payout_detail_item.setAdapter(null);
+        list_pay.setAdapter(null);
+        list_department.setAdapter(null);
+        Block_1.setVisibility(View.GONE);
+        Block_2.setVisibility(View.VISIBLE);
+        Block_group_doc.setVisibility(View.INVISIBLE);
+        Block_3.setVisibility(View.GONE);
+        Block_4.setVisibility(View.VISIBLE);
+        switch_opt.setVisibility(View.GONE);
+        imageCreate.setVisibility(View.GONE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        linear_layout_search.setLayoutParams(params);
+        displayPay(DepID, null, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+
+        spn_usr_receive.setSelection(0);
+
+        hideKeyboard(DispensingActivity.this);
     }
 
     public void block3_Visible()  {
