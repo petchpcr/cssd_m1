@@ -474,6 +474,7 @@ public class DispensingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //handler_dept.removeCallbacks(runnable_dept);
                 handler_dept.postDelayed(runnable_dept , 1000);
+                scan_log_listItems.clear();
                 Block_1.setVisibility(View.VISIBLE);
                 Block_2.setVisibility(View.GONE);
                 Block_group_doc.setVisibility(View.INVISIBLE);
@@ -1145,7 +1146,10 @@ public class DispensingActivity extends AppCompatActivity {
 //                                        checkExpiring(usagecode);
 //                                    }
 
-                                    if (((CssdProject) getApplication()).Project().equals("SiPH")||((CssdProject) getApplication()).Project().equals("SIH")||((CssdProject) getApplication()).Project().equals("RM9")){
+                                    if (((CssdProject) getApplication()).Project().equals("SiPH")
+                                            ||((CssdProject) getApplication()).Project().equals("SIH")
+                                            ||((CssdProject) getApplication()).Project().equals("RM9")
+                                            ||((CssdProject) getApplication()).Project().equals("RAMA")){
                                         f_checkExpiring(usagecode);
                                     }else{
                                         if (PA_IsUsedFIFO) {
@@ -1239,7 +1243,10 @@ public class DispensingActivity extends AppCompatActivity {
 
             Debug_Toast("tog_flow","checkDuplicate - "+check_Duplicate);
             if(check_Duplicate == false){
-                if (((CssdProject) getApplication()).Project().equals("SiPH")||((CssdProject) getApplication()).Project().equals("SIH")||((CssdProject) getApplication()).Project().equals("RM9")){
+                if (((CssdProject) getApplication()).Project().equals("SiPH")
+                        ||((CssdProject) getApplication()).Project().equals("SIH")
+                        ||((CssdProject) getApplication()).Project().equals("RM9")
+                        ||((CssdProject) getApplication()).Project().equals("RAMA")){
                     scan_log_listItems.add(xusagecode.toUpperCase());
                     f_checkExpiring(xusagecode);
                 }else{
@@ -1529,106 +1536,107 @@ public class DispensingActivity extends AppCompatActivity {
 
     // **2
 
-    public void CheckItem(final String p_usage_code) {
-
-        class CheckItem extends AsyncTask<String, Void, String> {
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                try {
-
-//                    Model_Payout_Detail_item = new ArrayList<>();
-
-                    JSONObject jsonObj = new JSONObject(s);
-                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-
-                    int Qty_pay = 0;
-                    int Qty_Break = 0;
-
-                    for (int i = 0; i < rs.length(); i++) {
-                        JSONObject c = rs.getJSONObject(i);
-
-                        if (c.getString("result").equals("A")) {
-
-                            focus();
-
-                            Qty_pay = Integer.parseInt(c.getString("Qty_topay"));
-                            Qty_Break = Integer.parseInt(c.getString("Qty_Break"));
-
-                            Log.d("BANKTEST",Qty_pay+"");
-                            Log.d("BANKTEST",Qty_Break+"");
-
-                            addItemError(p_usage_code,"0");
-
-                            if (c.getString("Qty_pay").equals("0")){
-
-                                SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
-
-                            }else {
-                                if (c.getString("IsWasting").equals("1")){
-
-                                    displayPayoutDetail(DocNo, false);
-
-                                }else {
-
-                                    SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
-
-                                }
-                            }
-
-                        }else if (c.getString("result").equals("E1")){
-
-                            focus();
-
-                            addItemError(p_usage_code,"0");
-
-                        }else {
-
-                            focus();
-
-//                            addItem(p_usage_code,"0");
-                            addItem(p_usage_code);
-
-                        }
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            protected String doInBackground(String... params) {
-                HashMap<String, String> data = new HashMap<String, String>();
-
-                data.put("p_usage_code", p_usage_code.toUpperCase());
-                if(DocNo != null) {
-                    data.put("p_docno", DocNo);
-                }
-                data.put("p_qty", "1");
-                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-                data.put("p_DeptID", DepID);
-                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_status_item_topay.php", data);
-
-                Log.d("tog_detail","data = "+data);
-                Log.d("tog_detail","result = "+result);
-
-                return result;
-            }
-        }
-
-        CheckItem ru = new CheckItem();
-
-        ru.execute();
-    }
+//    public void CheckItem(final String p_usage_code) {
+//
+//        class CheckItem extends AsyncTask<String, Void, String> {
+//
+//            @Override
+//            protected void onPreExecute() {
+//                super.onPreExecute();
+//
+//            }
+//
+//            @Override
+//            protected void onPostExecute(String s) {
+//                super.onPostExecute(s);
+//                try {
+//
+////                    Model_Payout_Detail_item = new ArrayList<>();
+//
+//                    JSONObject jsonObj = new JSONObject(s);
+//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+//
+//                    int Qty_pay = 0;
+//                    int Qty_Break = 0;
+//
+//                    for (int i = 0; i < rs.length(); i++) {
+//                        JSONObject c = rs.getJSONObject(i);
+//
+//                        if (c.getString("result").equals("A")) {
+//
+//                            focus();
+//
+//                            Qty_pay = Integer.parseInt(c.getString("Qty_topay"));
+//                            Qty_Break = Integer.parseInt(c.getString("Qty_Break"));
+//
+//                            Log.d("BANKTEST",Qty_pay+"");
+//                            Log.d("BANKTEST",Qty_Break+"");
+//
+//                            addItemError(p_usage_code,"0");
+//
+//                            if (c.getString("Qty_pay").equals("0")){
+//
+//                                SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
+//
+//                            }else {
+//                                if (c.getString("IsWasting").equals("1")){
+//
+//                                    displayPayoutDetail(DocNo, false);
+//
+//                                }else {
+//
+//                                    SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
+//
+//                                }
+//                            }
+//
+//                        }else if (c.getString("result").equals("E1")){
+//
+//                            focus();
+//
+//                            addItemError(p_usage_code,"0");
+//
+//                        }else {
+//
+//                            focus();
+//
+////                            addItem(p_usage_code,"0");
+//                            addItem(p_usage_code);
+//
+//                        }
+//
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            @Override
+//            protected String doInBackground(String... params) {
+//                HashMap<String, String> data = new HashMap<String, String>();
+//
+//                data.put("p_usage_code", p_usage_code.toUpperCase());
+//                if(DocNo != null) {
+//                    data.put("p_docno", DocNo);
+//                }
+//
+//                data.put("p_qty", "1");
+//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+//                data.put("p_DeptID", DepID);
+//                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_status_item_topay.php", data);
+//
+//                Log.d("tog_detail","data = "+data);
+//                Log.d("tog_detail","result = "+result);
+//
+//                return result;
+//            }
+//        }
+//
+//        CheckItem ru = new CheckItem();
+//
+//        ru.execute();
+//    }
 
     public void f_checkExpiring(final String usagecode) {
 
@@ -1931,20 +1939,23 @@ public class DispensingActivity extends AppCompatActivity {
                                 } else {
                                     s_expiring = true;
 
-                                    if (((CssdProject) getApplication()).Project().equals("VCH")) {
-                                        addItem(xUsageCode);
-                                    }else{
-                                        CheckItem(usagecode);
-                                    }
+//                                    if (((CssdProject) getApplication()).Project().equals("VCH")) {
+//                                        addItem(xUsageCode);
+//                                    }else{
+//                                        CheckItem(usagecode);
+//                                    }
+
+
+                                    addItem(xUsageCode);
                                 }
 
                             } else {
-                                if (((CssdProject) getApplication()).Project().equals("VCH")) {
-                                    addItem(xUsageCode);
-                                }else{
-                                    CheckItem(usagecode);
-                                }
-
+//                                if (((CssdProject) getApplication()).Project().equals("VCH")) {
+//                                    addItem(xUsageCode);
+//                                }else{
+//                                    CheckItem(usagecode);
+//                                }
+                                addItem(xUsageCode);
                             }
                         }
 
@@ -2221,6 +2232,7 @@ public class DispensingActivity extends AppCompatActivity {
                             }else{
                                 // Display Payout Detail
                                 //displayPayoutDetail(DocNo, false);
+
                             }
 
                         }else{
@@ -2303,6 +2315,7 @@ public class DispensingActivity extends AppCompatActivity {
 
         ru.execute();
     }
+
     ArrayList<String> addItem_p_usage_code = new ArrayList<String>();
     int add_item_loop =0;
     public void addItem(final String p_usage_code) {
@@ -2369,9 +2382,6 @@ public class DispensingActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-
-
-
 
                             Log.d("tog_flow", "addItem DocNo = " + DocNo);
 
@@ -2616,6 +2626,7 @@ public class DispensingActivity extends AppCompatActivity {
         B_IsNonSelectDocument = false;
 
 //        label_division.setText("เลือก: ");
+
 
         DocNo = null;
         RefDocNo = null;
@@ -3682,6 +3693,7 @@ public class DispensingActivity extends AppCompatActivity {
         }
 //                            title_2.setText( "  " );
         //handler_dept.removeCallbacks(runnable_dept);
+        scan_log_listItems.clear();
         Block_1.setVisibility(View.GONE);
         Block_2.setVisibility(View.VISIBLE);
         Block_group_doc.setVisibility(View.INVISIBLE);
@@ -5234,6 +5246,7 @@ public class DispensingActivity extends AppCompatActivity {
 
                             Log.d("tog_RemovePayout", "displayDepartment");
 //                            displayDepartment(txt_search_department.getText().toString(), -1,"");
+                            DocNo = null;
                             displayPay(DepID, null, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 
                         } else {
@@ -5594,6 +5607,7 @@ public class DispensingActivity extends AppCompatActivity {
 
     private void Debug_Toast(String tag,String txt){
 //        boolean show_all = false;
+//        boolean show_all = true;
 //
 //        ArrayList<String> _tag = new ArrayList<>(List.of("tog_flow","add_item"));
 //
@@ -5638,10 +5652,11 @@ public class DispensingActivity extends AppCompatActivity {
 
 
                 } catch (JSONException e) {
-
+                    checkToRemovePayout(Docno);
                     e.printStackTrace();
-
+                    return;
                 }
+
                 if(!Cnt.equals("0")){
                     IsGroupPayout_P = "1";
                 }
@@ -5947,6 +5962,8 @@ public class DispensingActivity extends AppCompatActivity {
         DocNo = null;
         RefDocNo = null;
 
+        scan_log_listItems.clear();
+
         //handler_dept.removeCallbacks(runnable_dept);
         list_payout_detail_item.setAdapter(null);
         list_pay.setAdapter(null);
@@ -5984,6 +6001,5 @@ public class DispensingActivity extends AppCompatActivity {
         params2.width = 250;
         imageCreate.setLayoutParams(params2);
     }
+
 }
-
-

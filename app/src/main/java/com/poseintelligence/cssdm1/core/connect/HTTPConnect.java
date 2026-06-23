@@ -3,6 +3,7 @@ package com.poseintelligence.cssdm1.core.connect;
 import android.util.Log;
 
 import com.poseintelligence.cssdm1.CssdProject;
+import com.poseintelligence.cssdm1.core.wr_files.ReadWriteFiles;
 import com.poseintelligence.cssdm1.model.Parameter;
 
 import java.io.BufferedInputStream;
@@ -38,16 +39,18 @@ public class HTTPConnect  {
             url = new URL(requestURL);
 
             Parameter pm = CssdProject.getPm();
+            String B_ID = CssdProject.Building_ID;
 
             if(pm!=null){
-                String B_ID = CssdProject.getPm().getBdCode();
-                if(!CssdProject.isuse_BID){
-                    B_ID = "0";
-                }
-                postDataParams.put("B_ID", B_ID+"");
+                B_ID = CssdProject.getPm().getBdCode();
                 String login_token = CssdProject.getPm().getLogin_token();
                 postDataParams.put("token", login_token);
             }
+
+            if(!CssdProject.isuse_BID){
+                B_ID = "0";
+            }
+            postDataParams.put("B_ID", B_ID+"");
 
             postDataParams.put("p_DB", CssdProject.D_DATABASE);
 
@@ -79,9 +82,8 @@ public class HTTPConnect  {
                     new OutputStreamWriter(os, "UTF-8"));
             writer.write(getPostDataString(postDataParams));
 
-
             Log.d("tog_http_F","requestURL = "+requestURL + "?" + getPostDataString(postDataParams));
-//            System.out.println("URL = " + requestURL + "?" + getPostDataString(postDataParams));
+//            CssdProject._writeLogFile("requestURL = "+requestURL + "?" + getPostDataString(postDataParams));
 
             writer.flush();
             writer.close();
@@ -115,6 +117,7 @@ public class HTTPConnect  {
             CssdProject.setExpired_token(true);
         }
 
+//        CssdProject._writeLogFile("result = "+response);
         return response;
     }
 
@@ -286,7 +289,7 @@ public class HTTPConnect  {
         return response;
     }
 
-    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+    public String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
         for (Map.Entry<String, String> entry : params.entrySet()) {

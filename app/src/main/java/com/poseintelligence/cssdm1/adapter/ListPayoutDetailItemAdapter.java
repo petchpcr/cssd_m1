@@ -55,12 +55,12 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
 
         final LinearLayout lLayout = (LinearLayout) view.findViewById(R.id.ll);
 
-
         final TextView txt_item_code2 = (TextView) view.findViewById(R.id.txt_item_code2);
         final TextView txt_QtyUrgent = (TextView) view.findViewById(R.id.txt_QtyUrgent);
 
         final String ID = DATA_MODEL.get(position).getID();
         txt_no.setText(DATA_MODEL.get(position).getNo());
+//        txt_no.setText(position+1);
         txt_item_code.setText(DATA_MODEL.get(position).getItemcode());
         txt_item_name.setText(DATA_MODEL.get(position).getItemname());
 
@@ -110,7 +110,7 @@ public class ListPayoutDetailItemAdapter extends ArrayAdapter<ModelPayoutDetails
 
                     txt_stock_qty.setText(Integer.toString(STOCK_QTY));
 
-                    txt_request_qty.setText(DATA_MODEL.get(position).getQty());
+                    txt_request_qty.setText(DATA_MODEL.get(position).getQty()); //แลก
 
 
                     if (DATA_MODEL.get(position).getRefDocNo().equals("")){

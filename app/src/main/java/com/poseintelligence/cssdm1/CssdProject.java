@@ -5,11 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.poseintelligence.cssdm1.model.ConfigM1;
 import com.poseintelligence.cssdm1.model.Parameter;
 import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
@@ -17,7 +15,7 @@ import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
 import java.util.ArrayList;
 
 public class CssdProject extends Application {
-
+    final public String version() { return "1.0.6(2)"; }//DispensingActivity.java แก้ไขบัคไม่เคลียร์ scan_log_listItems
     private static Context appContext;
 
     public static Context getAppContext() {
@@ -28,52 +26,51 @@ public class CssdProject extends Application {
 
     public static String Building_ID="-";
 
-    public static boolean Is_de_bug = false;
+    final public static boolean Is_de_bug = false;
     public static int isNonActiveTime = 0;
 //    public static boolean siri_api_login = false;
 //    public static boolean ldap_login = false;
 //    public static boolean isuse_BID=false;
 
-    //  SIRIRAJ
-//    public static String D_DATABASE="1";
-//    public static String Project = "SIH";
-//    public static boolean siri_api_login = true;
-//    public static boolean ldap_login = false;
-//    public static boolean isuse_BID=false;
-
-//      SIRIRAJ PIYA
-//    public static String D_DATABASE="1";
-//    public static String Project = "SiPH";
-//    public static boolean ldap_login = true;
-//    public static boolean siri_api_login = false;
-//public static boolean isuse_BID=false;
-
-
-    //  PARAM9
-//    public static String D_DATABASE="1";
-//    public static String Project = "RM9";
-//    public static boolean ldap_login = true;
-//    public static boolean siri_api_login = false;
-//    public static boolean isuse_BID=false;
-
-    //RAMA
-    public static String D_DATABASE="1";
-    public static String Project = "RAMA";
-    public static boolean ldap_login = false;
-    public static boolean siri_api_login = false;
-    public static boolean isuse_BID=true;
-
-//    public static String D_DATABASE="0";
-//    public static String Project = "VCH";
-//    public static boolean ldap_login = false;
-//    public static boolean siri_api_login = false;
-//    public static boolean isuse_BID=false;
-
-//    public static String D_DATABASE="0";
-//    public static String Project = "BGH";
-//    public static boolean ldap_login = false;
-//    public static boolean siri_api_login = false;
-//    public static boolean isuse_BID=false;
+    //    SIRIRAJ
+//    final public static String D_DATABASE="1";
+//    final public static String Project = "SIH";
+//    final public static boolean siri_api_login = false;
+//    final public static boolean ldap_login = false;
+//    final public static boolean isuse_BID=true;
+//
+    //    SIRIRAJ PIYA
+//    final public static String D_DATABASE="1";
+//    final public static String Project = "SiPH";
+////    final public static boolean ldap_login = true;
+//    final public static boolean siri_api_login = false;
+//    final public static boolean isuse_BID=true;
+//
+    //    PARAM9
+//    final public static String D_DATABASE="1";
+//    final public static String Project = "RM9";
+//    final public static boolean ldap_login = true;
+//    final public static boolean siri_api_login = false;
+//    final public static boolean isuse_BID=false;
+//
+    //    RAMA
+    final public static String D_DATABASE="1";
+    final public static String Project = "RAMA";
+    final public static boolean ldap_login = false;
+    final public static boolean siri_api_login = false;
+    final public static boolean isuse_BID=true;
+//
+//    final public static String D_DATABASE="0";
+//    final public static String Project = "VCH";
+//    final public static boolean ldap_login = false;
+//    final public static boolean siri_api_login = false;
+//    final public static boolean isuse_BID=false;
+//
+//    final public static String D_DATABASE="0";
+//    final public static String Project = "BGH";
+//    final public static boolean ldap_login = false;
+//    final public static boolean siri_api_login = false;
+//    final public static boolean isuse_BID=false;
 
 
     public static boolean expired_token = false;
@@ -222,9 +219,9 @@ public class CssdProject extends Application {
     public String getD_DATABASE() {
         return D_DATABASE;
     }
-    public void setD_DATABASE(String d_DATABASE) {
-        D_DATABASE = d_DATABASE;
-    }
+//    public void setD_DATABASE(String d_DATABASE) {
+//        D_DATABASE = d_DATABASE;
+//    }
 
     public boolean isSS_IsUsedClosePayout() {
         return SS_IsUsedClosePayout;

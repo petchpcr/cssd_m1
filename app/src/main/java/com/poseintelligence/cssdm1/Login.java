@@ -31,6 +31,7 @@ import android.view.View;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -47,8 +48,8 @@ import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.connect.HTTPPostRaw;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
+import com.poseintelligence.cssdm1.model.ModelPayout;
 import com.poseintelligence.cssdm1.model.Parameter;
-import com.poseintelligence.cssdm1.utils.MD5HashGenerator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,6 +60,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -100,8 +102,6 @@ public class Login extends AppCompatActivity {
         else
             return false;
     }
-
-    int dev = 0;
 
     int siri_api_login_checj_param = 0;
     String S_ReDirect = "https://au.si.mahidol.ac.th/adfs/oauth2/authorize?response_type=code&client_id=888e92d7-dc65-4f49-8eab-2fbbc1b10dc4&prompt=login&redirect_uri=http://172.29.61.150:9015/cssd_siriraj/";
@@ -152,16 +152,7 @@ public class Login extends AppCompatActivity {
 
         Log.d("tog_ccs_c","ComponentName "+Login.this );
 
-//        Log.d("tog_DBC","getItemstockAddToSterileBasket " );
-//
-//        HashMap<String, String> data = new HashMap<String, String>();
-//        data.put("basket_id", "bk0001");
-//        data.put("usage_code", "I02395-242-00001");
-//        data.put("program_id", "1");
-//        data.put("mac_id", "1");
-////        DBConnect.getItemstockAddToSterileBasket(data);
-//        Log.d("tog_DBC","getItemstockAddToSterileBasket  = "+DBConnect.getItemstockAddToSterileBasket(data));
-
+        u_r_dev();
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -189,7 +180,6 @@ public class Login extends AppCompatActivity {
             OutputStreamWriter outputWriter=new OutputStreamWriter(fileout);
             outputWriter.write( Url );
             outputWriter.close();
-            //display file saved message
             Toast.makeText(getBaseContext(),  "File saved successfully!",Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
@@ -424,7 +414,6 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    int ttt=0;
     private void byEvent(){
             uname.setText("");
             pword.setText("");
@@ -456,14 +445,8 @@ public class Login extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(dev_login()) return;
                 try {
-//                    ttt++;
-//                    if((ttt%2)==0){
-//                        toneG.startTone(ToneGenerator.TONE_CDMA_SOFT_ERROR_LITE, 1000);
-//                    }else{
-//                        toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 2000);
-//                    }
-                    debug_device();
 
                     if (!pword.getText().toString().equals("")) {
 
@@ -501,8 +484,8 @@ public class Login extends AppCompatActivity {
         iSetting.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if(dev_list_url()) return false;
                 pDialog();
-                dev++;
                 return false;
             }
         });
@@ -710,6 +693,7 @@ public class Login extends AppCompatActivity {
                 Log.d("tog_login","data = "+data);
                 String result = http.sendPostRequest(getUrl + "get_ad_to_login.php", data);
                 Log.d("tog_login","result = "+result);
+
                 return result;
             }
         }
@@ -1037,7 +1021,7 @@ public class Login extends AppCompatActivity {
 
             @Override
             protected String doInBackground(String... params) {
-                JSONObject data = new JSONObject();
+//                JSONObject data = new JSONObject();
                 try {
 
                     String Json_data = "{\"user\": \"" + uname + "\",\"password\": \"" + pword + "\",\"System\": \"CSSD\",\"IPAddres\": \"" + ipAddress + "\",\"Terminal\": \"" + deviceName + "\"}";
@@ -1400,7 +1384,6 @@ public class Login extends AppCompatActivity {
 //                            ((CssdProject) getApplication()).try_noti_token_expire = 5;
 //                            ((CssdProject) getApplication()).repeat_noti_token_expire = 4;
 
-
                             get_config_m1();
 
                         }else{
@@ -1508,38 +1491,6 @@ public class Login extends AppCompatActivity {
         ru.execute();
     }
 
-    public static String getSerialNumber() {
-        String serialNumber;
-
-        try {
-            Class<?> c = Class.forName("android.os.SystemProperties");
-            Method get = c.getMethod("get", String.class);
-
-            serialNumber = (String) get.invoke(c, "gsm.sn1");
-            if (serialNumber.equals(""))
-                serialNumber = (String) get.invoke(c, "ril.serialnumber");
-            if (serialNumber.equals(""))
-                serialNumber = (String) get.invoke(c, "sys.serialnumber");
-            if (serialNumber.equals(""))
-                serialNumber = Build.SERIAL;
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                if (serialNumber.equals("unknown"))
-                    serialNumber = Build.getSerial();
-            }
-
-            // If none of the methods above worked
-            if (serialNumber.equals(""))
-                serialNumber = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            serialNumber = null;
-        }
-
-        Log.d("serialNumber","serialNumber = "+serialNumber);
-        return serialNumber;
-    }
-
     public void getConfigurationMenu(String userid) {
 
         class ConfigurationMenu extends AsyncTask<String, Void, String> {
@@ -1605,6 +1556,10 @@ public class Login extends AppCompatActivity {
                 ((CssdProject) getApplication()).counting_token = 1;
                 ((CssdProject) getApplication()).repeat_noti_token_expire_time = 0;
                 ((CssdProject) getApplication()).time_noti_token_expire = ((CssdProject) getApplication()).start_noti_token_expire;
+
+//                if(((CssdProject) getApplication()).Building_ID.equals("-")){
+//                    ((CssdProject) getApplication()).Building_ID = "1";
+//                }
 
                 ((CssdProject) getApplication()).setcM1( config_m1 );
                 Intent intent = new Intent(Login.this,MainMenu.class);
@@ -1681,19 +1636,85 @@ public class Login extends AppCompatActivity {
         builder.show();
     }
 
-    public void debug_device(){
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 03, 15);
-            LocalDate today = LocalDate.now();
-            if (someDate.isEqual(today)) {
-                onLogin("user1", "111");
-//                onLogin("v", "70001954");
-//                onLogin("EM00437", "1");
+    //dev zone
+
+    public static String getSerialNumber() {
+        String serialNumber;
+
+        try {
+            Class<?> c = Class.forName("android.os.SystemProperties");
+            Method get = c.getMethod("get", String.class);
+
+            serialNumber = (String) get.invoke(c, "gsm.sn1");
+            if (serialNumber.equals(""))
+                serialNumber = (String) get.invoke(c, "ril.serialnumber");
+            if (serialNumber.equals(""))
+                serialNumber = (String) get.invoke(c, "sys.serialnumber");
+            if (serialNumber.equals(""))
+                serialNumber = Build.SERIAL;
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                if (serialNumber.equals("unknown"))
+                    serialNumber = Build.getSerial();
             }
+
+            // If none of the methods above worked
+            if (serialNumber.equals(""))
+                serialNumber = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            serialNumber = null;
         }
 
-        if(dev==4){
-            onLogin("v", "70001954");
+        Log.d("serialNumber","serialNumber = "+serialNumber);
+        return serialNumber;
+    }
+
+    boolean is_dev = false;
+    static final String FILE_URL_CONFIG = "dev_config.txt";
+
+    public void u_r_dev(){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate someDate = LocalDate.of(2026, 04, 25);
+            LocalDate today = LocalDate.now();
+            if (someDate.isEqual(today)) {
+                is_dev = true;
+            }
         }
+    }
+
+    public boolean dev_login(){
+        if(!is_dev) return false;
+
+        onLogin("user1", "111");
+//        onLogin("v", "70001954");
+//        onLogin("EM00437", "1");
+
+        return true;
+    }
+
+    public boolean dev_list_url(){
+        if(!is_dev) return false;
+        String[] _url = new String[]{
+                "http://172.20.220.161:8080/cssd_siph/",
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, _url);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(Cons.TITLE);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                ((CssdProject) getApplication()).setxUrl(_url[which]);
+                WriteFile( _url[which] );
+                finish();
+                startActivity(getIntent());
+            }
+        });
+
+        final AlertDialog dialog = builder.create();
+
+        dialog.show();
+        return true;
     }
 }
