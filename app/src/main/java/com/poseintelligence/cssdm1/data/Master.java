@@ -1,6 +1,8 @@
 package com.poseintelligence.cssdm1.data;
 
 public class Master {
+    public static final int acForResultRFID = 2009;
+
     public static final int ss_Clear_Expire = 1;
     public static final int ss_Clear_Wash_Tag = 2;
     public static final int ss_Focus_Wash_Tag_Box = 3;

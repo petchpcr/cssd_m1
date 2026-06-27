@@ -3,7 +3,6 @@ package com.poseintelligence.cssdm1.core.connect;
 import android.util.Log;
 
 import com.poseintelligence.cssdm1.CssdProject;
-import com.poseintelligence.cssdm1.core.wr_files.ReadWriteFiles;
 import com.poseintelligence.cssdm1.model.Parameter;
 
 import java.io.BufferedInputStream;

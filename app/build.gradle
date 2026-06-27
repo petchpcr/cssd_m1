@@ -33,7 +33,7 @@ android {
     applicationVariants.all { variant ->
         variant.outputs.all {
             def date = new java.text.SimpleDateFormat("MM-dd-HHmm").format(new Date())
-            def newName = "Cssd-M1-FULL" + date + ".apk"
+            def newName = "M1-FULL" + date + ".apk"
             outputFileName = newName
         }
     }
@@ -44,6 +44,7 @@ android {
 dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation 'com.tencent:mmkv:1.2.11'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'

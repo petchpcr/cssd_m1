@@ -31,4 +31,14 @@
     <string name="toast_10">Please set the printer as black label mode!</string>
     <string name="toast_11">Settings->System->Advanced->InnerPrinter-> set black mark function</string>
     <string name="toast_12">Please set the printer to label mode!</string>
+
+    <string name="init_msg">Initializing module configuration, please wait…</string>
+    <string name="poweon_failed">Power on fail</string>
+    <string name="low_power">The battery is too low, stop using RFID</string>
+    <string name="notice_power_failed">
+         1.Please check Settings-〉User Define-〉EMSH Service Settings-〉Chose Enable EMSH service \n
+         2.Please make sure there are two battery icons in the upper right corner of the PDA, and both display power；\n
+         If there is only one battery icon, make sure the gun is connected reliably to the PDA；\n If the battery icon on the left show the gun battery is out of power, please use 3-in-1 seat for charging\n
+         3.If you still have questions, please take a screenshot of EMSH setting -> EMSH status and send it to technical engineer
+    </string>
 </resources>
