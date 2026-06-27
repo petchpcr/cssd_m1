@@ -76,10 +76,10 @@ import java.util.Locale;
 
 public class DispensingActivity extends AppCompatActivity {
 
-    private String TAG_RESULTS = "result";
+    protected String TAG_RESULTS = "result";
     private String TAG_RESULTS_API = "data";
-    private JSONArray rs = null;
-    private HTTPConnect httpConnect = new HTTPConnect();
+    protected JSONArray rs = null;
+    protected HTTPConnect httpConnect = new HTTPConnect();
 
     private iAudio nMidia;
 
@@ -128,16 +128,16 @@ public class DispensingActivity extends AppCompatActivity {
     public boolean WA_IsUsedWash = false;
 
     private boolean PA_IsUsedZonePayout;
-    private boolean PA_IsCreateReceiveDepartment;
+    protected boolean PA_IsCreateReceiveDepartment;
     private boolean PA_IsShowToastDialog = true;
     private boolean PA_IsEditManualPayoutQty;
-    private boolean PA_IsUsedApprover = false;
-    private boolean PA_IsUsedRecipienter = false;
-    private boolean PA_IsConfirmClosePayout = false;
+    protected boolean PA_IsUsedApprover = false;
+    protected boolean PA_IsUsedRecipienter = false;
+    protected boolean PA_IsConfirmClosePayout = false;
     private boolean PA_IsUsedFIFO = false;
     private boolean PA_IsWastingPayout;
 
-    private boolean B_IsNonSelectDocument = false;
+    protected boolean B_IsNonSelectDocument = false;
 
     private String p_usage_code_pay = null;
     private String Docno_paylog = null;
@@ -182,16 +182,16 @@ public class DispensingActivity extends AppCompatActivity {
     // ---------------------------------------------------------------------------------------------
     // Obj
     // ---------------------------------------------------------------------------------------------
-    private String DocNo = null;
-    private String RefDocNo = null;
+    protected String DocNo = null;
+    protected String RefDocNo = null;
 
-    private String RefDocNoSend = null;
-    private String DepID = null;
-    private int DepIndex = -1;
-    private String DepName = "-";
-    private String DocDateTime = "";
-    private String p_receive_code = null;
-    private String p_approve_code = null;
+    protected String RefDocNoSend = null;
+    protected String DepID = null;
+    protected int DepIndex = -1;
+    protected String DepName = "-";
+    protected String DocDateTime = "";
+    protected String p_receive_code = null;
+    protected String p_approve_code = null;
 
     String user_name_pay;
 
@@ -231,24 +231,7 @@ public class DispensingActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler_dept.removeCallbacks(runnable_dept);
-//        check_active_time_handler.removeCallbacks(check_active_time_runnable);
     }
-
-//    int ActiveTime = 0;
-//    TextView active_time;
-//    Handler check_active_time_handler  = new Handler();
-//    Runnable check_active_time_runnable = new Runnable() {
-//        @Override
-//        public void run() {
-//            ActiveTime++;
-//            int h = Math.round((ActiveTime/60)/60);
-//            int m = Math.round(ActiveTime/60)%60;
-//            int s = ActiveTime%60;
-//            active_time.setText("เปิดมาแล้ว "+h+" ชม. "+m+" นาที "+s+" วิ");
-//
-//            check_active_time_handler.postDelayed(check_active_time_runnable, 1000);
-//        }
-//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,9 +244,6 @@ public class DispensingActivity extends AppCompatActivity {
                     this.getApplicationContext()));
         }
 
-//        active_time = (TextView) findViewById(R.id.textView9);
-//
-//        check_active_time_handler.postDelayed(check_active_time_runnable, 1000);
         byWidget();
 
         byEvent();
@@ -483,6 +463,7 @@ public class DispensingActivity extends AppCompatActivity {
                 switch_opt.setVisibility(View.GONE);
                 imageCreate.setVisibility(View.GONE);
                 txt_search_department.setText("");
+                list_pay.setAdapter(null);
                 displayDepartment(null, -1, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 
                 Log.d("tog_focus", "img_back_2");
@@ -532,8 +513,6 @@ public class DispensingActivity extends AppCompatActivity {
                 Block_4.setVisibility(View.VISIBLE);
                 switch_opt.setVisibility(View.GONE);
                 imageCreate.setVisibility(View.GONE);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-                linear_layout_search.setLayoutParams(params);
                 DocNo = null;
                 RefDocNo = null;
 
@@ -2168,14 +2147,6 @@ public class DispensingActivity extends AppCompatActivity {
                                 }else{
                                     title_3.setText(DocNo+" / "+DepName+" (M)");
                                 }
-
-                                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params1.width = Is_imageCreate?255:505;
-                                params1.setMargins(0, 0, 15, 0);
-                                linear_layout_search.setLayoutParams(params1);
-                                LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                                params2.width = 250;
-                                imageCreate.setLayoutParams(params2);
                                 // Display Payout Detail
                                 displayPayoutDetail(DocNo, false);
 
@@ -3701,8 +3672,6 @@ public class DispensingActivity extends AppCompatActivity {
         Block_4.setVisibility(View.VISIBLE);
         switch_opt.setVisibility(View.GONE);
         imageCreate.setVisibility(View.GONE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        linear_layout_search.setLayoutParams(params);
     }
 
     public static void hideKeyboard(Activity activity) {
@@ -5087,26 +5056,6 @@ public class DispensingActivity extends AppCompatActivity {
         }
     }
 
-    private void testPrint() {
-        Toast.makeText(DispensingActivity.this, "Test print !!", Toast.LENGTH_SHORT).show();
-
-        try {
-
-            SunmiPrintHelper.getInstance().setAlign(0);
-            SunmiPrintHelper.getInstance().printText("Test:" + DocNo + "\n", 28, false, false);
-            SunmiPrintHelper.getInstance().setAlign(2);
-            SunmiPrintHelper.getInstance().printQr(DocNo, 5, 0);
-            SunmiPrintHelper.getInstance().feedPaper();
-            SunmiPrintHelper.getInstance().cutpaper();
-
-            SunmiPrintHelper.getInstance().initPrinter();
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 //    public void dialog_wait_scan(String data,String type){
 //        ProgressDialog wait_dialog = new ProgressDialog(DispensingActivity.this);
 //
@@ -5940,8 +5889,6 @@ public class DispensingActivity extends AppCompatActivity {
     public void block1_Visible_from_case_number(String selectedCaseNumber,String selectedDeptId)  {
 
         switch_opt.setChecked(false);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        linear_layout_search.setLayoutParams(params);
         DocNo = null;
         RefDocNo = null;
 
@@ -5955,6 +5902,7 @@ public class DispensingActivity extends AppCompatActivity {
         switch_opt.setVisibility(View.GONE);
         imageCreate.setVisibility(View.GONE);
 
+        list_pay.setAdapter(null);
         selete_payout_from_case_number(selectedCaseNumber, selectedDeptId);
     }
 
@@ -5975,8 +5923,6 @@ public class DispensingActivity extends AppCompatActivity {
         Block_4.setVisibility(View.VISIBLE);
         switch_opt.setVisibility(View.GONE);
         imageCreate.setVisibility(View.GONE);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
-        linear_layout_search.setLayoutParams(params);
         displayPay(DepID, null, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
 
         spn_usr_receive.setSelection(0);
@@ -5993,13 +5939,6 @@ public class DispensingActivity extends AppCompatActivity {
         Block_4.setVisibility(View.VISIBLE);
         switch_opt.setVisibility(View.VISIBLE);
         imageCreate.setVisibility(Is_imageCreate ? View.VISIBLE : View.GONE);
-        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params1.width = Is_imageCreate ? 255 : 505;
-        params1.setMargins(0, 0, 15, 0);
-        linear_layout_search.setLayoutParams(params1);
-        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params2.width = 250;
-        imageCreate.setLayoutParams(params2);
     }
 
 }

@@ -441,17 +441,6 @@
         android:orientation="horizontal"
         android:visibility="visible">
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:gravity="center"
-            android:text="TextView"
-            android:textColor="@color/colorAccent"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
         <Switch
             android:id="@+id/switch_opt"
             android:layout_width="75dp"
@@ -463,12 +452,13 @@
 
         <RelativeLayout
             android:id="@+id/linear_layout_search"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/label_division"
             android:layout_alignParentEnd="true"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:visibility="invisible">
+            android:visibility="visible">
 
             <EditText
                 android:id="@+id/txt_usage_code"
@@ -504,6 +494,7 @@
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/imageBack"
             android:layout_alignParentEnd="false"
+            android:layout_weight="0"
             android:scaleType="fitCenter"
             android:src="@drawable/bt_close_payout" />
 
