@@ -1638,55 +1638,26 @@ public class Login extends AppCompatActivity {
 
     //dev zone
 
-    public static String getSerialNumber() {
-        String serialNumber;
-
-        try {
-            Class<?> c = Class.forName("android.os.SystemProperties");
-            Method get = c.getMethod("get", String.class);
-
-            serialNumber = (String) get.invoke(c, "gsm.sn1");
-            if (serialNumber.equals(""))
-                serialNumber = (String) get.invoke(c, "ril.serialnumber");
-            if (serialNumber.equals(""))
-                serialNumber = (String) get.invoke(c, "sys.serialnumber");
-            if (serialNumber.equals(""))
-                serialNumber = Build.SERIAL;
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                if (serialNumber.equals("unknown"))
-                    serialNumber = Build.getSerial();
-            }
-
-            // If none of the methods above worked
-            if (serialNumber.equals(""))
-                serialNumber = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-            serialNumber = null;
-        }
-
-        Log.d("serialNumber","serialNumber = "+serialNumber);
-        return serialNumber;
-    }
-
-    boolean is_dev = false;
     static final String FILE_URL_CONFIG = "dev_config.txt";
 
     public void u_r_dev(){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 04, 25);
+            LocalDate someDate = LocalDate.of(2026, 07, 1);
             LocalDate today = LocalDate.now();
+            Log.d("u_r_dev","someDate = "+someDate.toString());
+            Log.d("u_r_dev","someDate = "+today.toString());
             if (someDate.isEqual(today)) {
-                is_dev = true;
+                CssdProject.is_dev = true;
             }
+            Log.d("u_r_dev","CssdProject.is_dev = "+CssdProject.is_dev);
         }
     }
 
     public boolean dev_login(){
-        if(!is_dev) return false;
+        if(!CssdProject.is_dev) return false;
 
-        onLogin("user1", "111");
+//        onLogin("user1", "111");
+        onLogin("Admin", "123");
 //        onLogin("v", "70001954");
 //        onLogin("EM00437", "1");
 
@@ -1694,9 +1665,9 @@ public class Login extends AppCompatActivity {
     }
 
     public boolean dev_list_url(){
-        if(!is_dev) return false;
+        if(!CssdProject.is_dev) return false;
         String[] _url = new String[]{
-                "http://172.20.220.161:8080/cssd_siph/",
+                "http://172.20.100.163:8080/cssd_siph/",
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, _url);

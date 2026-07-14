@@ -84,7 +84,7 @@ public class GetRFIDThread extends Thread {
                 SystemClock.sleep(1000);
                 continue;
             }
-            SystemClock.sleep(100);
+            SystemClock.sleep(10);
             if (ifPostMsg) {
                 if (tempTime == 0 && sTime != 0) {
                     tempTime = sTime;
@@ -101,7 +101,6 @@ public class GetRFIDThread extends Thread {
                     tagData = uhft2x.getUhfMangerImpl().readTagFromBuffer();
                 }
                 if (tagData != null) {
-                    Log.e("tog_get_rfid","epcFottest = " + Arrays.toString(tagData));
                     if (UHFT2X.powerSize != 0) {
                         if (UHFT2X.isZhuYanCustom) {
                             if (UHFT2X.isZhuYanCustomReading) {

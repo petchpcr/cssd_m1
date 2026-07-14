@@ -3,6 +3,7 @@ package com.poseintelligence.cssdm1.RFID.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,11 @@ import com.poseintelligence.cssdm1.RFID.model.Item;
 
 import java.util.List;
 
-public class RFIDMapToReceive extends ArrayAdapter<Item> {
+public class RFIDMapToPay extends ArrayAdapter<Item> {
     private final List<Item> list;
     private final Activity context;
 
-    public RFIDMapToReceive(Activity context, List<Item> list) {
+    public RFIDMapToPay(Activity context, List<Item> list) {
         super(context, R.layout.activity_list_1, list);
         this.context = context;
         this.list = list;
@@ -36,43 +37,40 @@ public class RFIDMapToReceive extends ArrayAdapter<Item> {
         final TextView no = (TextView) view.findViewById(R.id.textViewNumber);
         final TextView rfid = (TextView) view.findViewById(R.id.textViewRFID);
         final TextView usagecode = (TextView) view.findViewById(R.id.textViewUsagecode);
+        final TextView itemName = (TextView) view.findViewById(R.id.textViewItemName);
         final LinearLayout buttonLayout = (LinearLayout) view.findViewById(R.id.buttonLayout);
         final Button buttonDelete = (Button) view.findViewById(R.id.buttonDelete);
         final Button buttonInfo = (Button) view.findViewById(R.id.buttonInfo);
-//        final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.rfid_progress_loader);
 
-//        if(list.get(position).getUsagecode()!=null){
-//            progressBar.setVisibility(View.GONE);
-//            buttonLayout.setVisibility(View.VISIBLE);
-//            if(list.get(position).getIsStatus()=="OK"){
-//                rfid.setTextColor(Color.parseColor("#FE5cb85c"));
-//                usagecode.setTextColor(Color.parseColor("#FE5cb85c"));
-//            }else{
-//                rfid.setTextColor(Color.parseColor("#FEC70000"));
-//                usagecode.setTextColor(Color.parseColor("#FEC70000"));
-//            }
-//        }else{
-//            buttonLayout.setVisibility(View.INVISIBLE);
-//        }
-
-//        buttonInfo.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                showDialog(list.get(position).getStatusName());
-//            }
-//        });
-
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                list.remove(position);
-                RFIDMapToReceive.this.notifyDataSetChanged();
-            }
-        });
+        if(list.get(position).getRfidStatus().equals("A")){
+            buttonDelete.setVisibility(View.VISIBLE);
+            buttonInfo.setVisibility(View.GONE);
+            buttonDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    list.remove(position);
+                    RFIDMapToPay.this.notifyDataSetChanged();
+                }
+            });
+        }else{
+            no.setTextColor(Color.GRAY);
+            rfid.setTextColor(Color.GRAY);
+            usagecode.setTextColor(Color.GRAY);
+            itemName.setTextColor(Color.GRAY);
+            buttonDelete.setVisibility(View.GONE);
+            buttonInfo.setVisibility(View.VISIBLE);
+            buttonInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDialog(list.get(position).getUsagecode()+" "+list.get(position).getStatusName());
+                }
+            });
+        }
 
         no.setText((position+1)+"");
-        rfid.setText(list.get(position).getRFID());
+        rfid.setText(list.get(position).getTagRfid());
         usagecode.setText(list.get(position).getUsagecode());
+        itemName.setText(list.get(position).getItemName());
 
         return view;
     }

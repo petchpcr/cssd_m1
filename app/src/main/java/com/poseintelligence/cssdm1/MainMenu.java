@@ -29,6 +29,7 @@ import com.poseintelligence.cssdm1.Menu_Remark.RemarkActivity;
 import com.poseintelligence.cssdm1.Menu_Return.ReturnActivity;
 import com.poseintelligence.cssdm1.Menu_Signature_Department.SignatureDepartmentActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
+import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Dispensing.DispensingRFIDActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
@@ -128,7 +129,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
         Class gx = DispensingActivity.class;
         switch(name) {
             case "bt_dispensing":
-                gx = DispensingActivity.class;break;
+                if(CssdProject.isT2X && CssdProject.use_rfid){
+                    gx = DispensingRFIDActivity.class;break;
+                }else{
+                    gx = DispensingActivity.class;break;
+                }
             case "bt_receive":
                 gx = ReceiveActivity.class; break;
             case "bt_remark":

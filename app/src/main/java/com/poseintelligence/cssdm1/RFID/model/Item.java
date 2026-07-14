@@ -1,23 +1,34 @@
 package com.poseintelligence.cssdm1.RFID.model;
 
 public class Item {
-    private String RFID;
+    private String tagRfid;
+    private String rfidStatus;
     private String Row_id;
     private String usagecode;
+    private String ItemCode;
     private String isStatus;
+    private String ItemName;
     private String statusName;
 
     public Item(String RFID) {
-        this.RFID = RFID;
+        this.tagRfid = RFID;
         this.usagecode = "usagecode";
     }
 
-    public String getRFID() {
-        return RFID;
+    public String getTagRfid() {
+        return tagRfid;
     }
 
-    public void setRFID(String xRFID) {
-        RFID = xRFID;
+    public void setTagRfid(String xRFID) {
+        tagRfid = xRFID;
+    }
+
+    public String getRfidStatus() {
+        return rfidStatus;
+    }
+
+    public void setRfidStatus(String rfidStatus) {
+        this.rfidStatus = rfidStatus;
     }
 
     public String getRow_id() {
@@ -36,6 +47,14 @@ public class Item {
         usagecode = xusagecode;
     }
 
+    public String getItemCode() {
+        return ItemCode;
+    }
+
+    public void setItemCode(String xItemCode) {
+        ItemCode = xItemCode;
+    }
+
     public String getIsStatus() {
         return isStatus;
     }
@@ -50,5 +69,13 @@ public class Item {
 
     public void setStatusName(String xstatusName) {
         statusName = xstatusName;
+    }
+
+    public String getItemName() {
+        return ItemName;
+    }
+
+    public void setItemName(String itemName) {
+        ItemName = itemName;
     }
 }

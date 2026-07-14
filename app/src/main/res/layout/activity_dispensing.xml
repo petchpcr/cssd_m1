@@ -437,7 +437,6 @@
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
         android:layout_marginTop="-60dp"
-        android:layout_marginEnd="10dp"
         android:orientation="horizontal"
         android:visibility="visible">
 
@@ -450,43 +449,59 @@
             android:textColor="@color/form_label"
             android:textSize="16dp" />
 
-        <RelativeLayout
-            android:id="@+id/linear_layout_search"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/label_division"
-            android:layout_alignParentEnd="true"
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:visibility="visible">
-
-            <EditText
-                android:id="@+id/txt_usage_code"
-                android:layout_width="fill_parent"
-                android:layout_height="35dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="0dp"
-                android:background="@drawable/text_dropdown"
-                android:color="@color/form_label"
-                android:gravity="center_vertical"
-                android:paddingLeft="15dp"
-                android:singleLine="true">
-
-                <requestFocus />
-            </EditText>
+            android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_search_item"
-                android:layout_width="27dp"
-                android:layout_height="27dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/ic_qrcode2" />
+                android:id="@+id/bt_rfid"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/bt_rfid"
+                android:visibility="gone" />
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/linear_layout_search"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignBottom="@+id/label_division"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/txt_usage_code"
+                    android:layout_width="fill_parent"
+                    android:layout_height="35dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginStart="0dp"
+                    android:background="@drawable/text_dropdown"
+                    android:color="@color/form_label"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="15dp"
+                    android:singleLine="true">
+
+                    <requestFocus />
+                </EditText>
+
+                <Button
+                    android:id="@+id/btn_search_item"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/ic_qrcode2" />
+
+            </RelativeLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageCreate"

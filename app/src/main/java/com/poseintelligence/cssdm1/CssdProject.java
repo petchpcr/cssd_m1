@@ -5,9 +5,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.poseintelligence.cssdm1.RFID.IDataT2X.UHFT2X;
 import com.poseintelligence.cssdm1.model.ConfigM1;
 import com.poseintelligence.cssdm1.model.Parameter;
 import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
@@ -15,7 +17,11 @@ import com.poseintelligence.cssdm1.utils.SunmiPrintHelper;
 import java.util.ArrayList;
 
 public class CssdProject extends Application {
-    final public String version() { return "1.0.6(2)"; }//DispensingActivity.java แก้ไขบัคไม่เคลียร์ scan_log_listItems
+    public static boolean is_dev = false;
+
+    public static  String Version = "1.1.0(1)";//เพิ่มการสแกน rfid iData T2X
+//    public static  String Version = "1.0.6(8)";//DispensingActivity.java แก้ไขบัคไม่เคลียร์ scan_log_listItems
+
     private static Context appContext;
 
     public static Context getAppContext() {
@@ -32,12 +38,18 @@ public class CssdProject extends Application {
 //    public static boolean ldap_login = false;
 //    public static boolean isuse_BID=false;
 
+//    RFID
+//    public static boolean use_rfid = false;
+//    public static boolean isT2X = false;
+
     //    SIRIRAJ
-//    final public static String D_DATABASE="1";
-//    final public static String Project = "SIH";
-//    final public static boolean siri_api_login = false;
-//    final public static boolean ldap_login = false;
-//    final public static boolean isuse_BID=true;
+    final public static String D_DATABASE="1";
+    final public static String Project = "SIH";
+    final public static boolean siri_api_login = false;
+    final public static boolean ldap_login = false;
+    final public static boolean isuse_BID=true;
+    final public static boolean use_rfid = true;
+    public static boolean isT2X = true;
 //
     //    SIRIRAJ PIYA
 //    final public static String D_DATABASE="1";
@@ -54,11 +66,11 @@ public class CssdProject extends Application {
 //    final public static boolean isuse_BID=false;
 //
     //    RAMA
-    final public static String D_DATABASE="1";
-    final public static String Project = "RAMA";
-    final public static boolean ldap_login = false;
-    final public static boolean siri_api_login = false;
-    final public static boolean isuse_BID=true;
+//    final public static String D_DATABASE="1";
+//    final public static String Project = "RAMA";
+//    final public static boolean ldap_login = false;
+//    final public static boolean siri_api_login = false;
+//    final public static boolean isuse_BID=true;
 //
 //    final public static String D_DATABASE="0";
 //    final public static String Project = "VCH";
@@ -847,19 +859,56 @@ public class CssdProject extends Application {
 
     public String Project() { return Project; }
 
+    public static String version() {
+        String name = Version;
+
+        if(D_DATABASE.equals("0")){name = name + "M";
+        }else{name = name + "S";}
+
+//        if(isC72){name = name + " rfid(C72)";}
+
+        if(isT2X){name = name + " rfid(T2X)";}
+
+        return name;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         appContext = getApplicationContext();
-        init();
+        initSunmiPrintH();
 
+        initRFID();
 
         createNotificationChannel();
     }
 
-    private void init(){
+    private void initSunmiPrintH(){
         SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
-        createNotificationChannel();
+    }
+
+    private void initRFID(){
+        if(use_rfid){
+            //C72
+//        try {
+//            UHFHelper.getInstance().init(this.getApplicationContext());
+//            isC72 = UHFHelper.getInstance().connect();
+//            return;
+//
+//        } catch (Exception e) {
+//            Log.e("CssdProject", "Error initializing UHFHelper", e);
+//            isC72 = false;
+//        }
+
+            try {
+                Log.d("tog_T2X","initialize");
+                UHFT2X.initialize(this);
+                isT2X = true;
+            } catch (Exception e) {
+                Log.e("CssdProject", "Error initializing UHFT2X", e);
+                isT2X = false;
+            }
+        }
     }
 
     public static boolean isExpired_token() {
@@ -895,5 +944,6 @@ public class CssdProject extends Application {
             }
         }
     }
+
 
 }

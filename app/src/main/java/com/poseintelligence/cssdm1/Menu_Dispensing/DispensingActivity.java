@@ -149,8 +149,8 @@ public class DispensingActivity extends AppCompatActivity {
     // Obj
     // ---------------------------------------------------------------------------------------------
     private LinearLayout Block_1;
-    private LinearLayout Block_2;
-    private LinearLayout Block_3;
+    protected LinearLayout Block_2;
+    protected LinearLayout Block_3;
     private LinearLayout Block_4;
     private RelativeLayout linear_layout_search;
     private ImageView img_back_1;
@@ -173,7 +173,7 @@ public class DispensingActivity extends AppCompatActivity {
     private Button btn_search_department;
 
     private Switch switch_mode;
-    private Switch switch_opt;
+    protected Switch switch_opt;
 
     private EditText txt_usage_code;
     private String mass_usage_code="";
@@ -327,7 +327,7 @@ public class DispensingActivity extends AppCompatActivity {
         Log.d("initPrinterStyle","have_printer = "+have_printer);
     }
 
-    private void byWidget() {
+    protected void byWidget() {
         Block_1 = (LinearLayout) findViewById(R.id.Block1);
         Block_2 = (LinearLayout) findViewById(R.id.Block2);
         Block_3 = (LinearLayout) findViewById(R.id.Block3);
@@ -505,18 +505,7 @@ public class DispensingActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //handler_dept.removeCallbacks(runnable_dept);
-                switch_opt.setChecked(false);
-                Block_1.setVisibility(View.GONE);
-                Block_2.setVisibility(View.VISIBLE);
-                Block_group_doc.setVisibility(View.INVISIBLE);
-                Block_3.setVisibility(View.GONE);
-                Block_4.setVisibility(View.VISIBLE);
-                switch_opt.setVisibility(View.GONE);
-                imageCreate.setVisibility(View.GONE);
-                DocNo = null;
-                RefDocNo = null;
-
-                scan_log_listItems.clear();
+                block2_Visible();
             }
         });
 
@@ -1515,107 +1504,107 @@ public class DispensingActivity extends AppCompatActivity {
 
     // **2
 
-//    public void CheckItem(final String p_usage_code) {
-//
-//        class CheckItem extends AsyncTask<String, Void, String> {
-//
-//            @Override
-//            protected void onPreExecute() {
-//                super.onPreExecute();
-//
-//            }
-//
-//            @Override
-//            protected void onPostExecute(String s) {
-//                super.onPostExecute(s);
-//                try {
-//
-////                    Model_Payout_Detail_item = new ArrayList<>();
-//
-//                    JSONObject jsonObj = new JSONObject(s);
-//                    rs = jsonObj.getJSONArray(TAG_RESULTS);
-//
-//                    int Qty_pay = 0;
-//                    int Qty_Break = 0;
-//
-//                    for (int i = 0; i < rs.length(); i++) {
-//                        JSONObject c = rs.getJSONObject(i);
-//
-//                        if (c.getString("result").equals("A")) {
-//
-//                            focus();
-//
-//                            Qty_pay = Integer.parseInt(c.getString("Qty_topay"));
-//                            Qty_Break = Integer.parseInt(c.getString("Qty_Break"));
-//
-//                            Log.d("BANKTEST",Qty_pay+"");
-//                            Log.d("BANKTEST",Qty_Break+"");
-//
-//                            addItemError(p_usage_code,"0");
-//
-//                            if (c.getString("Qty_pay").equals("0")){
-//
-//                                SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
-//
-//                            }else {
-//                                if (c.getString("IsWasting").equals("1")){
-//
-//                                    displayPayoutDetail(DocNo, false);
-//
-//                                }else {
-//
-//                                    SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
-//
-//                                }
-//                            }
-//
-//                        }else if (c.getString("result").equals("E1")){
-//
-//                            focus();
-//
-//                            addItemError(p_usage_code,"0");
-//
-//                        }else {
-//
-//                            focus();
-//
-////                            addItem(p_usage_code,"0");
-//                            addItem(p_usage_code);
-//
-//                        }
-//
-//                    }
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            @Override
-//            protected String doInBackground(String... params) {
-//                HashMap<String, String> data = new HashMap<String, String>();
-//
-//                data.put("p_usage_code", p_usage_code.toUpperCase());
-//                if(DocNo != null) {
-//                    data.put("p_docno", DocNo);
-//                }
-//
-//                data.put("p_qty", "1");
-//                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
-//                data.put("p_DeptID", DepID);
-//                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_status_item_topay.php", data);
-//
-//                Log.d("tog_detail","data = "+data);
-//                Log.d("tog_detail","result = "+result);
-//
-//                return result;
-//            }
-//        }
-//
-//        CheckItem ru = new CheckItem();
-//
-//        ru.execute();
-//    }
+    public void CheckItem(final String p_usage_code) {
+
+        class CheckItem extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try {
+
+//                    Model_Payout_Detail_item = new ArrayList<>();
+
+                    JSONObject jsonObj = new JSONObject(s);
+                    rs = jsonObj.getJSONArray(TAG_RESULTS);
+
+                    int Qty_pay = 0;
+                    int Qty_Break = 0;
+
+                    for (int i = 0; i < rs.length(); i++) {
+                        JSONObject c = rs.getJSONObject(i);
+
+                        if (c.getString("result").equals("A")) {
+
+                            focus();
+
+                            Qty_pay = Integer.parseInt(c.getString("Qty_topay"));
+                            Qty_Break = Integer.parseInt(c.getString("Qty_Break"));
+
+                            Log.d("BANKTEST",Qty_pay+"");
+                            Log.d("BANKTEST",Qty_Break+"");
+
+                            addItemError(p_usage_code,"0");
+
+                            if (c.getString("Qty_pay").equals("0")){
+
+                                SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
+
+                            }else {
+                                if (c.getString("IsWasting").equals("1")){
+
+                                    displayPayoutDetail(DocNo, false);
+
+                                }else {
+
+                                    SetAdapter(c.getString("ItemCode"),c.getString("Qty_pay"),c.getString("itemname"),c.getString("Stock"),c.getString("RefDocNo"),p_usage_code);
+
+                                }
+                            }
+
+                        }else if (c.getString("result").equals("E1")){
+
+                            focus();
+
+                            addItemError(p_usage_code,"0");
+
+                        }else {
+
+                            focus();
+
+//                            addItem(p_usage_code,"0");
+                            addItem(p_usage_code);
+
+                        }
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected String doInBackground(String... params) {
+                HashMap<String, String> data = new HashMap<String, String>();
+
+                data.put("p_usage_code", p_usage_code.toUpperCase());
+                if(DocNo != null) {
+                    data.put("p_docno", DocNo);
+                }
+
+                data.put("p_qty", "1");
+                data.put("p_DB", ((CssdProject) getApplication()).getD_DATABASE());
+                data.put("p_DeptID", DepID);
+                String result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_check_status_item_topay.php", data);
+
+                Log.d("tog_detail","data = "+data);
+                Log.d("tog_detail","result = "+result);
+
+                return result;
+            }
+        }
+
+        CheckItem ru = new CheckItem();
+
+        ru.execute();
+    }
 
     public void f_checkExpiring(final String usagecode) {
 
@@ -1918,23 +1907,19 @@ public class DispensingActivity extends AppCompatActivity {
                                 } else {
                                     s_expiring = true;
 
-//                                    if (((CssdProject) getApplication()).Project().equals("VCH")) {
-//                                        addItem(xUsageCode);
-//                                    }else{
-//                                        CheckItem(usagecode);
-//                                    }
-
-
-                                    addItem(xUsageCode);
+                                    if (((CssdProject) getApplication()).Project().equals("VCH") || ((CssdProject) getApplication()).Project().equals("RAMA")) {
+                                        addItem(xUsageCode);
+                                    }else{
+                                        CheckItem(usagecode);
+                                    }
                                 }
 
                             } else {
-//                                if (((CssdProject) getApplication()).Project().equals("VCH")) {
-//                                    addItem(xUsageCode);
-//                                }else{
-//                                    CheckItem(usagecode);
-//                                }
-                                addItem(xUsageCode);
+                                if (((CssdProject) getApplication()).Project().equals("VCH") || ((CssdProject) getApplication()).Project().equals("RAMA")) {
+                                    addItem(xUsageCode);
+                                }else{
+                                    CheckItem(usagecode);
+                                }
                             }
                         }
 
@@ -2523,6 +2508,7 @@ public class DispensingActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 } finally {
+                    if(CssdProject.is_dev) displayPayoutDetail(DocNo, false);
                     focus();
                 }
             }
@@ -5928,6 +5914,8 @@ public class DispensingActivity extends AppCompatActivity {
         spn_usr_receive.setSelection(0);
 
         hideKeyboard(DispensingActivity.this);
+
+        switch_opt.setChecked(false);
     }
 
     public void block3_Visible()  {

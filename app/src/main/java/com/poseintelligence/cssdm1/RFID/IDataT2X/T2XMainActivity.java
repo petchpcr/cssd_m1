@@ -43,6 +43,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.poseintelligence.cssdm1.R;
+import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Dispensing.DispensingRFIDT2XFrament;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.BaseFragment;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.GetRFIDThread;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.OnKeyDownListener;
