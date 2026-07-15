@@ -7,6 +7,19 @@
     android:orientation="vertical"
     tools:context=".Menu_Sterile.SterileActivity">
 
+    <ImageView
+        android:id="@+id/bt_rfid"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitEnd"
+        android:visibility="visible"
+        app:srcCompat="@drawable/bt_rfid" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

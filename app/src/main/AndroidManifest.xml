@@ -61,6 +61,10 @@
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".RFID.IDataT2X.Menu_Sterile.SterileRFIDActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="false" />
+        <activity
             android:name=".RFID.IDataT2X.Menu_Dispensing.DispensingRFIDActivity"
             android:exported="false" />
         <activity

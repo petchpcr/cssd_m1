@@ -44,6 +44,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Dispensing.DispensingRFIDT2XFrament;
+import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Sterile.SterileRFIDT2XFrament;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.BaseFragment;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.GetRFIDThread;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.OnKeyDownListener;
@@ -534,13 +535,11 @@ public class T2XMainActivity extends AppCompatActivity {
             case 1:
                 currentFragment = new DispensingRFIDT2XFrament();
                 break;
-//            // Tag finder screen
-//            case 2:
-//                currentFragment = mSearchFragment = (mSearchFragment == null ? new SearchFragment() : mSearchFragment);
-//                break;
-//            case 3:
-//                currentFragment = mInventoryFragment = (mInventoryFragment == null ? new InventoryFragment() : mInventoryFragment);
-//                break;
+            // Sterile screen
+            case 2:
+                currentFragment = new SterileRFIDT2XFrament();
+                break;
+
             default:
                 break;
         }

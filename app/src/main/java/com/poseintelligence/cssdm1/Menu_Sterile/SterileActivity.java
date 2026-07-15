@@ -52,8 +52,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 public class SterileActivity extends AppCompatActivity{
 
-    private final String TAG_RESULTS = "result";
-    private JSONArray rs = null;
+    protected final String TAG_RESULTS = "result";
+    protected JSONArray rs = null;
     public HTTPConnect httpConnect = new HTTPConnect();
     public static String folder_php = "sterile_basket/";
     public String getUrl;
@@ -114,14 +114,14 @@ public class SterileActivity extends AppCompatActivity{
     private iAudio nMidia;
     ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_RING, 100);
 
-    ArrayList<ModelMachine> list = new ArrayList<>();
-    ListBoxMachineAdapter list_mac_adapter;
+    protected ArrayList<ModelMachine> list = new ArrayList<>();
+    protected ListBoxMachineAdapter list_mac_adapter;
     public String mac_empty_id = "Empty";
     public String basket_empty_id = "Empty";
 
-    ArrayList<BasketTag> xlist_basket = new ArrayList<>();
+    protected ArrayList<BasketTag> xlist_basket = new ArrayList<>();
     HashMap<String,Integer> map_index_xlist_basket = new HashMap<String, Integer>();
-    ListBoxBasketAdapter list_basket_adapter;
+    protected ListBoxBasketAdapter list_basket_adapter;
 
     ArrayList<ItemInBasket> xlist_item_basket = new ArrayList<>();
     ListItemBasketAdapter list_item_basket_adapter;
@@ -202,7 +202,7 @@ public class SterileActivity extends AppCompatActivity{
 //        check_active_machine_handler.removeCallbacks(check_active_machine_runnable);
     }
 
-    int emtpyPos = 0;
+    protected int emtpyPos = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

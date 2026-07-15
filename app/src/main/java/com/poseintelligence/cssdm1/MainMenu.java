@@ -30,6 +30,7 @@ import com.poseintelligence.cssdm1.Menu_Return.ReturnActivity;
 import com.poseintelligence.cssdm1.Menu_Signature_Department.SignatureDepartmentActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Dispensing.DispensingRFIDActivity;
+import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Sterile.SterileRFIDActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
 import com.poseintelligence.cssdm1.model.ConfigM1;
@@ -145,7 +146,11 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_machine_test":
                 gx = MachineTestActivity.class; break;
             case "bt_sterile":
-                gx = SterileActivity.class; break;
+                if(CssdProject.isT2X && CssdProject.use_rfid){
+                    gx = SterileRFIDActivity.class;break;
+                }else{
+                    gx = SterileActivity.class;break;
+                }
             case "bt_sterile_mac_test":
                 gx = SterileActivity.class; break;
             case "bt_basket_washing":
