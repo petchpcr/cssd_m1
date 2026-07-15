@@ -244,7 +244,7 @@ public class DispensingRFIDT2XFrament extends RFIDT2XFrament {
 
 
                 try {
-                    result = httpConnect.sendPostRequest(getUrl + "rfid_scanner/map_rfid_check_status_item_topay.php", data);
+                    result = httpConnect.sendPostRequest(getUrl + "rfid_scanner/payout/map_rfid_check_status_item_topay.php", data);
                 } catch (Exception e) {
                     Log.d("tog_get_item_rfid","catch e = "+result);
                     e.printStackTrace();
