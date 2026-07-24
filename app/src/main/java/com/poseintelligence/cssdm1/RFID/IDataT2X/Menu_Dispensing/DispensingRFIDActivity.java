@@ -26,19 +26,22 @@ public class DispensingRFIDActivity extends DispensingActivity {
 
     ProgressDialog RFID_dialog;
     String[] usagecode_rfid = new String[0];
-    int cnt_add_rfid = 0;
+//    int cnt_add_rfid = 0;
 
     Button bt_rfid;
 
     private void gotoRFIDPage(){
-        if(Block_3.getVisibility() == View.VISIBLE){
+
+        if(Block_3.getVisibility() == View.VISIBLE || Block_2.getVisibility() == View.VISIBLE){
+            
             Intent i = new Intent(this, T2XMainActivity.class);
             i.putExtra("fragment", 1);
 
-            i.putExtra("p_docno", DocNo);
+            i.putExtra("p_docno", DocNo==null ? "-" : DocNo);
+            Log.d("tog_docno", DocNo==null ? "-" : DocNo);
+
             i.putExtra("p_dept_id", DepID);
             i.putExtra("switch_opt", switch_opt.isChecked());
-
             startActivityForResult(i, acForResultRFID);
         }
     }
@@ -48,7 +51,7 @@ public class DispensingRFIDActivity extends DispensingActivity {
         super.byWidget();
 
         bt_rfid = (Button) findViewById(R.id.bt_rfid);
-        bt_rfid.setVisibility(View.INVISIBLE);
+        bt_rfid.setVisibility(View.VISIBLE);
         bt_rfid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,17 +67,17 @@ public class DispensingRFIDActivity extends DispensingActivity {
         RFID_dialog = new ProgressDialog(this);
     }
 
-    @Override
-    public void block2_Visible()  {
-        super.block2_Visible();
-        bt_rfid.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void block3_Visible()  {
-        super.block3_Visible();
-        bt_rfid.setVisibility(View.VISIBLE);
-    }
+//    @Override
+//    public void block2_Visible()  {
+//        super.block2_Visible();
+//        bt_rfid.setVisibility(View.VISIBLE);
+//    }
+//
+//    @Override
+//    public void block3_Visible()  {
+//        super.block3_Visible();
+//        bt_rfid.setVisibility(View.VISIBLE);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -138,6 +141,35 @@ public class DispensingRFIDActivity extends DispensingActivity {
                         if(c.getString("result").equals("A")){
 //                            DocNo = c.getString("p_docno");
                             rfid_usage_code_count++;
+
+                            if (DocNo == null) {
+
+                                DocNo = c.getString("DocNo");
+
+                                if (B_IsNonSelectDocument) {
+                                    list_department.setAdapter(null);
+                                    displayDocumentNA();
+
+                                } else {
+                                    displayPay(DepID, DocNo, ar_list_zone_id.get(spn_zone.getSelectedItemPosition()));
+                                }
+
+                                //handler_dept.removeCallbacks(runnable_dept);
+                                if (Model_Pay.size() > 0) {
+                                    title_3.setText(DocNo + " / " + Model_Pay.get(0).getDepName() + " (M)");
+                                } else {
+                                    title_3.setText(DocNo + " / " + DepName + " (M)");
+                                }
+
+                                block3_Visible();
+
+                                // ได้ DocNo แล้ว → ยิงตัวที่เหลือแบบ parallel
+                                for (int j = 1; j < rfid_usage_code_list.length; j++) {
+                                    Add ru = new Add();
+                                    ru.execute(rfid_usage_code_list[j]);
+                                }
+
+                            }
                         }
                     }
 
@@ -210,9 +242,14 @@ public class DispensingRFIDActivity extends DispensingActivity {
             }
         }
 
-        for(int i=0;i<rfid_usage_code_list.length;i++){
-            Add ru = new Add();
-            ru.execute(rfid_usage_code_list[i]);
+        if (DocNo == null) {
+            Add AddItem = new Add();
+            AddItem.execute(rfid_usage_code_list[0]);
+        } else {
+            for (int i = 0; i < rfid_usage_code_list.length; i++) {
+                Add ru = new Add();
+                ru.execute(rfid_usage_code_list[i]);
+            }
         }
     }
 

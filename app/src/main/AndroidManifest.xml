@@ -57,6 +57,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_background"
         android:supportsRtl="true"
+        android:screenOrientation="portrait"
         android:theme="@style/Theme.CssdM1"
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true">

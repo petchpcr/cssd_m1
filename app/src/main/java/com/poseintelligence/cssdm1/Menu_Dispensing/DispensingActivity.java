@@ -84,12 +84,12 @@ public class DispensingActivity extends AppCompatActivity {
     private iAudio nMidia;
 
     private List<ModelDepartment> Model_Department;
-    private List<ModelPayout> Model_Pay;
+    protected List<ModelPayout> Model_Pay;
     private List<ModelPayoutDetails> Model_Payout_Detail_item = new ArrayList<>();
     private List<ModelPayoutDetailSub> Model_Payout_Detail_Sub;
 
     private ArrayList<String> ar_list_user_receive_id = new ArrayList<String>();
-    private ArrayList<String> ar_list_zone_id = new ArrayList<String>();
+    protected ArrayList<String> ar_list_zone_id = new ArrayList<String>();
     private ArrayList<String> ar_list_zone_name = new ArrayList<String>();
 
     private HashMap<String, String> data_user_receive_id = new HashMap<>();
@@ -157,16 +157,16 @@ public class DispensingActivity extends AppCompatActivity {
     private ImageView img_back_2;
     private ImageView img_back_3;
     private ImageView imageCreate;
-    private SearchableSpinner spn_zone;
+    protected SearchableSpinner spn_zone;
 
     private TextView txt_search_department;
     private TextView title_2;
-    private TextView title_3;
+    protected TextView title_3;
     private TextView txt_doc_type;
     TextView txt_p_approve_code;
     TextView txt_p_prepare_code;
 
-    private ListView list_department;
+    protected ListView list_department;
     private ListView list_pay;
     private ListView list_payout_detail_item;
 
@@ -3674,7 +3674,7 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
     // Display Payout (NA)
     // ------------------------------------------------------------------
-    private void displayDocumentNA() {
+    protected void displayDocumentNA() {
         class DisplayPay extends AsyncTask<String, Void, String> {
 
             // variable
@@ -3854,7 +3854,7 @@ public class DispensingActivity extends AppCompatActivity {
     // ------------------------------------------------------------------
     // Display Payout
     // ------------------------------------------------------------------
-    private void displayPay(final String p_department_id, final String p_docno, final String p_zone) {
+    protected void displayPay(final String p_department_id, final String p_docno, final String p_zone) {
 
         Log.d("tog_displayPay", "displayPay DocNo = " + p_docno);
         if (p_department_id == null && p_docno == null) {

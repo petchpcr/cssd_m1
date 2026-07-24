@@ -237,7 +237,7 @@ public class DispensingRFIDT2XFrament extends RFIDT2XFrament {
 
                 data.put("rfidList", rfidList);
 
-                data.put("p_docno", p_docno == null ? "" : p_docno);
+                data.put("p_docno", p_docno == null ? "-" : p_docno);
                 data.put("p_qty", "1");
                 data.put("p_DB", ((CssdProject) getActivity().getApplication()).getD_DATABASE());
                 data.put("p_DeptID", p_dept_id);

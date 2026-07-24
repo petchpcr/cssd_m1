@@ -579,17 +579,20 @@ public class T2XMainActivity extends AppCompatActivity {
         if (!ifRequesetPermission) {
             recyleResoure();
         }
-        switchTriggerMode(true);
     }
 
     private void switchTriggerMode(boolean flag) {
 //        Intent switchIScanKey = new Intent("android.intent.action.UHF_CHECK_TRIGGER");
 //        switchIScanKey.putExtra("isEnableScan", flag);
 //        sendBroadcast(switchIScanKey);
+
+        Log.d("tog_T2xMain","flag = "+flag);
         if (!flag) {
+            Log.d("tog_T2xMain","BARCODE UNLOCK SCANKEY");
             Intent switchIScanKey = new Intent("android.intent.action.BARCODEUNLOCKSCANKEY");
             sendBroadcast(switchIScanKey);
         }else {
+            Log.d("tog_T2xMain","BARCODE LOCK SCANKEY");
             Intent switchIScanKey = new Intent("android.intent.action.BARCODELOCKSCANKEY");
             sendBroadcast(switchIScanKey);
         }
@@ -629,7 +632,7 @@ public class T2XMainActivity extends AppCompatActivity {
 
         rfidThread.destoryThread();
 
-        Log.d("tog_t2x","poweroff = " + UHFT2X.getMyApp().getUhfMangerImpl().powerOff());
+        Log.d("tog_T2x","poweroff = " + UHFT2X.getMyApp().getUhfMangerImpl().powerOff());
         UHFT2X.getMyApp().getUhfMangerImpl().changeConfig(false);
         unRegisterPowerStatus();
         releaseWakeLock();
