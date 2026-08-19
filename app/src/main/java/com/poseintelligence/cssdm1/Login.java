@@ -1380,6 +1380,14 @@ public class Login extends AppCompatActivity {
                                 ((CssdProject) getApplication()).repeat_noti_token_expire = 0;
                             }
 
+
+                            Log.d("tog_888","TR_CanEditTestResult isNull = "+c.isNull("TR_CanEditTestResult"));
+                            if(!c.isNull("TR_CanEditTestResult")){
+                                ((CssdProject) getApplication()).TR_CanEditTestResult = c.getInt("TR_CanEditTestResult");
+                            }else{
+                                ((CssdProject) getApplication()).TR_CanEditTestResult = 0;
+                            }
+
 //                            ((CssdProject) getApplication()).start_noti_token_expire = 15;
 //                            ((CssdProject) getApplication()).try_noti_token_expire = 5;
 //                            ((CssdProject) getApplication()).repeat_noti_token_expire = 4;
@@ -1642,7 +1650,7 @@ public class Login extends AppCompatActivity {
 
     public void u_r_dev(){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 07, 1);
+            LocalDate someDate = LocalDate.of(2026, 8, 18);
             LocalDate today = LocalDate.now();
             Log.d("u_r_dev","someDate = "+someDate.toString());
             Log.d("u_r_dev","someDate = "+today.toString());
@@ -1656,8 +1664,8 @@ public class Login extends AppCompatActivity {
     public boolean dev_login(){
         if(!CssdProject.is_dev) return false;
 
-//        onLogin("user1", "111");
-        onLogin("Admin", "123");
+        onLogin("user1", "111");
+//        onLogin("Admin", "123");
 //        onLogin("v", "70001954");
 //        onLogin("EM00437", "1");
 

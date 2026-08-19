@@ -33,14 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.denzcoskun.imageslider.ImageSlider;
-import com.denzcoskun.imageslider.interfaces.ItemClickListener;
-import com.denzcoskun.imageslider.models.SlideModel;
 import com.poseintelligence.cssdm1.CssdProject;
-import com.poseintelligence.cssdm1.Menu_Remark.RemarkActivity;
 import com.poseintelligence.cssdm1.R;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
 import com.poseintelligence.cssdm1.core.string.Cons;
@@ -65,6 +60,7 @@ import java.util.Map;
 
 public class InSertImageSporeDocActivity extends AppCompatActivity {
     private static final Object REQUEST_CODE_PERMISSIONS = 1101;
+//    private static final org.apache.commons.logging.Log log = LogFactory.getLog(InSertImageSporeDocActivity.class);
     WebView webView;
     ArrayAdapter<String> adapter_spinner_detail;
     ArrayAdapter<String> adapter_spinner_detail1;
@@ -120,9 +116,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     String PicText1;
     String PicText2;
     String Name_p;
-    boolean pic = true;
-    boolean pic2 = true;
-    int statusPic = 0;
+    boolean pic = false;
+    boolean pic2 = false;
     int width = 800;
     int height = 800;
     Bitmap bitmap1 = null;
@@ -210,9 +205,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
             ShowRound();
         }
-
     }
 
+    boolean editMode = false;
     private void byIntent(){
         Intent intent = getIntent();
         DocNo = intent.getStringExtra("DocNo");
@@ -232,6 +227,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         SterileName = intent.getStringExtra("SterileName");
         SterileTypeID = intent.getStringExtra("SterileTypeID");
         sterileprogramID = intent.getStringExtra("sterileprogramID");
+
+        editMode = intent.getBooleanExtra("editMode",false);
+
     }
 
     public void init() {
@@ -352,24 +350,11 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         images1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("BANKFEY",NetWorkApp);
+                Log.d("tog_888","images1.setOnClickListener");
+                Spinner_data = pg_spinner.getSelectedItemPosition();
                 if (!IsActive.equals("1")){
-                    Spinner_data = pg_spinner.getSelectedItemPosition();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                        if (checkSelfPermission(Manifest.permission.CAMERA) ==
-                                PackageManager.PERMISSION_DENIED ||
-                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                                        PackageManager.PERMISSION_DENIED){
-                            String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                            requestPermissions(permission, PERMISSION_CODE);
-                        }
-                        else{
-                            openCamere();
-                        }
-                    }
-                    else {
-                        openCamere();
-                    }
+//                    edit_pic = editMode;
+                    openCamera(1);
                 }else {
                     open_pic("1");
                 }
@@ -380,24 +365,11 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         images1.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                Log.d("tog_888","images1.setOnLongClickListener");
                 if (IsActive.equals("1")){
                     edit_pic = true;
                     Spinner_data = pg_spinner.getSelectedItemPosition();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                        if (checkSelfPermission(Manifest.permission.CAMERA) ==
-                                PackageManager.PERMISSION_DENIED ||
-                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                                        PackageManager.PERMISSION_DENIED){
-                            String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                            requestPermissions(permission, PERMISSION_CODE);
-                        }
-                        else{
-                            openCamere();
-                        }
-                    }
-                    else {
-                        openCamere();
-                    }
+                    openCamera(1);
                 }
 
                 return false;
@@ -409,19 +381,8 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Spinner_data = pg_spinner.getSelectedItemPosition();
                 if (!IsActive.equals("1")){
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                        if (    checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ||
-                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-                            String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                            requestPermissions(permission, PERMISSION_CODE);
-                        }
-                        else{
-                            openCamere1();
-                        }
-                    }
-                    else {
-                        openCamere1();
-                    }
+//                    edit_pic = editMode;
+                    openCamera(2);
                 }else {
                     open_pic("2");
                 }
@@ -435,21 +396,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 if (IsActive.equals("1")){
                     edit_pic = true;
                     Spinner_data = pg_spinner.getSelectedItemPosition();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                        if (checkSelfPermission(Manifest.permission.CAMERA) ==
-                                PackageManager.PERMISSION_DENIED ||
-                                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                                        PackageManager.PERMISSION_DENIED){
-                            String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                            requestPermissions(permission, PERMISSION_CODE);
-                        }
-                        else{
-                            openCamere1();
-                        }
-                    }
-                    else {
-                        openCamere1();
-                    }
+                    openCamera(2);
                 }
 
                 return false;
@@ -855,6 +802,14 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             }
         });
 
+//        if(((CssdProject) getApplication()).getTR_CanEditTestResult() > 0 ){
+//
+//        }
+//
+//        if(((CssdProject) getApplication()).getPm().getIsAdmin()){
+//    4444
+//        }
+
         save_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1093,7 +1048,25 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
     }
 
-    private void openCamere() {
+    public void openCamera(int index){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (checkSelfPermission(Manifest.permission.CAMERA) ==
+                    PackageManager.PERMISSION_DENIED ||
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                            PackageManager.PERMISSION_DENIED){
+                String [] permission = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                requestPermissions(permission, PERMISSION_CODE);
+            }
+            else{
+                if(index == 1){openCamera1();}else{openCamera2();}
+            }
+        }
+        else {
+            if(index == 1){openCamera1();}else{openCamera2();}
+        }
+    }
+
+    private void openCamera1() {
         if (!pg_spinner.getSelectedItem().equals("-")) {
             ContentValues values = new ContentValues();
             values.put(MediaStore.Images.Media.TITLE, "New Image");
@@ -1109,7 +1082,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
         }
     }
 
-    private void openCamere1() {
+    private void openCamera2() {
         if (!pg_spinner.getSelectedItem().equals("-")) {
             if (datapic1.equals("1")) {
                 ContentValues values = new ContentValues();
@@ -1132,7 +1105,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
     @SuppressLint("MissingSuperCall")
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if (requestCode == 1001){
+            Log.d("tog_888","onActivityResult 1001");
             if(pic == true){
+                Log.d("tog_888","pic2");
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri1);
                     images1.setImageBitmap(bitmap);
@@ -1141,7 +1116,6 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                     datapic1 = "0";
                 }
                 pic = false;
-                statusPic++;
 
 //                images1.setImageURI(image_uri1);
 //                datapic1 = String.valueOf(data);
@@ -1153,21 +1127,23 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
 
             }else if (pic2 == true){
+                Log.d("tog_888","pic2");
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), image_uri2);
                     images2.setImageBitmap(bitmap);
                 } catch (Exception e){
                 }
                 pic2 = false;
-                statusPic++;
 
 //                images2.setImageURI(image_uri2);
             }
 
             pg_spinner.setSelection(Spinner_data);
 
+            Log.d("tog_888","edit_pic = "+edit_pic);
             if(edit_pic){
                 edit_pic = false;
+                Log.d("tog_888","edit_pic uploadImage");
                 uploadImage();
 //                uploadTextImage();
             }
@@ -1307,6 +1283,9 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
 
                 }
 
+                Log.d("tog_888","image_str1 = "+image_str1.length());
+                Log.d("tog_888","image_str2 = "+image_str2.length());
+
                 HashMap<String,String> data = new HashMap<>();
                 data.put("image1", image_str1);
                 data.put("name1",DocNo+"_pic1");
@@ -1319,6 +1298,10 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 if (!images1.getDrawable().equals(null)){
                     result = httpConnect.sendPostRequest(((CssdProject) getApplication()).getxUrl() + "cssd_image/UploadImageTestresult.php",data);
                 }
+
+//                Log.d("tog_888","data = "+data+"");
+                Log.d("tog_888","result = "+result+"");
+
                 Log.d("tog_UploadImage","data = "+data+"");
                 Log.d("tog_UploadImage","result = "+result+"");
                 return  result;
@@ -1639,12 +1622,14 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                             URL url = new URL(imageUrl1.toString());
                             Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                             images1.setImageBitmap(bmp);
+                            datapic1 = "1";
                         }catch(Exception e){
                             codeData_pic1 = "data:image/jpeg;base64,"+PicText1;
                             codeData_pic1 = codeData_pic1.replace("data:image/jpeg;base64,","");
                             byte[] code_pic1 = Base64.decode(codeData_pic1,Base64.DEFAULT);
                             Bitmap bitmap_pic1 = BitmapFactory.decodeByteArray(code_pic1,0,code_pic1.length);
                             images1.setImageBitmap(bitmap_pic1);
+                            datapic1 = "1";
                         }
 
                         try {
@@ -1683,7 +1668,14 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                         testyes.setEnabled(false);
                         testno.setEnabled(false);
 
-
+                        if(editMode){
+                            IsActive = "0";
+                            testremark.setEnabled(true);
+                            remark.setEnabled(true);
+                            pg_spinner.setEnabled(true);
+                            testyes.setEnabled(true);
+                            testno.setEnabled(true);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

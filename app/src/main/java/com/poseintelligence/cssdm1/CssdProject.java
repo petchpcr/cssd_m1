@@ -39,24 +39,24 @@ public class CssdProject extends Application {
 //    public static boolean isuse_BID=false;
 
 //    RFID
-//    public static boolean use_rfid = false;
-//    public static boolean isT2X = false;
+    public static boolean use_rfid = false;
+    public static boolean isT2X = false;
 
     //    SIRIRAJ
-    final public static String D_DATABASE="1";
-    final public static String Project = "SIH";
-    final public static boolean siri_api_login = false;
-    final public static boolean ldap_login = false;
-    final public static boolean isuse_BID=true;
-    final public static boolean use_rfid = true;
-    public static boolean isT2X = true;
+//    final public static String D_DATABASE="1";
+//    final public static String Project = "SIH";
+//    final public static boolean siri_api_login = false;
+//    final public static boolean ldap_login = false;
+//    final public static boolean isuse_BID=true;
+//    final public static boolean use_rfid = true;
+//    public static boolean isT2X = true;
 //
     //    SIRIRAJ PIYA
-//    final public static String D_DATABASE="1";
-//    final public static String Project = "SiPH";
-////    final public static boolean ldap_login = true;
-//    final public static boolean siri_api_login = false;
-//    final public static boolean isuse_BID=true;
+    final public static String D_DATABASE="1";
+    final public static String Project = "SiPH";
+    final public static boolean ldap_login = false;
+    final public static boolean siri_api_login = false;
+    final public static boolean isuse_BID=true;
 //
     //    PARAM9
 //    final public static String D_DATABASE="1";
@@ -185,6 +185,8 @@ public class CssdProject extends Application {
 
     boolean SR_IsTestProgramRunRound_M1 = false;
     boolean SR_IsProgramTestSplitRound = false;
+
+    int TR_CanEditTestResult = 0;
 
     String MD_URL = "";
 
@@ -848,6 +850,14 @@ public class CssdProject extends Application {
         this.SR_IsProgramTestSplitRound = SR_IsProgramTestSplitRound;
     }
 
+    public void setTR_CanEditTestResult(int TR_CanEditTestResult) {
+        this.TR_CanEditTestResult = TR_CanEditTestResult;
+    }
+
+    public int getTR_CanEditTestResult() {
+        return TR_CanEditTestResult;
+    }
+
     public String getMD_URL() {
         return MD_URL;
     }
@@ -918,6 +928,8 @@ public class CssdProject extends Application {
     public static void setExpired_token(boolean expired_token) {
         CssdProject.expired_token = expired_token;
     }
+
+
 
 
     public static int counting_token = 1;

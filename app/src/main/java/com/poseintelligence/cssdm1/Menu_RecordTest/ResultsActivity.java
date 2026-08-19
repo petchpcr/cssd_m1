@@ -76,6 +76,8 @@ public class ResultsActivity extends AppCompatActivity {
     ArrayList<String> list_fill_MachineID = new ArrayList<String>();
     ArrayList<String> list_fill_RoundNumber = new ArrayList<String>();
 
+    boolean canEditResult = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +124,22 @@ public class ResultsActivity extends AppCompatActivity {
     public void byIntent() {
         EmpCode = ((CssdProject) getApplication()).getPm().getEmCode()+"";
         B_ID = ((CssdProject) getApplication()).getPm().getBdCode()+"";
+
+        //canEditResult
+        canEditResult = false;
+
+        Log.d("tog_888","getTR_CanEditTestResult = "+((CssdProject) getApplication()).getTR_CanEditTestResult());
+        if(((CssdProject) getApplication()).getTR_CanEditTestResult() > 0){
+
+            Log.d("tog_888","getIsAdmin = "+((CssdProject) getApplication()).getPm().getIsAdmin());
+            if(((CssdProject) getApplication()).getTR_CanEditTestResult() == 2){
+                canEditResult = true;
+            }else{
+                if(((CssdProject) getApplication()).getPm().getIsAdmin()){
+                    canEditResult = true;
+                }
+            }
+        }
     }
 
 //    @Override
@@ -408,18 +426,18 @@ public class ResultsActivity extends AppCompatActivity {
                         rq_listdoc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                                Intent intent = new Intent(ResultsActivity.this, InSertImageSporeDocActivity.class);
-                                intent.putExtra("WashRoundNumber", Model_RQ.get(position).getWashRoundNumber());
-                                intent.putExtra("TestProgramName", Model_RQ.get(position).getTestProgramName());
-                                intent.putExtra("WashMachineID", Model_RQ.get(position).getWashMachineID());
-                                intent.putExtra("IsActive", Model_RQ.get(position).getIsActive());
-                                intent.putExtra("DocNo", Model_RQ.get(position).getDocNo());
-                                intent.putExtra("ID", Model_RQ.get(position).getID());
-                                intent.putExtra("page", page = "0");
-                                intent.putExtra("EmpCode", EmpCode);
-                                intent.putExtra("B_ID", B_ID);
-                                intent.putExtra("Username", Username);
-                                startActivity(intent);
+                                go_Wash_test(Model_RQ.get(position));
+                            }
+                        });
+
+                        rq_listdoc.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                                if(Model_RQ.get(position).getIsActive().equals("0")){
+                                    return false;
+                                }
+                                go_Edit_Wash_test(Model_RQ.get(position));
+                                return true;
                             }
                         });
 
@@ -467,22 +485,23 @@ public class ResultsActivity extends AppCompatActivity {
                         rq_listdoc.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
-                                Intent intent = new Intent(ResultsActivity.this, InSertImageSporeDocActivity.class);
-                                intent.putExtra("SterileRoundNumber", Model_RQ.get(position).getSterileRoundNumber());
-                                intent.putExtra("SterileMachineID", Model_RQ.get(position).getSterileMachineID());
-                                intent.putExtra("TestProgramName", Model_RQ.get(position).getTestProgramName());
-                                intent.putExtra("IsActive", Model_RQ.get(position).getIsActive());
-                                intent.putExtra("DocNo", Model_RQ.get(position).getDocNo());
-                                intent.putExtra("ID", Model_RQ.get(position).getID());
-                                intent.putExtra("page", page = "1");
-                                intent.putExtra("EmpCode", EmpCode);
-                                intent.putExtra("SterileName", Model_RQ.get(position).getSterileName());
-                                intent.putExtra("SterileTypeID", Model_RQ.get(position).getSterileTypeID());
-                                intent.putExtra("sterileprogramID", Model_RQ.get(position).getSterileprogramID());
-//                            Log.d("KFLHDL",EmpCode);
-                                intent.putExtra("B_ID", B_ID);
-                                intent.putExtra("Username", Username);
-                                startActivity(intent);
+                                go_Sterile_test(Model_RQ.get(position));
+                            }
+                        });
+
+                        rq_listdoc.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                                if(Model_RQ.get(position).getIsActive().equals("0")){
+                                    return false;
+                                }
+
+                                if(canEditResult){
+                                    go_Edit_Sterile_test(Model_RQ.get(position));
+                                    return true;
+                                }
+
+                                return false;
                             }
                         });
                     }
@@ -517,6 +536,82 @@ public class ResultsActivity extends AppCompatActivity {
         }
         getlistdata obj = new getlistdata();
         obj.execute();
+    }
+
+    public void go_Sterile_test(ModelDisplayDoc1_1 Model_RQ){
+        go_Sterile_test(Model_RQ,false);
+    }
+    public void go_Edit_Sterile_test(ModelDisplayDoc1_1 Model_RQ){
+
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(ResultsActivity.this);
+        quitDialog.setMessage("คุณต้องการแก้ไขผลทดสอบ ?");
+        quitDialog.setPositiveButton("แก้ไข", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                go_Sterile_test(Model_RQ,true);
+            }
+        });
+        quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        quitDialog.show();
+    }
+    public void go_Sterile_test(ModelDisplayDoc1_1 Model_RQ , boolean editMode){
+        Intent intent = new Intent(ResultsActivity.this, InSertImageSporeDocActivity.class);
+        intent.putExtra("SterileRoundNumber", Model_RQ.getSterileRoundNumber());
+        intent.putExtra("SterileMachineID", Model_RQ.getSterileMachineID());
+        intent.putExtra("TestProgramName", Model_RQ.getTestProgramName());
+        intent.putExtra("IsActive", Model_RQ.getIsActive());
+        intent.putExtra("DocNo", Model_RQ.getDocNo());
+        intent.putExtra("ID", Model_RQ.getID());
+        intent.putExtra("page", page = "1");
+        intent.putExtra("EmpCode", EmpCode);
+        intent.putExtra("SterileName", Model_RQ.getSterileName());
+        intent.putExtra("SterileTypeID", Model_RQ.getSterileTypeID());
+        intent.putExtra("sterileprogramID", Model_RQ.getSterileprogramID());
+//                            Log.d("KFLHDL",EmpCode);
+        intent.putExtra("B_ID", B_ID);
+        intent.putExtra("Username", Username);
+        intent.putExtra("editMode", editMode);
+        startActivity(intent);
+    }
+
+    public void go_Wash_test(ModelDisplayDoc0_1 Model_RQ){
+        go_Wash_test(Model_RQ,false);
+    }
+    public void go_Edit_Wash_test(ModelDisplayDoc0_1 Model_RQ){
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(ResultsActivity.this);
+        quitDialog.setMessage("คุณต้องการแก้ไขผลทดสอบ ?");
+        quitDialog.setPositiveButton("แก้ไข", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                go_Wash_test(Model_RQ,true);
+            }
+        });
+        quitDialog.setNegativeButton("ยกเลิก", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        quitDialog.show();
+    }
+    public void go_Wash_test(ModelDisplayDoc0_1 Model_RQ , boolean editMode){
+        Intent intent = new Intent(ResultsActivity.this, InSertImageSporeDocActivity.class);
+        intent.putExtra("WashRoundNumber", Model_RQ.getWashRoundNumber());
+        intent.putExtra("TestProgramName", Model_RQ.getTestProgramName());
+        intent.putExtra("WashMachineID", Model_RQ.getWashMachineID());
+        intent.putExtra("IsActive", Model_RQ.getIsActive());
+        intent.putExtra("DocNo", Model_RQ.getDocNo());
+        intent.putExtra("ID", Model_RQ.getID());
+        intent.putExtra("page", page = "0");
+        intent.putExtra("EmpCode", EmpCode);
+        intent.putExtra("B_ID", B_ID);
+        intent.putExtra("Username", Username);
+
+        intent.putExtra("editMode", editMode);
+        startActivity(intent);
     }
 
     public String convertdate(String date){
