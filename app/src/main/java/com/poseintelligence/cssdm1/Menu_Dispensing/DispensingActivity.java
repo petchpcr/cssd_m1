@@ -5445,7 +5445,7 @@ public class DispensingActivity extends AppCompatActivity {
 
             int unicodeChar = event.getUnicodeChar();
 
-//            if(keyCode==37){
+//            if(keyCode==189 || keyCode==190){
 //                mass_usage_code = "";
 //            }
 

@@ -453,12 +453,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="left|center_vertical"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/bt_rfid"
-                android:layout_width="150dp"
+                android:layout_width="130dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:background="@drawable/bt_rfid"
@@ -506,7 +506,7 @@
 
         <ImageView
             android:id="@+id/imageCreate"
-            android:layout_width="150dp"
+            android:layout_width="140dp"
             android:layout_height="match_parent"
             android:layout_alignBottom="@+id/imageBack"
             android:layout_alignParentEnd="false"
