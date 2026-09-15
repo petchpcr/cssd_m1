@@ -43,6 +43,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.poseintelligence.cssdm1.R;
+import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_CheckStock.CheckStockMainRFIDT2XFrament;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Dispensing.DispensingRFIDT2XFrament;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Sterile.SterileRFIDT2XFrament;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.event.BaseFragment;
@@ -538,6 +539,10 @@ public class T2XMainActivity extends AppCompatActivity {
             // Sterile screen
             case 2:
                 currentFragment = new SterileRFIDT2XFrament();
+                break;
+            // Check stock screen
+            case 3:
+                currentFragment = new CheckStockMainRFIDT2XFrament();
                 break;
 
             default:

@@ -1,185 +1,194 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.poseintelligence.cssdm1"
-    android:installLocation="auto"
-    android:versionCode="1"
-    android:versionName="1.1">
+<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+package="com.poseintelligence.cssdm1"
+android:installLocation="auto"
+android:versionCode="1"
+android:versionName="1.1">
 
-    <uses-sdk android:maxSdkVersion="34" />
-    <!-- To access Google+ APIs: -->
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.usb" />
-    <uses-feature
-        android:name="android.hardware.location"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.location.gps"
-        android:required="true" />
+<uses-sdk android:maxSdkVersion="34" />
+<!-- To access Google+ APIs: -->
+<uses-feature android:name="android.hardware.camera" />
+<uses-feature android:name="android.hardware.usb" />
+<uses-feature
+    android:name="android.hardware.location"
+    android:required="true" />
+<uses-feature
+    android:name="android.hardware.location.gps"
+    android:required="true" />
 
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+<uses-permission android:name="android.permission.WAKE_LOCK" />
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.USE_CREDENTIALS" />
+<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+<uses-permission android:name="android.permission.READ_PROFILE" />
+<uses-permission android:name="android.permission.READ_CONTACTS" />
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.CAMERA" />
+<uses-permission android:name="android.permission.GET_TASKS" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+<uses-permission android:name="android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE" />
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+<uses-permission
+    android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    tools:ignore="ScopedStorage" />
 
-    <queries>
-        <package android:name="woyou.aidlservice.jiuiv5"/>
-    </queries>
+<queries>
+    <package android:name="woyou.aidlservice.jiuiv5" />
+</queries>
 
-    <application
-        android:name=".CssdProject"
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_background"
-        android:label="@string/app_name"
-        android:largeHeap="true"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:roundIcon="@mipmap/ic_launcher_background"
-        android:supportsRtl="true"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.CssdM1"
-        android:enableOnBackInvokedCallback="true"
-        android:usesCleartextTraffic="true">
-        <activity
-            android:name=".RFID.IDataT2X.Menu_Sterile.SterileRFIDActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:exported="false" />
-        <activity
-            android:name=".RFID.IDataT2X.Menu_Dispensing.DispensingRFIDActivity"
-            android:exported="false" />
-        <activity
-            android:name=".RFID.IDataT2X.T2XMainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Menu_Dispensing.CheckQR_Approve"
-            android:theme="@style/myDialog"
-            android:exported="false" />
-        <activity
-            android:name=".WaitConnectDialog"
-            android:exported="false"
-            android:theme="@style/myDialog" />
+<application
+    android:name=".CssdProject"
+    android:allowBackup="true"
+    android:icon="@mipmap/ic_launcher_background"
+    android:label="@string/app_name"
+    android:largeHeap="true"
+    android:networkSecurityConfig="@xml/network_security_config"
+    android:roundIcon="@mipmap/ic_launcher_background"
+    android:supportsRtl="true"
+    android:screenOrientation="portrait"
+    android:theme="@style/Theme.CssdM1"
+    android:enableOnBackInvokedCallback="true"
+    android:usesCleartextTraffic="true">
+    <activity
+        android:name=".RFID.IDataT2X.Menu_Sterile.SterileRFIDActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:exported="false" />
+    <activity
+        android:name=".RFID.IDataT2X.Menu_Dispensing.DispensingRFIDActivity"
+        android:exported="false" />
+    <activity
+        android:name=".RFID.IDataT2X.T2XMainActivity"
+        android:exported="false" />
+    <activity
+        android:name=".Menu_Dispensing.CheckQR_Approve"
+        android:theme="@style/myDialog"
+        android:exported="false" />
+    <activity
+        android:name=".WaitConnectDialog"
+        android:exported="false"
+        android:theme="@style/myDialog" />
 
-        <service
-            android:name=".core.connect.RunningBackgroundService"
-            android:exported="false" />
+    <service
+        android:name=".core.connect.RunningBackgroundService"
+        android:exported="false" />
 
-        <activity
-            android:name=".Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".Menu_BasketWashing.BasketWashingActivity"
-            android:exported="false"
-            android:theme="@style/Theme.CssdM1.NoActionBar" />
-        <activity
-            android:name=".Menu_Sterile.SterileActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:hardwareAccelerated="true"/>
-        <activity
-            android:name=".Menu_MachineTest.MachineTestDetailActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".Menu_MachineTest.MachineTestActivity" />
-        <activity
-            android:name=".Menu_RecordTest.ATPDocnoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".Menu_RecordTest.InSertImageSporeDocActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".Menu_Receive.SearchItem_SendSterile"
-            android:exported="true" />
-        <activity
-            android:name=".Menu_Remark.dialog_remark_sendsterile"
-            android:exported="true" />
-        <activity
-            android:name=".Menu_Remark.dialog_delete_pic_remark"
-            android:theme="@style/myDialog" />
-        <activity
-            android:name=".Menu_Receive.dialog_Load_Img"
-            android:exported="true"
-            android:label="@string/title_activity_dialog_load_img"
-            android:theme="@style/Theme.CssdM1.NoActionBar" />
-        <activity
-            android:name=".Menu_Receive.dialog_Load_Img_Remark"
-            android:exported="true" />
-        <activity
-            android:name=".Menu_Return.ReturnActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_RecordTest.ResultsActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_Signature_Department.SignatureDepartmentActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_Signature_Department.SignatureDepartmentDetailActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_Signature_Department.SignaturePadAtivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_Remark.RemarkActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_Receive.ReceiveActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Menu_Dispensing.DispensingActivity"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".MainMenu"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".Login"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".SplashScreen"
-            android:exported="true"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    <activity
+        android:name=".Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    <activity
+        android:name=".Menu_BasketWashing.BasketWashingActivity"
+        android:exported="false"
+        android:theme="@style/Theme.CssdM1.NoActionBar" />
+    <activity
+        android:name=".Menu_Sterile.SterileActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:hardwareAccelerated="true" />
+    <activity
+        android:name=".Menu_MachineTest.MachineTestDetailActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    <activity android:name=".Menu_MachineTest.MachineTestActivity" />
+    <activity
+        android:name=".Menu_RecordTest.ATPDocnoActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    <activity
+        android:name=".Menu_RecordTest.InSertImageSporeDocActivity"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+    <activity
+        android:name=".Menu_Receive.SearchItem_SendSterile"
+        android:exported="true" />
+    <activity
+        android:name=".Menu_Remark.dialog_remark_sendsterile"
+        android:exported="true" />
+    <activity
+        android:name=".Menu_Remark.dialog_delete_pic_remark"
+        android:theme="@style/myDialog" />
+    <activity
+        android:name=".Menu_Receive.dialog_Load_Img"
+        android:exported="true"
+        android:label="@string/title_activity_dialog_load_img"
+        android:theme="@style/Theme.CssdM1.NoActionBar" />
+    <activity
+        android:name=".Menu_Receive.dialog_Load_Img_Remark"
+        android:exported="true" />
+    <activity
+        android:name=".Menu_Return.ReturnActivity"
+        android:exported="true"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_RecordTest.ResultsActivity"
+        android:exported="true"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_Signature_Department.SignatureDepartmentActivity"
+        android:exported="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_Signature_Department.SignatureDepartmentDetailActivity"
+        android:exported="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_Signature_Department.SignaturePadAtivity"
+        android:exported="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_Remark.RemarkActivity"
+        android:exported="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_Receive.ReceiveActivity"
+        android:exported="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Menu_Dispensing.DispensingActivity"
+        android:exported="true"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".MainMenu"
+        android:exported="true"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".Login"
+        android:exported="true"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".SplashScreen"
+        android:exported="true"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-    </application>
-
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+    <activity
+        android:name="com.poseintelligence.cssdm1.Menu_CheckStock.CheckStockMainActivity"
+        android:exported="false" />
+    <activity
+        android:name="com.poseintelligence.cssdm1.Menu_CheckStock.CheckStockItemActivity"
+        android:exported="false" />
+    <activity
+        android:name=".RFID.IDataT2X.Menu_CheckStock.CheckStockMainRFIDActivity"
+        android:exported="false" />
+</application>
 </manifest>

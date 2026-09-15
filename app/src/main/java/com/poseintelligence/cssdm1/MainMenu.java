@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
+import com.poseintelligence.cssdm1.Menu_CheckStock.CheckStockMainActivity;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.Menu_MachineTest.MachineTestActivity;
 import com.poseintelligence.cssdm1.Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity;
@@ -29,6 +30,7 @@ import com.poseintelligence.cssdm1.Menu_Remark.RemarkActivity;
 import com.poseintelligence.cssdm1.Menu_Return.ReturnActivity;
 import com.poseintelligence.cssdm1.Menu_Signature_Department.SignatureDepartmentActivity;
 import com.poseintelligence.cssdm1.Menu_Sterile.SterileActivity;
+import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_CheckStock.CheckStockMainRFIDActivity;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Dispensing.DispensingRFIDActivity;
 import com.poseintelligence.cssdm1.RFID.IDataT2X.Menu_Sterile.SterileRFIDActivity;
 import com.poseintelligence.cssdm1.core.connect.HTTPConnect;
@@ -105,19 +107,6 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             public void onClick(View v)
             {
                 Integer position = Integer.parseInt(v.getTag().toString());
-//                Log.d("OOOO","Clicked item at position: " + position + " : " + cM1.get(position).getCngName());
-//                switch(cM1.get(position).getBtImg()) {
-//                    case "bt_dispensing": getoPage(DispensingActivity.class); break;
-//                    case "bt_receive": getoPage(ReceiveActivity.class); break;
-//                    case "bt_remark": getoPage(RemarkActivity.class); break;
-//                    case "bt_results": getoPage(ResultsActivity.class); break;
-//                    case "bt_returnofcssd": getoPage(ReturnActivity.class); break;
-//                    case "bt_machine_test": getoPage(MachineTestActivity.class); break;
-//                    case "bt_sterile": getoPage(SterileActivity.class); break;
-//                    case "bt_sterile_test_mac": getoPage(SterileActivity.class); break;
-//                    case "bt_basket_washing": getoPage(BasketWashingActivity.class); break;
-//                    case "bt_nonusage": getoPage(ReceivePayNonUsageActivity.class); break;
-//                    case "bt_signature_dept": getoPage(SignatureDepartmentActivity.class); break;
 //                }
                 gotoPage(cM1.get(position).getBtImg());
             }
@@ -159,6 +148,12 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 gx = ReceivePayNonUsageActivity.class; break;
             case "bt_signature_dept":
                 gx = SignatureDepartmentActivity.class; break;
+            case "bt_check_stock":
+                if(CssdProject.isT2X && CssdProject.use_rfid){
+                    gx = CheckStockMainRFIDActivity.class; break;
+                }else{
+                    gx = CheckStockMainActivity.class; break;
+                }
         }
 
         Intent intent = new Intent(MainMenu.this,gx);
@@ -276,6 +271,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_basket_washing": t.setText("นำเข้าตะกร้า-เครื่องล้าง"); break;
             case "bt_nonusage": t.setText("รับ-จ่าย รายการ non-usage"); break;
             case "bt_signature_dept": t.setText("ลงชื่อผู้รับแผนก"); break;
+            case "bt_check_stock": t.setText("ตรวจสอบสต๊อกจ่ายกลาง"); break;
         }
 
         t.setGravity(Gravity.CENTER);
