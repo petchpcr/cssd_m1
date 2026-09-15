@@ -19,7 +19,8 @@ import java.util.ArrayList;
 public class CssdProject extends Application {
     public static boolean is_dev = false;
 
-    public static  String Version = "1.1.0(1)";//เพิ่มการสแกน rfid iData T2X
+    public static  String Version = "1.2.0(1)";//เพิ่มเมนู check stock + rfid iData T2X
+//    public static  String Version = "1.1.0(1)";//เพิ่มการสแกน rfid iData T2X
 //    public static  String Version = "1.0.6(8)";//DispensingActivity.java แก้ไขบัคไม่เคลียร์ scan_log_listItems
 
     private static Context appContext;
@@ -39,8 +40,8 @@ public class CssdProject extends Application {
 //    public static boolean isuse_BID=false;
 
 //    RFID
-    public static boolean use_rfid = false;
-    public static boolean isT2X = false;
+//    public static boolean use_rfid = false;
+//    public static boolean isT2X = false;
 
     //    SIRIRAJ
 //    final public static String D_DATABASE="1";
@@ -48,8 +49,8 @@ public class CssdProject extends Application {
 //    final public static boolean siri_api_login = false;
 //    final public static boolean ldap_login = false;
 //    final public static boolean isuse_BID=true;
-//    final public static boolean use_rfid = true;
-//    public static boolean isT2X = true;
+    final public static boolean use_rfid = true;
+    public static boolean isT2X = true;
 //
     //    SIRIRAJ PIYA
     final public static String D_DATABASE="1";

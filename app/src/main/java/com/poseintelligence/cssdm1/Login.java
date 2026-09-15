@@ -1650,7 +1650,7 @@ public class Login extends AppCompatActivity {
 
     public void u_r_dev(){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 8, 18);
+            LocalDate someDate = LocalDate.of(2026, 9, 3);
             LocalDate today = LocalDate.now();
             Log.d("u_r_dev","someDate = "+someDate.toString());
             Log.d("u_r_dev","someDate = "+today.toString());
@@ -1675,7 +1675,7 @@ public class Login extends AppCompatActivity {
     public boolean dev_list_url(){
         if(!CssdProject.is_dev) return false;
         String[] _url = new String[]{
-                "http://172.20.100.163:8080/cssd_siph/",
+                "http://172.20.100.66:8080/cssd_siph/",
         };
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, _url);

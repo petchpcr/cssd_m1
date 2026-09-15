@@ -353,7 +353,7 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
                 Log.d("tog_888","images1.setOnClickListener");
                 Spinner_data = pg_spinner.getSelectedItemPosition();
                 if (!IsActive.equals("1")){
-//                    edit_pic = editMode;
+                    edit_pic = editMode;
                     openCamera(1);
                 }else {
                     open_pic("1");
@@ -381,18 +381,21 @@ public class InSertImageSporeDocActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Spinner_data = pg_spinner.getSelectedItemPosition();
                 if (!IsActive.equals("1")){
-//                    edit_pic = editMode;
+                    edit_pic = editMode;
                     openCamera(2);
                 }else {
                     open_pic("2");
                 }
-
             }
         });
 
         images2.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                if(editMode=true){
+                    return false;
+                }
+
                 if (IsActive.equals("1")){
                     edit_pic = true;
                     Spinner_data = pg_spinner.getSelectedItemPosition();
