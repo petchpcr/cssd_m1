@@ -23,6 +23,7 @@ import com.poseintelligence.cssdm1.Menu_BasketWashing.BasketWashingActivity;
 import com.poseintelligence.cssdm1.Menu_CheckStock.CheckStockMainActivity;
 import com.poseintelligence.cssdm1.Menu_Dispensing.DispensingActivity;
 import com.poseintelligence.cssdm1.Menu_MachineTest.MachineTestActivity;
+import com.poseintelligence.cssdm1.Menu_ParStock.ParStockSelectDeptActivity;
 import com.poseintelligence.cssdm1.Menu_Re_Pay_NonUsage.ReceivePayNonUsageActivity;
 import com.poseintelligence.cssdm1.Menu_Receive.ReceiveActivity;
 import com.poseintelligence.cssdm1.Menu_RecordTest.ResultsActivity;
@@ -154,6 +155,8 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
                 }else{
                     gx = CheckStockMainActivity.class; break;
                 }
+            case "bt_par_stock":
+                gx = ParStockSelectDeptActivity.class; break;
         }
 
         Intent intent = new Intent(MainMenu.this,gx);
@@ -272,6 +275,7 @@ public class MainMenu extends AppCompatActivity implements View.OnClickListener 
             case "bt_nonusage": t.setText("รับ-จ่าย รายการ non-usage"); break;
             case "bt_signature_dept": t.setText("ลงชื่อผู้รับแผนก"); break;
             case "bt_check_stock": t.setText("ตรวจสอบสต๊อกจ่ายกลาง"); break;
+            case "bt_par_stock": t.setText("บันทึกจำนวน Par Stock"); break;
         }
 
         t.setGravity(Gravity.CENTER);

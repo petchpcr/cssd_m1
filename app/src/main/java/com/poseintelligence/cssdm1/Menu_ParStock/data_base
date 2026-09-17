@@ -1,0 +1,5 @@
+INSERT INTO [dbo].[Config_M1]([Id], [Cng_Name], [Cng_Comment], [isActive], [isStatus], [showBtn], [imgBtn], [B_ID]) VALUES (14, N'(เมนู) บันทึกจำนวน PAR Stock', N'บันทึกจำนวน PAR Stock', '1', '0', '1', N'bt_par_stock', 1);
+
+ALTER TABLE [dbo].[config_menu_m1] ADD [bt_par_stock] bit DEFAULT 0 NULL
+
+UPDATE [dbo].[config_menu_m1] SET [bt_par_stock] = '1'

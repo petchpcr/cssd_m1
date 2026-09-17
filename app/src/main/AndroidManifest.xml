@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:tools="http://schemas.android.com/tools"
 package="com.poseintelligence.cssdm1"
 android:installLocation="auto"
@@ -189,6 +189,12 @@ android:versionName="1.1">
         android:exported="false" />
     <activity
         android:name=".RFID.IDataT2X.Menu_CheckStock.CheckStockMainRFIDActivity"
+        android:exported="false" />
+    <activity
+        android:name="com.poseintelligence.cssdm1.Menu_ParStock.ParStockSelectDeptActivity"
+        android:exported="false" />
+    <activity
+        android:name="com.poseintelligence.cssdm1.Menu_ParStock.ParStockMainActivity"
         android:exported="false" />
 </application>
 </manifest>

@@ -1,0 +1,5 @@
+INSERT INTO [dbo].[Config_M1]([Id], [Cng_Name], [Cng_Comment], [isActive], [isStatus], [showBtn], [imgBtn], [B_ID]) VALUES (13, N'(เมนู) ตรวจสอบสต๊อกจ่ายกลาง', N'เมนูตรวจสอบสต๊อกจ่ายกลาง', '1', '0', '1', N'bt_check_stock', 1);
+
+ALTER TABLE [dbo].[config_menu_m1] ADD [bt_check_stock] bit DEFAULT 0 NULL
+
+UPDATE [dbo].[config_menu_m1] SET [bt_check_stock] = '1'
