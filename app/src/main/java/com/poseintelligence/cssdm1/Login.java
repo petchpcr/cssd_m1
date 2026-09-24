@@ -1650,7 +1650,7 @@ public class Login extends AppCompatActivity {
 
     public void u_r_dev(){
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            LocalDate someDate = LocalDate.of(2026, 9, 3);
+            LocalDate someDate = LocalDate.of(2026, 9, 24);
             LocalDate today = LocalDate.now();
             Log.d("u_r_dev","someDate = "+someDate.toString());
             Log.d("u_r_dev","someDate = "+today.toString());
@@ -1664,10 +1664,10 @@ public class Login extends AppCompatActivity {
     public boolean dev_login(){
         if(!CssdProject.is_dev) return false;
 
-        onLogin("user1", "111");
+//        onLogin("user1", "111");
 //        onLogin("Admin", "123");
 //        onLogin("v", "70001954");
-//        onLogin("EM00437", "1");
+        onLogin("EM00004", "1");
 
         return true;
     }

@@ -3,3 +3,25 @@ INSERT INTO [dbo].[Config_M1]([Id], [Cng_Name], [Cng_Comment], [isActive], [isSt
 ALTER TABLE [dbo].[config_menu_m1] ADD [bt_par_stock] bit DEFAULT 0 NULL
 
 UPDATE [dbo].[config_menu_m1] SET [bt_par_stock] = '1'
+
+CREATE TABLE [dbo].[par_stock](
+	[id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[itemcode] NVARCHAR(25) NOT NULL,
+	[department_id] INT NOT NULL,
+	[par_qty] INT NOT NULL,
+	[is_active] BIT NOT NULL,
+	[create_date] DATETIME NOT NULL,
+	[create_by] INT NOT NULL,
+	[modify_date] DATETIME NULL,
+	[modify_by] INT NULL
+);
+
+CREATE TABLE [dbo].[par_stock_log](
+	[id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+	[par_stock_id] INT NOT NULL,
+	[par_qty] INT NOT NULL,
+	[remark] NVARCHAR(500) NULL,
+	[create_by] INT NOT NULL,
+	[create_date] DATETIME NOT NULL,
+	CONSTRAINT [fk_par_stock_log_par_stock] FOREIGN KEY ([par_stock_id]) REFERENCES [dbo].[par_stock]([id])
+);

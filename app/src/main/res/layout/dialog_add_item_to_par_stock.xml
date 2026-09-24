@@ -53,11 +53,16 @@
 
     <Button
         android:id="@+id/btn_ok"
-        android:layout_width="134dp"
-        android:layout_height="60dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:background="@drawable/bt_agreed" />
+        android:layout_weight="1"
+        android:background="@drawable/rectangle_blue"
+        android:paddingLeft="26dp"
+        android:paddingRight="26dp"
+        android:text="เพิ่มรายการ"
+        android:textColor="@color/ic_launcher_background"
+        android:textSize="16sp" />" />
 
 
 </LinearLayout>
